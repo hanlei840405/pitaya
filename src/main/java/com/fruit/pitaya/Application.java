@@ -1,12 +1,12 @@
-package com.fruit;
+package com.fruit.pitaya;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PitayaApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PitayaApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 }

@@ -1,4 +1,4 @@
-package com.fruit;
+package com.fruit.pitaya;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
