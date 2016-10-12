@@ -40,7 +40,7 @@ public class CustomerService {
     @Transactional
     public Customer update(Customer customer) throws Exception {
         try {
-            jdbcTemplate.update("UPDATE mall_customer SET sex=?,brithday=?,email=?,phone=?,wechat=?,upCode=?,upCustomer=?,saler=? WHERE id=?",
+            jdbcTemplate.update("UPDATE mall_customer SET sex=?,birthday=?,email=?,phone=?,wechat=?,upCode=?,upCustomer=?,saler=? WHERE id=?",
                     new Object[]{customer.getSex(), customer.getBirthday(), customer.getEmail(), customer.getPhone(),
                             customer.getWechat(), customer.getUpCode(), customer.getUpCustomer(), customer.getSaler(), customer.getId()});
         } catch (Exception e) {

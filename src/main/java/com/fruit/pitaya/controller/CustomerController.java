@@ -38,6 +38,7 @@ public class CustomerController {
             model.addAttribute("errorCode", "500");
             model.addAttribute("errorMsg", "保存失败");
         }
+        model.addAttribute("me", exist);
         return "profile";
     }
 }

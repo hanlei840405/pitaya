@@ -41,7 +41,11 @@ public class HomeController {
     public String profile(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
+        servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
         model.addAttribute("me", customer);
+//        model.addAttribute("addresses", new String[0]);
         return "profile";
     }
 }
