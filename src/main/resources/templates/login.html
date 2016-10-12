@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:replace="header"></div>
+<body>
+<header id="header">
+    <!--header-->
+    <div class="header_top">
+        <!--header_top-->
+        <div class="container">
+            <div class="row">
+                <div class="social-icons">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-phone"></i>400 0000 000</a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-envelope"></i>info@domain.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/header_top-->
+    <div class="header-middle">
+        <!--header-middle-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="logo pull-left">
+                        <a href="index.html">
+                            <img src="images/home/logo.png" alt=""/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/header-bottom-->
+</header>
+
+<section id="form" style="margin-top: 0;;margin-bottom: 50px"><!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="login-form"><!--login form-->
+                    <h2>Login to your account</h2>
+
+                    <form action="login" method="post">
+                        <input type="text" placeholder="用户名" name="username"/>
+                        <input type="password" placeholder="密码" name="password"/>
+                        <button type="submit" class="btn btn-default">Login</button>
+                    </form>
+                </div><!--/login form-->
+            </div>
+            <div class="col-sm-1">
+                <h2 class="or">OR</h2>
+            </div>
+            <div class="col-sm-4">
+                <div class="signup-form"><!--sign up form-->
+                    <h2>New User Signup!</h2>
+
+                    <form action="register">
+                        <input type="text" placeholder="用户名" name="username"/>
+                        <input type="password" placeholder="密码" name="password"/>
+                        <input type="password" placeholder="确认密码" name="rePassword"/>
+                        <button type="submit" class="btn btn-default">Signup</button>
+                    </form>
+                </div><!--/sign up form-->
+            </div>
+        </div>
+    </div>
+</section><!--/form-->
+<div th:replace="footer"/>
+</body>
+</html>

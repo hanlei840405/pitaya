@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:replace="header"></div>
+<body>
+<header id="header">
+    <!--header-->
+    <div class="header_top">
+        <!--header_top-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="social-icons">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-phone"></i>400 0000 000</a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-envelope"></i>info@domain.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="social-icons pull-right">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="profile">
+                                    <i class="fa fa-user"></i></a>
+                            </li>
+                            <li>
+                                <a href="cart">
+                                    <i class="fa fa-shopping-cart"></i></a>
+                            </li>
+                            <li><a th:href="${session.username} != null ? @{logout} : @{login}"><i
+                                    th:class="${session.username} != null ? @{fa fa-unlock} : @{fa fa-lock}"></i><span
+                                    th:text="${session.username} != null ? ${session.username}"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/header_top-->
+    <div class="header-middle">
+        <!--header-middle-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="logo pull-left">
+                        <a href="index.html">
+                            <img src="images/home/logo.png" alt=""/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!--/header-->
+<section id="form" style="margin-top: 0px;margin-bottom: 10px;"><!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="login-form col-sm-4"><!--sign up form-->
+                <form action="updateMe" method="post">
+                    <div class="row">
+                        <span class="col-sm-2">
+                            <input type="radio" class="radio" name="sex" value="M" th:checked="${me.sex} == 'M' ? @{checked}"/> 男
+                        </span>
+                        <span class="col-sm-2">
+                            <input type="radio" class="radio" name="sex" value="F" th:checked="${me.sex} == 'F' ? @{checked}"/> 女
+                        </span>
+                    </div>
+                    <input type="email" placeholder="邮箱" name="email" th:value="${me.email} != null ? ${me.email}"/>
+                    <input type="text" placeholder="电话" name="phone" th:value="${me.phone} != null ? ${me.phone}"/>
+                    <input type="text" placeholder="微信" name="wechat" th:value="${me.wechat} != null ? ${me.wechat}"/>
+                    <input type="text" placeholder="上级经销商" name="upCode" th:value="${me.upCode} != null ? ${me.upCode}"/>
+                    <input type="text" placeholder="销售员" name="saler" th:value="${me.saler} != null ? ${me.saler}"/>
+                    <button type="submit" class="btn btn-default">保存</button>
+                </form>
+            </div><!--/sign up form-->
+        </div>
+    </div>
+</section><!--/form-->
+<div th:replace="footer"/>
+</body>
+
+</html>
