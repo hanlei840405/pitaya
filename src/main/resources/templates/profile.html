@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<div th:replace="header"></div>
+<head>
+    <div th:include="header"></div>
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet"/>
+</head>
 <body>
 <header id="header">
     <!--header-->
@@ -64,7 +67,7 @@
             <p>基础信息</p>
 
             <form action="updateMe" method="post">
-                <div class="row">
+                <div class="row" style="line-height: 3.7">
                         <span class="col-sm-3">
                             <input type="radio" class="radio" style="display: inline" name="sex" value="M"
                                    th:checked="${me.sex} == 'M' ? @{checked}"/> 男
@@ -74,6 +77,8 @@
                                    th:checked="${me.sex} == 'F' ? @{checked}"/> 女
                         </span>
                 </div>
+                <input type="text" placeholder="生日" id="birthday" name="birthday"
+                       th:value="${me.birthday}"/>
                 <input type="email" placeholder="邮箱" name="email" th:value="${me.email} != null ? ${me.email}"/>
                 <input type="text" placeholder="电话" name="phone" th:value="${me.phone} != null ? ${me.phone}"/>
                 <input type="text" placeholder="微信" name="wechat" th:value="${me.wechat} != null ? ${me.wechat}"/>
@@ -128,6 +133,17 @@
     </div>
 </section><!--/form-->
 <div th:replace="footer"/>
+<script src="js/bootstrap-datepicker.min.js"></script>
+<script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript">
+    $(document.body).ready(function () {
+        alert(1);
+        $('#birthday').datepicker({
+            format: "yyyy-mm-dd",
+            language: "zh-CN"
+        });
+    });
+</script>
 </body>
 
 </html>
