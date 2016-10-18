@@ -26,7 +26,6 @@ public class CustomerMapper implements RowMapper<Customer> {
         customer.setBirthday(rs.getDate("birthday"));
         customer.setStatus(rs.getInt("status"));
         customer.setUpCode(rs.getString("upCode"));
-        customer.setUpCustomer(rs.getString("upCustomer"));
         customer.setWechat(rs.getString("wechat"));
         return customer;
     }

@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
 //                .passwordEncoder(new Md5PasswordEncoder())
-                .usersByUsernameQuery("SELECT cusCode as username, passwd as password, status as enable FROM mall_customer WHERE cusCode = ?")
+                .usersByUsernameQuery("SELECT cusCode as username, passwd as password, 1 as enable FROM mall_customer WHERE cusCode = ?")
                 .authoritiesByUsernameQuery("SELECT cusCode as username, 'customer' as authority FROM mall_customer WHERE cusCode = ?");
         ReflectionSaltSource rss = new ReflectionSaltSource();
         rss.setUserPropertyToUse("username");

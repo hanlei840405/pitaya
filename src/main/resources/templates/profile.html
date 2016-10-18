@@ -95,7 +95,7 @@
                 <input type="text" th:each="address : ${addresses}" th:placeholder="$address"
                        disabled="disabled"/>
             </form>
-            <form>
+            <form action="newAddress" method="post">
                 <input type="text" placeholder="收件人" name="recipient"/>
                 <input type="text" placeholder="地址" name="addr"/>
                 <input type="text" placeholder="电话" name="phone"/>
@@ -109,10 +109,10 @@
                 <input type="text" th:each="online : ${onlines}" th:placeholder="online"
                        disabled="disabled"/>
             </form>
-            <form>
+            <form action="newOnlineShop" method="post" enctype="multipart/form-data">
                 <input type="text" placeholder="店铺名称" name="olshopName"/>
                 <input type="text" placeholder="店铺地址" name="olshopAddt"/>
-                <input type="text" placeholder="店铺LOGO" name="olshopPic"/>
+                <input type="file" placeholder="店铺LOGO" name="olshopPic"/>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
         </div>
@@ -123,10 +123,10 @@
                 <input type="text" th:each="shop : ${shops}" th:placeholder="shop"
                        disabled="disabled"/>
             </form>
-            <form>
+            <form action="newShop" method="post" enctype="multipart/form-data">
                 <input type="text" placeholder="店铺名称" name="shopName"/>
                 <input type="text" placeholder="店铺地址" name="shopAddt"/>
-                <input type="text" placeholder="店铺LOGO" name="shopPic"/>
+                <input type="file" placeholder="店铺LOGO" name="shopPic"/>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
         </div>
@@ -137,7 +137,6 @@
 <script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script type="text/javascript">
     $(document.body).ready(function () {
-        alert(1);
         $('#birthday').datepicker({
             format: "yyyy-mm-dd",
             language: "zh-CN"

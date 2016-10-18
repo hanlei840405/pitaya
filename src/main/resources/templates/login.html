@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <div th:include="header"></div>
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet"/>
 </head>
 <body>
 <header id="header">
@@ -46,13 +47,14 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-4 col-sm-offset-1">
-                <div class="login-form"><!--login form-->
+                <div class="signup-form"><!--login form-->
                     <h2>Login to your account</h2>
 
                     <form action="login" method="post">
                         <input type="text" placeholder="用户名" name="username"/>
                         <input type="password" placeholder="密码" name="password"/>
-                        <button type="submit" class="btn btn-default">Login</button>
+                        <button type="submit" class="btn btn-default pull-left">Login</button>
+                        <a class="pull-right" href="forgotPwd">忘记密码?</a>
                     </form>
                 </div><!--/login form-->
             </div>
@@ -63,11 +65,23 @@
                 <div class="signup-form"><!--sign up form-->
                     <h2>New User Signup!</h2>
 
-                    <form action="register">
-                        <input type="text" placeholder="用户名" name="username"/>
-                        <input type="password" placeholder="密码" name="password"/>
-                        <input type="password" placeholder="确认密码" name="rePassword"/>
-                        <button type="submit" class="btn btn-default">Signup</button>
+                    <form action="register" method="post" id="signForm" class="form-horizontal">
+                        <input type="hidden" name="sex" id="sex" value="M"/>
+                        <input type="text" placeholder="姓名" name="cusName" id="cusName"/>
+                        <input type="password" placeholder="密码" name="passwd" id="passwd"/>
+
+                        <div class="btn-group col-sm-12"
+                             style="margin-bottom:10px; padding-left: 0px;padding-right: 0px;">
+                            <a class="btn btn-success col-sm-6 male">男</a>
+                            <a class="btn btn-default col-sm-6 female">女</a>
+                        </div>
+                        <input type="text" placeholder="生日" name="birthday" id="birthday"/>
+                        <input type="email" placeholder="邮箱" name="email" id="email"/>
+                        <input type="text" placeholder="电话" name="phone" id="phone"/>
+                        <input type="text" placeholder="微信" name="wechat" id="wechat"/>
+                        <input type="text" placeholder="上级商户" name="upCode" id="upCode"/>
+                        <input type="text" placeholder="业务员" name="saler" id="saler"/>
+                        <button type="button" class="btn btn-default submit">注册</button>
                     </form>
                 </div><!--/sign up form-->
             </div>
@@ -75,5 +89,47 @@
     </div>
 </section><!--/form-->
 <div th:replace="footer"/>
+<script src="js/bootstrap-datepicker.min.js"></script>
+<script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="application/javascript">
+    /*<![CDATA[*/
+    $(document.body).ready(function () {
+        $('#birthday').datepicker({
+            format: "yyyy-mm-dd",
+            language: "zh-CN"
+        });
+        $('.male').click(function () {
+            $('#sex').val('M');
+            $('.male').removeClass('btn-default').addClass('btn-success');
+            $('.female').removeClass('btn-success').addClass('btn-default');
+        });
+        $('.female').click(function () {
+            $('#sex').val('F');
+            $('.female').removeClass('btn-default').addClass('btn-success');
+            $('.male').removeClass('btn-success').addClass('btn-default');
+        });
+        $('.submit').on('click', register);
+    });
+    function register() {
+        var flag = true;
+        var f1 = validate($('#cusName'));
+        var f2 = validate($('#passwd'));
+        var f3 = validate($('#birthday'));
+        var f4 = validate($('#email'));
+        var f5 = validate($('#phone'));
+        var f6 = validate($('#wechat'));
+        if (flag && f1 && f2 && f3 && f4 && f5 && f6) {
+            $('#signForm').submit();
+        }
+    }
+    function validate(dom) {
+        if ($.trim(dom.val()) == '') {
+            dom.css('background', '#a94442');
+            return false;
+        }
+        return true;
+    }
+    /*]]>*/
+</script>
 </body>
 </html>

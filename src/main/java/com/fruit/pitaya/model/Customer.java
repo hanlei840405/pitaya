@@ -2,6 +2,7 @@ package com.fruit.pitaya.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,12 +20,12 @@ public class Customer implements Serializable {
     private String passwd;
     private int status;
     private String sex;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
     private String email;
     private String phone;
     private String wechat;
     private String upCode;
-    private String upCustomer;
     private String saler;
     private int rate;
     private BigDecimal amount;
