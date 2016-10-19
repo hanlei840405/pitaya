@@ -14,7 +14,7 @@ import java.util.Date;
 @Setter
 @Getter
 public class Customer implements Serializable {
-    private long id;
+    private Long id;
     private String cusCode;
     private String cusName;
     private String passwd;

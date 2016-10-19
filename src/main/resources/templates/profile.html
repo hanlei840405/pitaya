@@ -63,16 +63,16 @@
 <!--/header-->
 <section id="form" style="margin-top: 0px;margin-bottom: 10px;"><!--form-->
     <div class="container">
-        <div class="shopper-info col-sm-3"><!--sign up form-->
+        <div class="shopper-info col-sm-4"><!--sign up form-->
             <p>基础信息</p>
 
-            <form action="updateMe" method="post">
+            <form action="customer/updateMe" method="post">
                 <div class="row" style="line-height: 3.7">
-                        <span class="col-sm-3">
+                        <span class="col-sm-2">
                             <input type="radio" class="radio" style="display: inline" name="sex" value="M"
                                    th:checked="${me.sex} == 'M' ? @{checked}"/> 男
                         </span>
-                        <span class="col-sm-3">
+                        <span class="col-sm-2">
                             <input type="radio" class="radio" style="display: inline" name="sex" value="F"
                                    th:checked="${me.sex} == 'F' ? @{checked}"/> 女
                         </span>
@@ -88,45 +88,28 @@
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
         </div>
-        <div class="shopper-info col-sm-3"><!--sign up form-->
+
+        <div class="shopper-info col-sm-4"><!--sign up form-->
             <p>收货地址</p>
 
-            <form>
-                <input type="text" th:each="address : ${addresses}" th:placeholder="$address"
-                       disabled="disabled"/>
-            </form>
-            <form action="newAddress" method="post">
-                <input type="text" placeholder="收件人" name="recipient"/>
-                <input type="text" placeholder="地址" name="addr"/>
-                <input type="text" placeholder="电话" name="phone"/>
+            <div id="addresses"></div>
+            <form action="customer/saveAddr" method="post">
+                <input type="hidden" name="id" id="addrId"/>
+                <input type="text" placeholder="收件人" name="recipient" id="recipient"/>
+                <input type="text" placeholder="地址" name="addr" id="addr"/>
+                <input type="text" placeholder="电话" name="phone" id="phone"/>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
         </div>
-        <div class="shopper-info col-sm-3"><!--sign up form-->
-            <p>在线店铺</p>
+        <div class="shopper-info col-sm-4"><!--sign up form-->
+            <p>店铺信息</p>
 
-            <form>
-                <input type="text" th:each="online : ${onlines}" th:placeholder="online"
-                       disabled="disabled"/>
-            </form>
-            <form action="newOnlineShop" method="post" enctype="multipart/form-data">
-                <input type="text" placeholder="店铺名称" name="olshopName"/>
-                <input type="text" placeholder="店铺地址" name="olshopAddt"/>
-                <input type="file" placeholder="店铺LOGO" name="olshopPic"/>
-                <button type="submit" class="btn btn-primary">保存</button>
-            </form>
-        </div>
-        <div class="shopper-info col-sm-3"><!--sign up form-->
-            <p>线下店铺</p>
-
-            <form>
-                <input type="text" th:each="shop : ${shops}" th:placeholder="shop"
-                       disabled="disabled"/>
-            </form>
-            <form action="newShop" method="post" enctype="multipart/form-data">
+            <div id="shopInfos"></div>
+            <form action="customer/saveOnlineShop" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="shopId"/>
                 <input type="text" placeholder="店铺名称" name="shopName"/>
                 <input type="text" placeholder="店铺地址" name="shopAddt"/>
-                <input type="file" placeholder="店铺LOGO" name="shopPic"/>
+                <input type="file" placeholder="店铺LOGO" name="file"/>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
         </div>
@@ -136,12 +119,115 @@
 <script src="js/bootstrap-datepicker.min.js"></script>
 <script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script type="text/javascript">
+    /*<![CDATA[*/
     $(document.body).ready(function () {
         $('#birthday').datepicker({
             format: "yyyy-mm-dd",
             language: "zh-CN"
         });
+        loadAddresses();
+        loadShopInfos();
     });
+
+    function loadAddresses() {
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: 'customer/listAddr',
+            success: function (response) {
+                var addresses = $('#addresses');
+                addresses.empty();
+                for (var i = 0; i < response.length; i++) {
+                    var addr = response[i];
+                    var deleteSpan = $('<label/>');
+                    deleteSpan.addClass('fa fa-times pull-right');
+                    deleteSpan.click(function () {
+                        $.ajax({
+                            cache: false,
+                            type: 'POST',
+                            url: 'customer/deleteAddr',
+                            data: {id: addr.id},
+                            success: function () {
+                                loadAddresses();
+                            }
+                        });
+                    });
+
+                    var editSpan = $('<label/>');
+                    editSpan.addClass('fa fa-pencil-square-o pull-right');
+                    editSpan.click(function () {
+                        $('#addrId').val(addr.id);
+                        $('#addr').val(addr.addr);
+                        $('#recipient').val(addr.recipient);
+                        $('#phone').val(addr.phone);
+                    });
+                    var array = [deleteSpan, editSpan];
+                    $(array).each(function () {
+                        var me = $(this);
+                        me.hover(function () {
+                            me.addClass('label-primary');
+                        }, function () {
+                            me.removeClass('label-primary');
+                        });
+                    });
+
+                    var ele = $('<h4/>');
+                    ele.append(addr.addr).append(" ").append(addr.recipient).append(" ").append(addr.phone).append(deleteSpan).append(editSpan)
+                    addresses.append(ele);
+                }
+            }
+        });
+    }
+
+    function loadShopInfos() {
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: 'customer/listShops',
+            success: function (response) {
+                var shopInfos = $('#shopInfos');
+                shopInfos.empty();
+                for (var i = 0; i < response.length; i++) {
+                    var shop = response[i];
+                    var deleteSpan = $('<label/>');
+                    deleteSpan.addClass('fa fa-times pull-right');
+                    deleteSpan.click(function () {
+                        $.ajax({
+                            cache: false,
+                            type: 'POST',
+                            url: 'customer/deleteShop',
+                            data: {id: shop.id},
+                            success: function () {
+                                loadAddresses();
+                            }
+                        });
+                    });
+
+                    var editSpan = $('<label/>');
+                    editSpan.addClass('fa fa-pencil-square-o pull-right');
+                    editSpan.click(function () {
+                        $('#shopId').val(shop.id);
+                        $('#shopName').val(shop.shopName);
+                        $('#shopAddt').val(shop.shopAddt);
+                    });
+                    var array = [deleteSpan, editSpan];
+                    $(array).each(function () {
+                        var me = $(this);
+                        me.hover(function () {
+                            me.addClass('label-primary');
+                        }, function () {
+                            me.removeClass('label-primary');
+                        });
+                    });
+
+                    var ele = $('<h4/>');
+                    ele.append(shop.shopName).append(" ").append(shop.shopAddt).append(deleteSpan).append(editSpan)
+                    shopInfos.append(ele);
+                }
+            }
+        });
+    }
+    /*]]>*/
 </script>
 </body>
 
