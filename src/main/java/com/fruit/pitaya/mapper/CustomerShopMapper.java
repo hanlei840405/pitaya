@@ -16,7 +16,7 @@ public class CustomerShopMapper implements RowMapper<CustomerShop> {
         customerShop.setId(rs.getLong("id"));
         customerShop.setCustomer(rs.getString("customer"));
         customerShop.setCategory(rs.getString("category"));
-        customerShop.setShopAddt(rs.getString("shopAddr"));
+        customerShop.setShopAddr(rs.getString("shopAddr"));
         customerShop.setShopName(rs.getString("shopName"));
         customerShop.setShopPic(rs.getString("shopPic"));
         return customerShop;

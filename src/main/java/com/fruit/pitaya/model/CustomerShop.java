@@ -13,6 +13,6 @@ public class CustomerShop {
     private String customer;
     private String category;
     private String shopName;
-    private String shopAddt;
+    private String shopAddr;
     private String shopPic;
 }

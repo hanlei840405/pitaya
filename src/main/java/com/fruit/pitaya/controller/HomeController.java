@@ -1,6 +1,8 @@
 package com.fruit.pitaya.controller;
 
+import com.fruit.pitaya.model.Category;
 import com.fruit.pitaya.model.Customer;
+import com.fruit.pitaya.service.CategoryService;
 import com.fruit.pitaya.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,21 +17,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.List;
+
 /**
  * Created by hanlei6 on 2016/10/12.
  */
 @Controller
 public class HomeController {
+
     @Autowired
     private CustomerService customerService;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @RequestMapping("/")
-    public String home() {
+    public String home(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!principal.equals("anonymousUser")) {
             User user = (User) principal;
@@ -38,6 +47,8 @@ public class HomeController {
             servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
             servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
         }
+        List<Category> categories = categoryService.findAllCategories();
+        model.addAttribute("categories", categories);
         return "index";
     }
 

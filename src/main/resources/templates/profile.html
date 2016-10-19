@@ -105,16 +105,41 @@
             <p>店铺信息</p>
 
             <div id="shopInfos"></div>
-            <form action="customer/saveOnlineShop" method="post" enctype="multipart/form-data">
+            <form action="customer/saveShop" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="shopId"/>
-                <input type="text" placeholder="店铺名称" name="shopName"/>
-                <input type="text" placeholder="店铺地址" name="shopAddt"/>
+                <input type="text" placeholder="店铺名称" name="shopName" id="shopName"/>
+                <input type="text" placeholder="店铺地址" name="shopAddr" id="shopAddr"/>
                 <input type="file" placeholder="店铺LOGO" name="file"/>
+                <div>
+                <input type="checkbox" name="category" id="category" value="1"/>线下
+                </div>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
         </div>
     </div>
 </section><!--/form-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    店铺图片
+                </h4>
+            </div>
+            <div class="modal-body">
+                <img id="shopPic" src=""/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 <div th:replace="footer"/>
 <script src="js/bootstrap-datepicker.min.js"></script>
 <script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
@@ -141,26 +166,30 @@
                     var addr = response[i];
                     var deleteSpan = $('<label/>');
                     deleteSpan.addClass('fa fa-times pull-right');
-                    deleteSpan.click(function () {
-                        $.ajax({
-                            cache: false,
-                            type: 'POST',
-                            url: 'customer/deleteAddr',
-                            data: {id: addr.id},
-                            success: function () {
-                                loadAddresses();
-                            }
-                        });
-                    });
+                    deleteSpan.click((function (param) {
+                        return function () {
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: 'customer/deleteAddr',
+                                data: {id: param.id},
+                                success: function () {
+                                    loadAddresses();
+                                }
+                            });
+                        }
+                    })(addr));
 
                     var editSpan = $('<label/>');
                     editSpan.addClass('fa fa-pencil-square-o pull-right');
-                    editSpan.click(function () {
-                        $('#addrId').val(addr.id);
-                        $('#addr').val(addr.addr);
-                        $('#recipient').val(addr.recipient);
-                        $('#phone').val(addr.phone);
-                    });
+                    editSpan.click((function (param) {
+                        return function () {
+                            $('#addrId').val(param.id);
+                            $('#addr').val(param.addr);
+                            $('#recipient').val(param.recipient);
+                            $('#phone').val(param.phone);
+                        }
+                    })(addr));
                     var array = [deleteSpan, editSpan];
                     $(array).each(function () {
                         var me = $(this);
@@ -183,7 +212,7 @@
         $.ajax({
             cache: false,
             type: 'POST',
-            url: 'customer/listShops',
+            url: 'customer/listShop',
             success: function (response) {
                 var shopInfos = $('#shopInfos');
                 shopInfos.empty();
@@ -191,26 +220,46 @@
                     var shop = response[i];
                     var deleteSpan = $('<label/>');
                     deleteSpan.addClass('fa fa-times pull-right');
-                    deleteSpan.click(function () {
-                        $.ajax({
-                            cache: false,
-                            type: 'POST',
-                            url: 'customer/deleteShop',
-                            data: {id: shop.id},
-                            success: function () {
-                                loadAddresses();
-                            }
-                        });
-                    });
+                    deleteSpan.click((function (param) {
+                        return function () {
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: 'customer/deleteShop',
+                                data: {id: param.id},
+                                success: function () {
+                                    loadShopInfos();
+                                }
+                            });
+                        }
+                    })(shop));
 
                     var editSpan = $('<label/>');
                     editSpan.addClass('fa fa-pencil-square-o pull-right');
-                    editSpan.click(function () {
-                        $('#shopId').val(shop.id);
-                        $('#shopName').val(shop.shopName);
-                        $('#shopAddt').val(shop.shopAddt);
-                    });
-                    var array = [deleteSpan, editSpan];
+                    editSpan.click((function (param) {
+                        return function () {
+                            $('#shopId').val(param.id);
+                            $('#shopName').val(param.shopName);
+                            $('#shopAddr').val(param.shopAddr);
+                            if (param.category == '1') {
+                                $('#category').attr('checked', true);
+                            } else {
+                                $('#category').attr('checked', false);
+                            }
+                        }
+                    })(shop));
+
+                    var viewSpan = $('<label data-target="#myModal"/>');
+                    viewSpan.addClass('fa fa-eye pull-right');
+                    viewSpan.click((function (param) {
+                        return function () {
+                            $('#shopPic').attr('src', 'ext/' + param.shopPic);
+                            $('#myModal').modal({
+                                keyboard: true
+                            })
+                        }
+                    })(shop));
+                    var array = [deleteSpan, editSpan, viewSpan];
                     $(array).each(function () {
                         var me = $(this);
                         me.hover(function () {
@@ -221,7 +270,7 @@
                     });
 
                     var ele = $('<h4/>');
-                    ele.append(shop.shopName).append(" ").append(shop.shopAddt).append(deleteSpan).append(editSpan)
+                    ele.append(shop.shopName).append(" ").append(shop.shopAddr).append(deleteSpan).append(viewSpan).append(editSpan)
                     shopInfos.append(ele);
                 }
             }

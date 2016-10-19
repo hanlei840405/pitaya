@@ -34,14 +34,14 @@ public class CustomerShopService {
 
     @Transactional
     public void insert(CustomerShop customerShop) {
-        jdbcTemplate.update("INSERT INTO mall_customer_shop (customer,category,shopName,shopAddt,shopPic) VALUE (?,?,?,?,?)",
-                new Object[]{customerShop.getCustomer(), customerShop.getCategory(), customerShop.getShopName(), customerShop.getShopAddt()}, customerShop.getShopPic());
+        jdbcTemplate.update("INSERT INTO mall_customer_shop (customer,category,shopName,shopAddr,shopPic) VALUE (?,?,?,?,?)",
+                new Object[]{customerShop.getCustomer(), customerShop.getCategory(), customerShop.getShopName(), customerShop.getShopAddr(), customerShop.getShopPic()});
     }
 
     @Transactional
     public void update(CustomerShop customerShop) {
-        jdbcTemplate.update("UPDATE mall_customer_shop SET category=?,shopName=?,shopAddt=?,shopPic=? WHERE id=?",
-                new Object[]{customerShop.getCategory(), customerShop.getShopName(), customerShop.getShopAddt(), customerShop.getShopPic(), customerShop.getId()});
+        jdbcTemplate.update("UPDATE mall_customer_shop SET category=?,shopName=?,shopAddr=?,shopPic=? WHERE id=?",
+                new Object[]{customerShop.getCategory(), customerShop.getShopName(), customerShop.getShopAddr(), customerShop.getShopPic(), customerShop.getId()});
     }
 
     @Transactional

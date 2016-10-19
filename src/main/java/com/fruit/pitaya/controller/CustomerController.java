@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -94,8 +95,15 @@ public class CustomerController {
         try {
             if (!file.isEmpty()) {
                 final Path rootLocation = Paths.get(System.getProperties().getProperty("user.home"), "/upload/");
+                File folder = new File(rootLocation.toUri());
+                if (!folder.exists() && !folder.isDirectory()) {
+                    folder.mkdir();
+                }
+                if (Files.exists(rootLocation.resolve(file.getOriginalFilename()))) {
+                    Files.delete(rootLocation.resolve(file.getOriginalFilename()));
+                }
                 Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()));
-                customerShop.setShopPic(System.getProperties().getProperty("user.home") + "/upload/");
+                customerShop.setShopPic(file.getOriginalFilename());
             }
 
             if (customerShop.getId() != null) {
@@ -107,7 +115,7 @@ public class CustomerController {
                 }
                 exist.setShopPic(customerShop.getShopPic());
                 exist.setShopName(customerShop.getShopName());
-                exist.setShopAddt(customerShop.getShopAddt());
+                exist.setShopAddr(customerShop.getShopAddr());
                 exist.setCategory(customerShop.getCategory());
                 exist.setShopPic(customerShop.getShopPic());
                 customerShopService.update(exist);
