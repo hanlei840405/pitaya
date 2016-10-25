@@ -94,7 +94,7 @@ public class CustomerController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
             if (!file.isEmpty()) {
-                final Path rootLocation = Paths.get(System.getProperties().getProperty("user.home"), "/upload/");
+                final Path rootLocation = Paths.get(System.getProperties().getProperty("user.home"), "/upload/private/");
                 File folder = new File(rootLocation.toUri());
                 if (!folder.exists() && !folder.isDirectory()) {
                     folder.mkdir();

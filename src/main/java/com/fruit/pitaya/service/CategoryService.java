@@ -27,4 +27,9 @@ public class CategoryService {
         }
         return categories;
     }
+
+    public List<Category> findAllSubCategories() {
+        List<Category> categories = jdbcTemplate.query("SELECT * FROM mall_category WHERE parentCode is NOT NULL ", new CategoryMapper());
+        return categories;
+    }
 }
