@@ -1,9 +1,6 @@
 package com.fruit.pitaya.controller;
 
-import com.fruit.pitaya.model.Category;
-import com.fruit.pitaya.model.CategoryVO;
-import com.fruit.pitaya.model.Customer;
-import com.fruit.pitaya.model.SkuVO;
+import com.fruit.pitaya.model.*;
 import com.fruit.pitaya.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +45,9 @@ public class HomeController {
     @Autowired
     private SkuSPriceService skuSPriceService;
 
+    @Autowired
+    private CartService cartService;
+
     @RequestMapping("/")
     public String home(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -57,6 +57,8 @@ public class HomeController {
             ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
             servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
+            Cart cart = cartService.get(user.getUsername());
+            model.addAttribute("cart", cart);
         }
         List<Category> categories = categoryService.findAllCategories();
         model.addAttribute("categories", categories);

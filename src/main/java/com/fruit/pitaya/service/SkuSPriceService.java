@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by hanlei6 on 2016/10/25.
  */
@@ -17,8 +19,11 @@ public class SkuSPriceService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-
-    public SkuSPrice findBySkuAndType(String sku, String customer) {
-        return jdbcTemplate.queryForObject("SELECT * FROM mall_sku_sprice WHERE sku=? AND customer=?", new Object[]{sku, customer}, new SkuSPriceMapper());
+    public SkuSPrice findByCusCodeAndSku(String cusCode, String sku) {
+        List<SkuSPrice> skuSPrices = jdbcTemplate.query("SELECT * FROM mall_sku_sprice WHERE sku=? AND customer=?", new Object[]{sku, cusCode}, new SkuSPriceMapper());
+        if (skuSPrices.isEmpty()) {
+            return null;
+        }
+        return skuSPrices.get(0);
     }
 }

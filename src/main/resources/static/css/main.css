@@ -2,9 +2,9 @@
 /*************************
 *******Typography******
 **************************/
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,300,400italic,500,700,100);
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,800,300,600,700);
-@import url(http://fonts.googleapis.com/css?family=Abel);
+/*@import url(http://fonts.googleapis.com/css?family=Roboto:400,300,400italic,500,700,100);*/
+/*@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,800,300,600,700);*/
+/*@import url(http://fonts.googleapis.com/css?family=Abel);*/
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -867,10 +867,20 @@ h2.title {
 	font-size: 24px;
 	font-weight: 700;
 }
+.productinfo h5{
+	color: #FE980F;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+}
 .product-overlay h2{
 	color: #fff;
 	font-family: 'Roboto', sans-serif;
 	font-size: 24px;
+	font-weight: 700;
+}
+.product-overlay h5{
+	color: #fff;
+	font-family: 'Roboto', sans-serif;
 	font-weight: 700;
 }
 

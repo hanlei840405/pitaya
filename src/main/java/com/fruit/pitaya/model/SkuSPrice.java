@@ -13,6 +13,6 @@ import java.math.BigDecimal;
 public class SkuSPrice {
     private String sku;
     private String customer;
-    private Integer fristbuy;
+    private String firstbuy;
     private BigDecimal price;
 }

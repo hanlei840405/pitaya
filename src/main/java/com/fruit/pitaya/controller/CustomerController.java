@@ -55,8 +55,8 @@ public class CustomerController {
             customerService.update(exist);
         } catch (Exception e) {
             log.error("UPDATE CUSTOMER : {}", exist);
-            redirectAttributes.addAttribute("errorCode", "500");
-            redirectAttributes.addAttribute("errorMsg", "保存失败");
+            redirectAttributes.addAttribute("code", "500");
+            redirectAttributes.addAttribute("msg", "保存失败");
         }
         redirectAttributes.addAttribute("me", exist);
         return "redirect:/profile";
@@ -69,8 +69,8 @@ public class CustomerController {
             if (customerAddr.getId() != null) {
                 CustomerAddr exist = customerAddrService.get(customerAddr.getId(), user.getUsername());
                 if (exist == null) {
-                    redirectAttributes.addAttribute("errorCode", "500");
-                    redirectAttributes.addAttribute("errorMsg", "未找到符合条件的地址");
+                    redirectAttributes.addAttribute("code", "500");
+                    redirectAttributes.addAttribute("msg", "未找到符合条件的地址");
                     return "redirect:profile";
                 }
                 exist.setPhone(customerAddr.getPhone());
@@ -83,8 +83,8 @@ public class CustomerController {
             }
         } catch (Exception e) {
             log.error("SAVE CUSTOMER ADDR : {}", customerAddr);
-            redirectAttributes.addAttribute("errorCode", "500");
-            redirectAttributes.addAttribute("errorMsg", "保存失败");
+            redirectAttributes.addAttribute("code", "500");
+            redirectAttributes.addAttribute("msg", "保存失败");
         }
         return "redirect:/profile";
     }
@@ -109,8 +109,8 @@ public class CustomerController {
             if (customerShop.getId() != null) {
                 CustomerShop exist = customerShopService.get(customerShop.getId(), user.getUsername());
                 if (exist == null) {
-                    redirectAttributes.addAttribute("errorCode", "500");
-                    redirectAttributes.addAttribute("errorMsg", "未找到符合条件的店铺");
+                    redirectAttributes.addAttribute("code", "500");
+                    redirectAttributes.addAttribute("msg", "未找到符合条件的店铺");
                     return "redirect:profile";
                 }
                 exist.setShopPic(customerShop.getShopPic());
@@ -125,8 +125,8 @@ public class CustomerController {
             }
         } catch (Exception e) {
             log.error("SAVE CUSTOMER SHOP : {}", customerShop);
-            redirectAttributes.addAttribute("errorCode", "500");
-            redirectAttributes.addAttribute("errorMsg", "保存失败");
+            redirectAttributes.addAttribute("code", "500");
+            redirectAttributes.addAttribute("msg", "保存失败");
         }
         return "redirect:/profile";
     }
@@ -140,19 +140,19 @@ public class CustomerController {
         try {
             CustomerAddr exist = customerAddrService.get(id, user.getUsername());
             if (exist == null) {
-                result.put("errorCode", "500");
-                result.put("errorMsg", "未找到符合条件的地址");
+                result.put("code", "500");
+                result.put("msg", "未找到符合条件的地址");
                 return result;
             }
             customerAddrService.delete(id);
         } catch (Exception e) {
             log.error("DELETE CUSTOMER ADDR : {}", id);
-            result.put("errorCode", "500");
-            result.put("errorMsg", "删除失败");
+            result.put("code", "500");
+            result.put("msg", "删除失败");
             return result;
         }
-        result.put("errorCode", "200");
-        result.put("errorMsg", "操作成功");
+        result.put("code", "200");
+        result.put("msg", "操作成功");
         return result;
     }
 
@@ -165,19 +165,19 @@ public class CustomerController {
         try {
             CustomerShop exist = customerShopService.get(id, user.getUsername());
             if (exist == null) {
-                result.put("errorCode", "500");
-                result.put("errorMsg", "未找到符合条件的店铺");
+                result.put("code", "500");
+                result.put("msg", "未找到符合条件的店铺");
                 return result;
             }
             customerShopService.delete(id);
         } catch (Exception e) {
             log.error("DELETE CUSTOMER SHOP : {}", id);
-            result.put("errorCode", "500");
-            result.put("errorMsg", "删除失败");
+            result.put("code", "500");
+            result.put("msg", "删除失败");
             return result;
         }
-        result.put("errorCode", "200");
-        result.put("errorMsg", "操作成功");
+        result.put("code", "200");
+        result.put("msg", "操作成功");
         return result;
     }
 

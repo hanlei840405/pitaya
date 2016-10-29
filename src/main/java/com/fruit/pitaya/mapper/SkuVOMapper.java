@@ -28,6 +28,7 @@ public class SkuVOMapper implements RowMapper<SkuVO> {
         skuVO.setPrice2(rs.getBigDecimal("price2"));
         skuVO.setNum3(rs.getInt("num3"));
         skuVO.setPrice3(rs.getBigDecimal("price3"));
+        skuVO.setQuantity(rs.getLong("quantity"));
         return skuVO;
     }
 }

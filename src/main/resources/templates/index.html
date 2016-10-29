@@ -76,9 +76,9 @@
                     <div class="mainmenu pull-left">
                         <ul class="nav navbar-nav collapse navbar-collapse">
                             <li class="dropdown" th:each="category:${categories}">
-                                <a href="#" th:text="${category.cateName}"><i class="fa fa-angle-down"></i></a>
+                                <a th:href="${'#' + category.cateCode}" th:text="${category.cateName}"><i class="fa fa-angle-down"></i></a>
                                 <ul role="menu" class="sub-menu" th:each="subCategory: ${category.categories}">
-                                    <li><a href="shop.html" th:text="${subCategory.cateName}"></a></li>
+                                    <li><a th:href="${'#' + subCategory.cateCode}" th:text="${subCategory.cateName}"></a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -170,43 +170,54 @@
                 <div class="features_items" th:each="category:${subCategories}">
                     <!--features_items-->
                     <h2 class="title text-center" th:text="${category.category.cateName}"
-                        th:name="${category.category.cateCode}"></h2>
+                        th:name="${category.category.cateCode}" th:id="${category.category.cateCode}"></h2>
 
                     <div class="col-sm-4" th:each="sku:${category.skus}">
                         <div class="product-image-wrapper">
                             <div class="single-products">
                                 <div class="productinfo text-center">
-                                    <img class="lazy" width="100%" th:attr="data-original=${'ext/public/' + sku.image}" alt=""/>
+                                    <img class="lazy" width="100%" th:attr="data-original=${'ext/public/' + sku.image}"
+                                         alt=""/>
+                                    <h5 class="pull-left" th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
+                                    <h5 class="pull-right" th:text="${'库存:' + sku.quantity}"></h5>
+                                    <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
                                 </div>
                                 <div class="product-overlay">
                                     <div class="overlay-content" style="bottom: 20px !important;">
                                         <div class="row"
                                              th:style="${sku.price == null} ? 'display: none;' : 'display:block'">
                                             <p class="col-md-offset-1 col-md-5 text-right">统一价</p>
+
                                             <p class="col-md-1 text-right" th:text="${'￥' + sku.price}"></p>
                                         </div>
                                         <div class="row"
                                              th:style="${sku.price == null} ? 'display: block;' : 'display:none'">
-                                            <p class="col-md-offset-1 col-md-5 text-right" th:text="${'0 到 ' + sku.num2 + '件'}"></p>
+                                            <p class="col-md-offset-1 col-md-5 text-right"
+                                               th:text="${'0 到 ' + sku.num2 + '件'}"></p>
+
                                             <p class="col-md-1 text-right" th:text="${'￥' + sku.price1}"></p>
                                         </div>
                                         <div class="row"
                                              th:style="${sku.price == null} ? 'display: block;' : 'display:none'">
                                             <p class="col-md-offset-1 col-md-5 text-right"
-                                                 th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p>
+                                               th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p>
+
                                             <p class="col-md-1 text-right" th:text="${'￥' + sku.price2}"></p>
                                         </div>
                                         <div class="row"
                                              th:style="${sku.price == null} ? 'display: block;' : 'display:none'">
-                                            <p class="col-md-offset-1 col-md-5 text-right" th:text="${sku.num3 + '件以上'}"></p>
+                                            <p class="col-md-offset-1 col-md-5 text-right"
+                                               th:text="${sku.num3 + '件以上'}"></p>
+
                                             <p class="col-md-1 text-right" th:text="${'￥' + sku.price3}"></p>
                                         </div>
                                         <div class="row">
-                                            <input class="col-md-offset-3 col-md-6 purchase-text" placeholder="请输入购买数量"/>
+                                            <input class="col-md-offset-3 col-md-6 purchase-text"
+                                                   placeholder="请输入购买数量"/>
                                         </div>
-
-                                        <p th:text="${sku.skuName + '(' + sku.sku + ')'}"></p>
-                                        <a href="#" class="btn btn-default add-to-cart">
+                                        <h5 class="pull-left" th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
+                                        <h5 class="pull-right" th:text="${'库存:' + sku.quantity}"></h5>
+                                        <a th:href="${'cart/addSku/' + sku.sku}" class="btn btn-default add-to-cart btn-add-to-cart">
                                             <i class="fa fa-shopping-cart"></i>Add to cart</a>
                                     </div>
                                 </div>
@@ -219,140 +230,9 @@
                 <div class="left-sidebar">
                     <h2>购物车</h2>
 
-                    <div class="panel-group category-products" id="accordian">
-                        <!--category-productsr-->
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordian" href="#sportswear">
-                        <span class="badge pull-right">
-                          <i class="fa fa-plus"></i>
-                        </span>Sportswear</a>
-                                </h4>
-                            </div>
-                            <div id="sportswear" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <ul>
-                                        <li>
-                                            <a href="#">Nike</a></li>
-                                        <li>
-                                            <a href="#">Under Armour</a></li>
-                                        <li>
-                                            <a href="#">Adidas</a></li>
-                                        <li>
-                                            <a href="#">Puma</a></li>
-                                        <li>
-                                            <a href="#">ASICS</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordian" href="#mens">
-                        <span class="badge pull-right">
-                          <i class="fa fa-plus"></i>
-                        </span>Mens</a>
-                                </h4>
-                            </div>
-                            <div id="mens" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <ul>
-                                        <li>
-                                            <a href="#">Fendi</a></li>
-                                        <li>
-                                            <a href="#">Guess</a></li>
-                                        <li>
-                                            <a href="#">Valentino</a></li>
-                                        <li>
-                                            <a href="#">Dior</a></li>
-                                        <li>
-                                            <a href="#">Versace</a></li>
-                                        <li>
-                                            <a href="#">Armani</a></li>
-                                        <li>
-                                            <a href="#">Prada</a></li>
-                                        <li>
-                                            <a href="#">Dolce and Gabbana</a></li>
-                                        <li>
-                                            <a href="#">Chanel</a></li>
-                                        <li>
-                                            <a href="#">Gucci</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordian" href="#womens">
-                        <span class="badge pull-right">
-                          <i class="fa fa-plus"></i>
-                        </span>Womens</a>
-                                </h4>
-                            </div>
-                            <div id="womens" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <ul>
-                                        <li>
-                                            <a href="#">Fendi</a></li>
-                                        <li>
-                                            <a href="#">Guess</a></li>
-                                        <li>
-                                            <a href="#">Valentino</a></li>
-                                        <li>
-                                            <a href="#">Dior</a></li>
-                                        <li>
-                                            <a href="#">Versace</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Kids</a></h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Fashion</a></h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Households</a></h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Interiors</a></h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Clothing</a></h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Bags</a></h4>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a href="#">Shoes</a></h4>
-                            </div>
-                        </div>
+                    <div class="panel-group category-products" style="padding-bottom: 0px !important;" id="accordion"
+                         th:include="${session.username} != null ? @{cart-widget} : @{none}">
                     </div>
-                    <!--/shipping-->
                 </div>
             </div>
         </div>
@@ -365,13 +245,31 @@
         $("img.lazy").lazyload({
             effect: "fadeIn"
         });
-        $('.add-to-cart').each(function (index) {
+        $('.btn-add-to-cart').each(function (index) {
+            var me = $(this);
             $(this).click((function (param) {
-                return function (){
-                    alert($('.purchase-text').get(param).value);
+                return function () {
+                    var url = me.attr('href');
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {count: $('.purchase-text').get(param).value},
+                        success: function (response) {
+                            if (undefined == response.code) {
+                                location.href = 'login';
+                            } else if(response.code == '500') {
+                                alert("库存不足");
+                                return;
+                            }else {
+                                $("#accordion").load('cart/fresh');
+                            }
+                        }
+                    });
+                    return false;
                 }
             })(index));
         });
+        $('#accordion').find('.collapse').collapse({toggle: false});
     });
 </script>
 </body>

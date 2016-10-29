@@ -15,7 +15,7 @@ public class SkuSPriceMapper implements RowMapper<SkuSPrice> {
         SkuSPrice skuSPrice = new SkuSPrice();
         skuSPrice.setSku(rs.getString("sku"));
         skuSPrice.setCustomer(rs.getString("customer"));
-        skuSPrice.setFristbuy(rs.getInt("firstbuy"));
+        skuSPrice.setFirstbuy(rs.getString("firstbuy"));
         skuSPrice.setPrice(rs.getBigDecimal("price"));
         return skuSPrice;
     }
