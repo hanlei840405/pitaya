@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -58,7 +55,6 @@ public class CustomerController {
             redirectAttributes.addAttribute("code", "500");
             redirectAttributes.addAttribute("msg", "保存失败");
         }
-        redirectAttributes.addAttribute("me", exist);
         return "redirect:/profile";
     }
 
@@ -131,6 +127,37 @@ public class CustomerController {
         return "redirect:/profile";
     }
 
+    /**
+     * 设置常用收货信息
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/usedAddr", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, Object> usedAddr(Long id) {
+        Map<String, Object> result = new HashMap<>();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            CustomerAddr exist = customerAddrService.get(id, user.getUsername());
+            if (exist == null) {
+                result.put("code", "500");
+                result.put("msg", "未找到符合条件的地址");
+                return result;
+            }
+            customerAddrService.updateUsed(user.getUsername(), id);
+        } catch (Exception e) {
+            log.error("DELETE CUSTOMER ADDR : {}", id);
+            result.put("code", "500");
+            result.put("msg", "设置常用地址失败");
+            return result;
+        }
+        result.put("code", "200");
+        result.put("msg", "操作成功");
+        return result;
+    }
+
     @RequestMapping(value = "/deleteAddr", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -197,6 +224,23 @@ public class CustomerController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<CustomerShop> shops = customerShopService.findByCustomer(user.getUsername());
         return shops;
+    }
+
+    @RequestMapping(value = "/address/{id}")
+    public
+    @ResponseBody
+    Map<String, Object> address(@PathVariable("id") Long id) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomerAddr customerAddr = customerAddrService.get(id, user.getUsername());
+        Map<String, Object> result = new HashMap<>();
+        if (customerAddr != null) {
+            result.put("code", "200");
+            result.put("address", customerAddr);
+        } else {
+            result.put("code", "500");
+            result.put("msg", "未找到地址");
+        }
+        return result;
     }
 
 }

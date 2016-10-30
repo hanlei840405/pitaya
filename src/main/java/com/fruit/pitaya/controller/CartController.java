@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +37,8 @@ public class CartController {
     private SkuNPriceService skuNPriceService;
     @Autowired
     private StockService stockService;
+    @Autowired
+    private CustomerAddrService customerAddrService;
 
     @RequestMapping("/fresh")
     public String fresh(Model model) {
@@ -96,7 +99,6 @@ public class CartController {
         }
 
         try {
-            Cart cart = cartService.get(customer.getCusCode());
             cartService.process(customer.getCusCode(), sku, priceType, price, count);
             result.put("code", "200");
             result.put("msg", "操作成功");
@@ -106,5 +108,49 @@ public class CartController {
         }
 
         return result;
+    }
+
+    /**
+     * 前往结算页面
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("")
+    public String settle(Model model) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Cart cart = cartService.get(user.getUsername());
+        CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
+        List<CustomerAddr> customerAddrs = customerAddrService.findByCustomer(user.getUsername());
+        model.addAttribute("cart", cart);
+        model.addAttribute("address", customerAddr);
+        model.addAttribute("addresses", customerAddrs);
+        return "cart";
+    }
+
+    /**
+     * 删除明细
+     *
+     * @param sku
+     * @return
+     */
+    @RequestMapping("/delete/{sku}")
+    public String delete(@PathVariable("sku") String sku) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        cartService.clearCartDetail(user.getUsername(), sku);
+        return "redirect:/";
+    }
+
+    /**
+     * 购物车转为订单
+     *
+     * @param addressId
+     * @return
+     */
+    @RequestMapping("/settle")
+    public String delete(@RequestParam Long addressId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        cartService.clearCart(user.getUsername());
+        return "redirect:/";
     }
 }

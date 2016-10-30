@@ -1,8 +1,29 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <div th:include="header"></div>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>电子烟商城</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="css/prettyPhoto.css" rel="stylesheet"/>
+    <link href="css/price-range.css" rel="stylesheet"/>
+    <link href="css/animate.css" rel="stylesheet"/>
+    <link href="css/main.css" rel="stylesheet"/>
+    <link href="css/responsive.css" rel="stylesheet"/>
     <link href="css/bootstrap-datepicker.min.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="images/ico/favicon.ico"/>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png"/>
 </head>
 <body>
 <header id="header">
@@ -52,7 +73,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="logo pull-left">
-                        <a href="">
+                        <a href="./">
                             <img src="images/home/logo.png" alt=""/></a>
                     </div>
                 </div>
@@ -140,7 +161,23 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
-<div th:replace="footer"/>
+<footer id="footer"><!--Footer-->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
+                <p class="pull-right">Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
+            </div>
+        </div>
+    </div>
+</footer><!--/Footer-->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.scrollUp.min.js"></script>
+<script src="js/price-range.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/notify.min.js"></script>
+<script src="js/main.js"></script>
 <script src="js/bootstrap-datepicker.min.js"></script>
 <script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <script type="text/javascript">
@@ -164,7 +201,7 @@
                 addresses.empty();
                 for (var i = 0; i < response.length; i++) {
                     var addr = response[i];
-                    var deleteSpan = $('<label/>');
+                    var deleteSpan = $('<a title="删除"/>');
                     deleteSpan.addClass('fa fa-times pull-right');
                     deleteSpan.click((function (param) {
                         return function () {
@@ -173,14 +210,19 @@
                                 type: 'POST',
                                 url: 'customer/deleteAddr',
                                 data: {id: param.id},
-                                success: function () {
-                                    loadAddresses();
+                                success: function (response) {
+                                    if (response.code == '200') {
+                                        alert("删除成功");
+                                        loadAddresses();
+                                    }else {
+                                        alert(response.msg);
+                                    }
                                 }
                             });
                         }
                     })(addr));
 
-                    var editSpan = $('<label/>');
+                    var editSpan = $('<a title="编辑"/>');
                     editSpan.addClass('fa fa-pencil-square-o pull-right');
                     editSpan.click((function (param) {
                         return function () {
@@ -190,18 +232,43 @@
                             $('#phone').val(param.phone);
                         }
                     })(addr));
-                    var array = [deleteSpan, editSpan];
+
+                    var usedSpan = $('<a title="设为常用"></a>');
+                    usedSpan.addClass('fa fa-anchor pull-right');
+                    usedSpan.click((function (param) {
+                        return function () {
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: 'customer/usedAddr',
+                                data: {id: param.id},
+                                success: function (response) {
+                                    if (response.code == '200') {
+                                        alert("设置成功");
+                                        loadAddresses();
+                                    }else {
+                                        alert(response.msg);
+                                    }
+                                }
+                            });
+                        }
+                    })(addr));
+
+                    var array = [deleteSpan, editSpan, usedSpan];
                     $(array).each(function () {
                         var me = $(this);
                         me.hover(function () {
-                            me.addClass('label-primary');
+                            me.addClass('label-danger');
                         }, function () {
-                            me.removeClass('label-primary');
+                            me.removeClass('label-danger');
                         });
                     });
 
-                    var ele = $('<h4/>');
-                    ele.append(addr.addr).append(" ").append(addr.recipient).append(" ").append(addr.phone).append(deleteSpan).append(editSpan)
+                    var ele = $('<h5/>');
+                    if (addr.used == '1') {
+                        ele.css('font-weight','bolder');
+                    }
+                    ele.append(addr.addr).append(" ").append(addr.recipient).append(" ").append(addr.phone).append(usedSpan).append(deleteSpan).append(editSpan);
                     addresses.append(ele);
                 }
             }
@@ -218,7 +285,7 @@
                 shopInfos.empty();
                 for (var i = 0; i < response.length; i++) {
                     var shop = response[i];
-                    var deleteSpan = $('<label/>');
+                    var deleteSpan = $('<a title="删除"/>');
                     deleteSpan.addClass('fa fa-times pull-right');
                     deleteSpan.click((function (param) {
                         return function () {
@@ -227,14 +294,19 @@
                                 type: 'POST',
                                 url: 'customer/deleteShop',
                                 data: {id: param.id},
-                                success: function () {
-                                    loadShopInfos();
+                                success: function (response) {
+                                    if (response.code == '200') {
+                                        alert("删除成功");
+                                        loadAddresses();
+                                    }else {
+                                        alert(response.msg);
+                                    }
                                 }
                             });
                         }
                     })(shop));
 
-                    var editSpan = $('<label/>');
+                    var editSpan = $('<a title="编辑"/>');
                     editSpan.addClass('fa fa-pencil-square-o pull-right');
                     editSpan.click((function (param) {
                         return function () {
@@ -249,7 +321,7 @@
                         }
                     })(shop));
 
-                    var viewSpan = $('<label data-target="#myModal"/>');
+                    var viewSpan = $('<a title="查看照片" data-target="#myModal"/>');
                     viewSpan.addClass('fa fa-eye pull-right');
                     viewSpan.click((function (param) {
                         return function () {
@@ -263,13 +335,13 @@
                     $(array).each(function () {
                         var me = $(this);
                         me.hover(function () {
-                            me.addClass('label-primary');
+                            me.addClass('label-danger');
                         }, function () {
-                            me.removeClass('label-primary');
+                            me.removeClass('label-danger');
                         });
                     });
 
-                    var ele = $('<h4/>');
+                    var ele = $('<h5/>');
                     ele.append(shop.shopName).append(" ").append(shop.shopAddr).append(deleteSpan).append(viewSpan).append(editSpan)
                     shopInfos.append(ele);
                 }

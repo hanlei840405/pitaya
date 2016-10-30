@@ -22,6 +22,7 @@ public class CartDetailVOMapper implements RowMapper<CartDetailVO> {
         cartDetailVO.setSkuAmount(rs.getBigDecimal("skuAmount"));
         cartDetailVO.setSkuName(rs.getString("skuName"));
         cartDetailVO.setSpecName(rs.getString("specName"));
+        cartDetailVO.setImage(rs.getString("image"));
         return cartDetailVO;
     }
 }

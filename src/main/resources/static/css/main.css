@@ -2530,4 +2530,5 @@ h2.title {
   color: #FE980F;
 }
 
+.fixed-bottom {position: fixed;bottom: 0;width:100%;}
 

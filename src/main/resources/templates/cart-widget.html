@@ -1,15 +1,16 @@
 <!--category-productsr-->
-<div class="panel panel-default" th:each="cartDetail:${cart} != null ? ${cart.cartDetailVOs}" xmlns:th="http://www.w3.org/1999/xhtml">
+<div class="panel panel-default" th:each="cartDetail:${cart} != null ? ${cart.cartDetailVOs}"
+     xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" th:href="${'#' + cartDetail.id}">
+            <a data-toggle="collapse" data-parent="#accordion" th:href="${'#' + cartDetail.sku}">
                         <span class="badge pull-right">
                           <i class="fa fa-plus"></i>
                         </span><i th:text="${cartDetail.skuName}"></i><i class="pull-right"
                                                                          th:text="${'￥' + cartDetail.skuAmount}"></i></a>
         </h4>
     </div>
-    <div th:attr="id=${cartDetail.id}" class="panel-collapse collapse">
+    <div th:attr="id=${cartDetail.sku}" class="panel-collapse collapse">
         <div class="panel-body">
             <ul>
                 <li>
@@ -22,7 +23,7 @@
                                                                            th:text="${'单价:￥' + cartDetail.price}"></i>
                     </div>
                     <div class="row">
-                        <a class="btn btn-default" th:href="${'cart/delete/' + cartDetail.id}">删除</a>
+                        <a class="btn btn-danger" th:href="${'cart/delete/' + cartDetail.sku}">删除</a>
                     </div>
                 </li>
             </ul>
@@ -30,5 +31,5 @@
     </div>
 </div>
 <div class="panel panel-default">
-    <button class="btn btn-danger pull-right">结算</button>
+    <a href="cart" class="pull-right cart-settle">去结算</a>
 </div>

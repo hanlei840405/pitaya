@@ -21,4 +21,5 @@ public class CartDetailVO implements Serializable {
     private Integer skuCount;
     private BigDecimal price;
     private BigDecimal skuAmount;
+    private String image;
 }

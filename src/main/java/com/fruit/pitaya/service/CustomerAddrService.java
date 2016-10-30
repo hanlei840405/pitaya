@@ -28,6 +28,18 @@ public class CustomerAddrService {
         return null;
     }
 
+    public CustomerAddr getDefault(String cusCode) {
+        List<CustomerAddr> result = jdbcTemplate.query("SELECT * FROM mall_customer_addr WHERE used='1' AND customer=?", new Object[]{cusCode}, new CustomerAddrMapper());
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        result = jdbcTemplate.query("SELECT * FROM mall_customer_addr WHERE customer=?", new Object[]{cusCode}, new CustomerAddrMapper());
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        return null;
+    }
+
     public List<CustomerAddr> findByCustomer(String cusCode) {
         return jdbcTemplate.query("SELECT * FROM mall_customer_addr WHERE customer=?", new Object[]{cusCode}, new CustomerAddrMapper());
     }
@@ -42,6 +54,12 @@ public class CustomerAddrService {
     public void update(CustomerAddr customerAddr) {
         jdbcTemplate.update("UPDATE mall_customer_addr SET addr=?,recipient=?,phone=? WHERE id=?",
                 new Object[]{customerAddr.getAddr(), customerAddr.getRecipient(), customerAddr.getPhone(), customerAddr.getId()});
+    }
+
+    @Transactional
+    public void updateUsed(String cusCode, long id) {
+        jdbcTemplate.update("UPDATE mall_customer_addr SET used='0' WHERE customer=?", new Object[]{cusCode});
+        jdbcTemplate.update("UPDATE mall_customer_addr SET used='1' WHERE customer=? AND id=?", new Object[]{cusCode, id});
     }
 
     @Transactional

@@ -1,7 +1,10 @@
 package com.fruit.pitaya.controller;
 
 import com.fruit.pitaya.model.*;
-import com.fruit.pitaya.service.*;
+import com.fruit.pitaya.service.CartService;
+import com.fruit.pitaya.service.CategoryService;
+import com.fruit.pitaya.service.CustomerService;
+import com.fruit.pitaya.service.SkuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,12 +43,6 @@ public class HomeController {
     private SkuService skuService;
 
     @Autowired
-    private SkuNPriceService skuNPriceService;
-
-    @Autowired
-    private SkuSPriceService skuSPriceService;
-
-    @Autowired
     private CartService cartService;
 
     @RequestMapping("/")
@@ -53,10 +50,6 @@ public class HomeController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!principal.equals("anonymousUser")) {
             User user = (User) principal;
-            Customer customer = customerService.get(user.getUsername());
-            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
-            servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
             Cart cart = cartService.get(user.getUsername());
             model.addAttribute("cart", cart);
         }

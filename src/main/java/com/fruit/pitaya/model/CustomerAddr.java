@@ -14,5 +14,5 @@ public class CustomerAddr {
     private String addr;
     private String recipient;
     private String phone;
-
+    private String used;
 }

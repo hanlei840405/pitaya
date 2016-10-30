@@ -18,6 +18,7 @@ public class CustomerAddrMapper implements RowMapper<CustomerAddr> {
         customerAddr.setCustomer(rs.getString("customer"));
         customerAddr.setPhone(rs.getString("phone"));
         customerAddr.setRecipient(rs.getString("recipient"));
+        customerAddr.setUsed(rs.getString("used"));
         return customerAddr;
     }
 }

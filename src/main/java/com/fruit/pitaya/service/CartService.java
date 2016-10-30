@@ -39,7 +39,7 @@ public class CartService {
     }
 
     public List<CartDetailVO> findByCusCode(String cusCode) {
-        return jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName FROM mall_cart_de t1 INNER JOIN mall_sku t2 ON t1.sku = t2.sku WHERE cusCode=?", new Object[]{cusCode}, new CartDetailVOMapper());
+        return jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM mall_cart_de t1 INNER JOIN mall_sku t2 ON t1.sku = t2.sku WHERE cusCode=?", new Object[]{cusCode}, new CartDetailVOMapper());
     }
 
     public CartDetail get(String cusCode, String sku) {
