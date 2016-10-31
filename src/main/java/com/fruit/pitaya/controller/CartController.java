@@ -39,6 +39,8 @@ public class CartController {
     private StockService stockService;
     @Autowired
     private CustomerAddrService customerAddrService;
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("/fresh")
     public String fresh(Model model) {
@@ -148,9 +150,13 @@ public class CartController {
      * @return
      */
     @RequestMapping("/settle")
-    public String delete(@RequestParam Long addressId) {
+    public String delete(Long addressId) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        cartService.clearCart(user.getUsername());
+        CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
+        if (addressId == null) {
+            addressId = customerAddr.getId();
+        }
+        orderService.create(user.getUsername(), addressId);
         return "redirect:/";
     }
 }

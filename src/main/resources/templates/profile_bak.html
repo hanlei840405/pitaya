@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>电子烟商城</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="css/prettyPhoto.css" rel="stylesheet"/>
+    <link href="css/price-range.css" rel="stylesheet"/>
+    <link href="css/animate.css" rel="stylesheet"/>
+    <link href="css/main.css" rel="stylesheet"/>
+    <link href="css/responsive.css" rel="stylesheet"/>
+    <link href="css/bootstrap-datepicker.min.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="images/ico/favicon.ico"/>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png"/>
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png"/>
+</head>
+<body>
+<header id="header">
+    <!--header-->
+    <div class="header_top">
+        <!--header_top-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="social-icons">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-phone"></i>400 0000 000</a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="fa fa-envelope"></i>info@domain.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="social-icons pull-right">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="profile">
+                                    <i class="fa fa-user"></i></a>
+                            </li>
+                            <li>
+                                <a href="cart">
+                                    <i class="fa fa-shopping-cart"></i></a>
+                            </li>
+                            <li><a th:href="${session.username} != null ? @{logout} : @{login}"><i
+                                    th:class="${session.username} != null ? @{fa fa-unlock} : @{fa fa-lock}"></i><span
+                                    th:text="${session.username} != null ? ${session.username}"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/header_top-->
+    <div class="header-middle">
+        <!--header-middle-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="logo pull-left">
+                        <a href="./">
+                            <img src="images/home/logo.png" alt=""/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!--/header-->
+<section id="form" style="margin-top: 0px;margin-bottom: 10px;"><!--form-->
+    <div class="container">
+        <div class="shopper-info col-sm-4"><!--sign up form-->
+            <p>基础信息</p>
+
+            <form action="customer/updateMe" method="post">
+                <div class="row" style="line-height: 3.7">
+                        <span class="col-sm-2">
+                            <input type="radio" class="radio" style="display: inline" name="sex" value="M"
+                                   th:checked="${me.sex} == 'M' ? @{checked}"/> 男
+                        </span>
+                        <span class="col-sm-2">
+                            <input type="radio" class="radio" style="display: inline" name="sex" value="F"
+                                   th:checked="${me.sex} == 'F' ? @{checked}"/> 女
+                        </span>
+                </div>
+                <input type="text" placeholder="生日" id="birthday" name="birthday"
+                       th:value="${me.birthday}"/>
+                <input type="email" placeholder="邮箱" name="email" th:value="${me.email} != null ? ${me.email}"/>
+                <input type="text" placeholder="电话" name="phone" th:value="${me.phone} != null ? ${me.phone}"/>
+                <input type="text" placeholder="微信" name="wechat" th:value="${me.wechat} != null ? ${me.wechat}"/>
+                <input type="text" placeholder="上级经销商" name="upCode"
+                       th:value="${me.upCode} != null ? ${me.upCode}"/>
+                <input type="text" placeholder="销售员" name="saler" th:value="${me.saler} != null ? ${me.saler}"/>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+
+        <div class="shopper-info col-sm-4"><!--sign up form-->
+            <p>收货地址</p>
+
+            <div id="addresses"></div>
+            <form action="customer/saveAddr" method="post">
+                <input type="hidden" name="id" id="addrId"/>
+                <input type="text" placeholder="收件人" name="recipient" id="recipient"/>
+                <input type="text" placeholder="地址" name="addr" id="addr"/>
+                <input type="text" placeholder="电话" name="phone" id="phone"/>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+        <div class="shopper-info col-sm-4"><!--sign up form-->
+            <p>店铺信息</p>
+
+            <div id="shopInfos"></div>
+            <form action="customer/saveShop" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" id="shopId"/>
+                <input type="text" placeholder="店铺名称" name="shopName" id="shopName"/>
+                <input type="text" placeholder="店铺地址" name="shopAddr" id="shopAddr"/>
+                <input type="file" placeholder="店铺LOGO" name="file"/>
+                <div>
+                <input type="checkbox" name="category" id="category" value="1"/>线下
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+</section><!--/form-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    店铺图片
+                </h4>
+            </div>
+            <div class="modal-body">
+                <img id="shopPic" src=""/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<footer id="footer"><!--Footer-->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
+                <p class="pull-right">Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
+            </div>
+        </div>
+    </div>
+</footer><!--/Footer-->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.scrollUp.min.js"></script>
+<script src="js/price-range.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/notify.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/bootstrap-datepicker.min.js"></script>
+<script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    $(document.body).ready(function () {
+        $('#birthday').datepicker({
+            format: "yyyy-mm-dd",
+            language: "zh-CN"
+        });
+        loadAddresses();
+        loadShopInfos();
+    });
+
+    function loadAddresses() {
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: 'customer/listAddr',
+            success: function (response) {
+                var addresses = $('#addresses');
+                addresses.empty();
+                for (var i = 0; i < response.length; i++) {
+                    var addr = response[i];
+                    var deleteSpan = $('<a title="删除"/>');
+                    deleteSpan.addClass('fa fa-times pull-right');
+                    deleteSpan.click((function (param) {
+                        return function () {
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: 'customer/deleteAddr',
+                                data: {id: param.id},
+                                success: function (response) {
+                                    if (response.code == '200') {
+                                        alert("删除成功");
+                                        loadAddresses();
+                                    }else {
+                                        alert(response.msg);
+                                    }
+                                }
+                            });
+                        }
+                    })(addr));
+
+                    var editSpan = $('<a title="编辑"/>');
+                    editSpan.addClass('fa fa-pencil-square-o pull-right');
+                    editSpan.click((function (param) {
+                        return function () {
+                            $('#addrId').val(param.id);
+                            $('#addr').val(param.addr);
+                            $('#recipient').val(param.recipient);
+                            $('#phone').val(param.phone);
+                        }
+                    })(addr));
+
+                    var usedSpan = $('<a title="设为常用"></a>');
+                    usedSpan.addClass('fa fa-anchor pull-right');
+                    usedSpan.click((function (param) {
+                        return function () {
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: 'customer/usedAddr',
+                                data: {id: param.id},
+                                success: function (response) {
+                                    if (response.code == '200') {
+                                        alert("设置成功");
+                                        loadAddresses();
+                                    }else {
+                                        alert(response.msg);
+                                    }
+                                }
+                            });
+                        }
+                    })(addr));
+
+                    var array = [deleteSpan, editSpan, usedSpan];
+                    $(array).each(function () {
+                        var me = $(this);
+                        me.hover(function () {
+                            me.addClass('label-danger');
+                        }, function () {
+                            me.removeClass('label-danger');
+                        });
+                    });
+
+                    var ele = $('<h5/>');
+                    if (addr.used == '1') {
+                        ele.css('font-weight','bolder');
+                    }
+                    ele.append(addr.addr).append(" ").append(addr.recipient).append(" ").append(addr.phone).append(usedSpan).append(deleteSpan).append(editSpan);
+                    addresses.append(ele);
+                }
+            }
+        });
+    }
+
+    function loadShopInfos() {
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: 'customer/listShop',
+            success: function (response) {
+                var shopInfos = $('#shopInfos');
+                shopInfos.empty();
+                for (var i = 0; i < response.length; i++) {
+                    var shop = response[i];
+                    var deleteSpan = $('<a title="删除"/>');
+                    deleteSpan.addClass('fa fa-times pull-right');
+                    deleteSpan.click((function (param) {
+                        return function () {
+                            $.ajax({
+                                cache: false,
+                                type: 'POST',
+                                url: 'customer/deleteShop',
+                                data: {id: param.id},
+                                success: function (response) {
+                                    if (response.code == '200') {
+                                        alert("删除成功");
+                                        loadAddresses();
+                                    }else {
+                                        alert(response.msg);
+                                    }
+                                }
+                            });
+                        }
+                    })(shop));
+
+                    var editSpan = $('<a title="编辑"/>');
+                    editSpan.addClass('fa fa-pencil-square-o pull-right');
+                    editSpan.click((function (param) {
+                        return function () {
+                            $('#shopId').val(param.id);
+                            $('#shopName').val(param.shopName);
+                            $('#shopAddr').val(param.shopAddr);
+                            if (param.category == '1') {
+                                $('#category').attr('checked', true);
+                            } else {
+                                $('#category').attr('checked', false);
+                            }
+                        }
+                    })(shop));
+
+                    var viewSpan = $('<a title="查看照片" data-target="#myModal"/>');
+                    viewSpan.addClass('fa fa-eye pull-right');
+                    viewSpan.click((function (param) {
+                        return function () {
+                            $('#shopPic').attr('src', 'ext/private/' + param.shopPic);
+                            $('#myModal').modal({
+                                keyboard: true
+                            })
+                        }
+                    })(shop));
+                    var array = [deleteSpan, editSpan, viewSpan];
+                    $(array).each(function () {
+                        var me = $(this);
+                        me.hover(function () {
+                            me.addClass('label-danger');
+                        }, function () {
+                            me.removeClass('label-danger');
+                        });
+                    });
+
+                    var ele = $('<h5/>');
+                    ele.append(shop.shopName).append(" ").append(shop.shopAddr).append(deleteSpan).append(viewSpan).append(editSpan)
+                    shopInfos.append(ele);
+                }
+            }
+        });
+    }
+    /*]]>*/
+</script>
+</body>
+
+</html>

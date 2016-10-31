@@ -139,7 +139,7 @@
                         <li>联系电话 <span th:text="${address.phone}" id="phone"></span></li>
                     </ul>
                     <a class="btn btn-default update" href="javascript:void(0)">更换收货地址</a>
-                    <a class="btn btn-default check_out" href="../cart">下单</a>
+                    <a class="btn btn-default check_out" href="../cart/settle">下单</a>
                     <ul id="addresses" style="display: none;">
                         <li th:each="addr : ${addresses}"><label
                                 th:text="${addr.addr + ' ' + addr.recipient + ' ' + addr.phone}"></label> <span><a
@@ -176,7 +176,6 @@
         $('.select-address').each(function () {
             var me = $(this);
             me.click(function () {
-                debugger;
                 var url = me.attr('href');
                 $.ajax({
                     url: url,
@@ -195,6 +194,15 @@
                     }
                 });
                 return false;
+            });
+        });
+        $('.check_out').each(function () {
+            var me = $(this);
+            me.click(function () {
+                var url = me.attr('href');
+                if (selectAddress != undefined) {
+                    me.attr('href', url + selectAddress)
+                }
             });
         });
         $('.update').click(function () {

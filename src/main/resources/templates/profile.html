@@ -70,7 +70,7 @@
     <div class="header-middle">
         <!--header-middle-->
         <div class="container">
-            <div class="row">
+            <div class="row" style="border-bottom: 0px;!important;">
                 <div class="col-sm-4">
                     <div class="logo pull-left">
                         <a href="./">
@@ -84,58 +84,216 @@
 <!--/header-->
 <section id="form" style="margin-top: 0px;margin-bottom: 10px;"><!--form-->
     <div class="container">
-        <div class="shopper-info col-sm-4"><!--sign up form-->
-            <p>基础信息</p>
-
-            <form action="customer/updateMe" method="post">
-                <div class="row" style="line-height: 3.7">
-                        <span class="col-sm-2">
-                            <input type="radio" class="radio" style="display: inline" name="sex" value="M"
-                                   th:checked="${me.sex} == 'M' ? @{checked}"/> 男
-                        </span>
-                        <span class="col-sm-2">
-                            <input type="radio" class="radio" style="display: inline" name="sex" value="F"
-                                   th:checked="${me.sex} == 'F' ? @{checked}"/> 女
-                        </span>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="left-sidebar">
+                    <div class="panel-group category-products" id="accordian"><!--category-productsr-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a href="javascript:showPanel('customer')">个人信息</a></h4>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a href="javascript:showPanel('order')">我的订单</a></h4>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a href="javascript:showPanel('address')">收货地址</a></h4>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a href="javascript:showPanel('shopInfo')">店铺信息</a></h4>
+                            </div>
+                        </div>
+                    </div><!--/category-products-->
                 </div>
-                <input type="text" placeholder="生日" id="birthday" name="birthday"
-                       th:value="${me.birthday}"/>
-                <input type="email" placeholder="邮箱" name="email" th:value="${me.email} != null ? ${me.email}"/>
-                <input type="text" placeholder="电话" name="phone" th:value="${me.phone} != null ? ${me.phone}"/>
-                <input type="text" placeholder="微信" name="wechat" th:value="${me.wechat} != null ? ${me.wechat}"/>
-                <input type="text" placeholder="上级经销商" name="upCode"
-                       th:value="${me.upCode} != null ? ${me.upCode}"/>
-                <input type="text" placeholder="销售员" name="saler" th:value="${me.saler} != null ? ${me.saler}"/>
-                <button type="submit" class="btn btn-primary">保存</button>
-            </form>
-        </div>
+            </div>
+            <div class="col-sm-9">
+                <div class="blog-post-area" id="customer">
+                    <h2 class="title text-center">个人信息</h2>
 
-        <div class="shopper-info col-sm-4"><!--sign up form-->
-            <p>收货地址</p>
+                    <form action="customer/updateMe" method="post" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="male" class="col-sm-2 control-label">性别</label>
 
-            <div id="addresses"></div>
-            <form action="customer/saveAddr" method="post">
-                <input type="hidden" name="id" id="addrId"/>
-                <input type="text" placeholder="收件人" name="recipient" id="recipient"/>
-                <input type="text" placeholder="地址" name="addr" id="addr"/>
-                <input type="text" placeholder="电话" name="phone" id="phone"/>
-                <button type="submit" class="btn btn-primary">保存</button>
-            </form>
-        </div>
-        <div class="shopper-info col-sm-4"><!--sign up form-->
-            <p>店铺信息</p>
+                            <div class="col-sm-4">
+                                <label class="checkbox-inline">
+                                    <input type="radio" name="sex" value="M" id="male"
+                                           th:checked="${me.sex} == 'M' ? @{checked}"/> 男
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="radio" name="sex" value="F" id="female"
+                                           th:checked="${me.sex} == 'F' ? @{checked}"/> 女
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
 
-            <div id="shopInfos"></div>
-            <form action="customer/saveShop" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="id" id="shopId"/>
-                <input type="text" placeholder="店铺名称" name="shopName" id="shopName"/>
-                <input type="text" placeholder="店铺地址" name="shopAddr" id="shopAddr"/>
-                <input type="file" placeholder="店铺LOGO" name="file"/>
-                <div>
-                <input type="checkbox" name="category" id="category" value="1"/>线下
+                            <label for="cusCode" class="col-sm-2 control-label">编号</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="编号" class="form-control" id="cusCode" name="cusCode"
+                                       th:value="${me.cusCode}" readonly="readonly"/>
+                            </div>
+                            <label for="cusName" class="col-sm-2 control-label">姓名</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="姓名" class="form-control" id="cusName" name="cusName"
+                                       th:value="${me.cusCode}" readonly="readonly"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount" class="col-sm-2 control-label">消费金额</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="消费金额" class="form-control" id="amount" name="amount"
+                                       th:value="${me.amount}" readonly="readonly"/>
+                            </div>
+                            <label for="priceType" class="col-sm-2 control-label">价格类型</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="价格类型" class="form-control" id="priceType"
+                                       name="priceType"
+                                       th:value="${me.priceType}" readonly="readonly"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="col-sm-2 control-label">生日</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="生日" class="form-control" id="birthday" name="birthday"
+                                       th:value="${me.birthday}"/>
+                            </div>
+                            <label for="email" class="col-sm-2 control-label">邮箱</label>
+
+                            <div class="col-sm-4">
+                                <input type="email" placeholder="邮箱" class="form-control" id="email" name="email"
+                                       th:value="${me.email} != null ? ${me.email}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="col-sm-2 control-label">电话</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="电话" class="form-control" id="phone" name="phone"
+                                       th:value="${me.phone} != null ? ${me.phone}"/>
+                            </div>
+                            <label for="wechat" class="col-sm-2 control-label">微信</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="微信" class="form-control" id="wechat" name="wechat"
+                                       th:value="${me.wechat} != null ? ${me.wechat}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="upCode" class="col-sm-2 control-label">上级经销商</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="上级经销商" class="form-control" id="upCode" name="upCode"
+                                       th:value="${me.upCode} != null ? ${me.upCode}"/>
+                            </div>
+                            <label for="saler" class="col-sm-2 control-label">销售员</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="销售员" class="form-control" id="saler" name="saler"
+                                       th:value="${me.saler} != null ? ${me.saler}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary">保存</button>
-            </form>
+
+                <div class="blog-post-area" id="order" style="display: none;">
+                    <h2 class="title text-center">我的订单</h2>
+
+                </div>
+
+                <div class="blog-post-area" id="address" style="display: none;">
+                    <h2 class="title text-center">收货地址</h2>
+
+                    <form action="customer/saveAddr" method="post" class="form-horizontal" role="form">
+                        <input type="hidden" name="id" id="addrId"/>
+
+                        <div class="form-group">
+                            <label for="address_recipient" class="col-sm-2 control-label">收件人</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="收件人" class="form-control" name="recipient"
+                                       id="address_recipient"/>
+                            </div>
+                            <label for="address_phone" class="col-sm-2 control-label">电话</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="电话" class="form-control" name="phone" id="address_phone"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address_addr" class="col-sm-2 control-label">地址</label>
+
+                            <div class="col-sm-10">
+                                <input type="text" placeholder="地址" class="form-control" name="addr" id="address_addr"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-sm-12">
+                        <div id="addresses" class="total_area"></div>
+                    </div>
+                </div>
+
+                <div class="blog-post-area" id="shopInfo" style="display: none;">
+                    <h2 class="title text-center">店铺信息</h2>
+
+                    <form action="customer/saveShop" method="post" class="form-horizontal" role="form"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="id" id="shopId"/>
+
+                        <div class="form-group">
+                            <label for="shopInfo_shopName" class="col-sm-2 control-label">店铺名称</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="店铺名称" class="form-control" name="shopName"
+                                       id="shopInfo_shopName"/>
+                            </div>
+                            <label for="shopInfo_file" class="col-sm-2 control-label">店铺LOGO</label>
+
+                            <div class="col-sm-4">
+                                <input type="file" placeholder="店铺LOGO" class="form-control" name="file" id="shopInfo_file"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="shopInfo_shopAddr" class="col-sm-2 control-label">店铺地址</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" placeholder="店铺地址" class="form-control" name="shopAddr"
+                                       id="shopInfo_shopAddr"/>
+                            </div>
+                            <div class="col-sm-1">
+                                <input type="checkbox" name="category" id="shopInfo_category" value="1"/>线下
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-sm-12">
+                        <div id="shopInfos" class="total_area"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section><!--/form-->
@@ -166,7 +324,9 @@
         <div class="container">
             <div class="row">
                 <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
-                <p class="pull-right">Designed by <span><a target="_blank" href="http://www.themeum.com">Themeum</a></span></p>
+
+                <p class="pull-right">Designed by <span><a target="_blank"
+                                                           href="http://www.themeum.com">Themeum</a></span></p>
             </div>
         </div>
     </div>
@@ -199,6 +359,7 @@
             success: function (response) {
                 var addresses = $('#addresses');
                 addresses.empty();
+                var ul = $('<ul/>');
                 for (var i = 0; i < response.length; i++) {
                     var addr = response[i];
                     var deleteSpan = $('<a title="删除"/>');
@@ -214,7 +375,7 @@
                                     if (response.code == '200') {
                                         alert("删除成功");
                                         loadAddresses();
-                                    }else {
+                                    } else {
                                         alert(response.msg);
                                     }
                                 }
@@ -226,10 +387,10 @@
                     editSpan.addClass('fa fa-pencil-square-o pull-right');
                     editSpan.click((function (param) {
                         return function () {
-                            $('#addrId').val(param.id);
-                            $('#addr').val(param.addr);
-                            $('#recipient').val(param.recipient);
-                            $('#phone').val(param.phone);
+                            $('#address_addrId').val(param.id);
+                            $('#address_addr').val(param.addr);
+                            $('#address_recipient').val(param.recipient);
+                            $('#address_phone').val(param.phone);
                         }
                     })(addr));
 
@@ -246,7 +407,7 @@
                                     if (response.code == '200') {
                                         alert("设置成功");
                                         loadAddresses();
-                                    }else {
+                                    } else {
                                         alert(response.msg);
                                     }
                                 }
@@ -254,23 +415,14 @@
                         }
                     })(addr));
 
-                    var array = [deleteSpan, editSpan, usedSpan];
-                    $(array).each(function () {
-                        var me = $(this);
-                        me.hover(function () {
-                            me.addClass('label-danger');
-                        }, function () {
-                            me.removeClass('label-danger');
-                        });
-                    });
-
-                    var ele = $('<h5/>');
+                    var ele = $('<li/>');
                     if (addr.used == '1') {
-                        ele.css('font-weight','bolder');
+                        ele.css('font-weight', 'bolder');
                     }
                     ele.append(addr.addr).append(" ").append(addr.recipient).append(" ").append(addr.phone).append(usedSpan).append(deleteSpan).append(editSpan);
-                    addresses.append(ele);
+                    ul.append(ele);
                 }
+                addresses.append(ul);
             }
         });
     }
@@ -283,6 +435,7 @@
             success: function (response) {
                 var shopInfos = $('#shopInfos');
                 shopInfos.empty();
+                var ul = $('<ul/>');
                 for (var i = 0; i < response.length; i++) {
                     var shop = response[i];
                     var deleteSpan = $('<a title="删除"/>');
@@ -298,7 +451,7 @@
                                     if (response.code == '200') {
                                         alert("删除成功");
                                         loadAddresses();
-                                    }else {
+                                    } else {
                                         alert(response.msg);
                                     }
                                 }
@@ -310,13 +463,13 @@
                     editSpan.addClass('fa fa-pencil-square-o pull-right');
                     editSpan.click((function (param) {
                         return function () {
-                            $('#shopId').val(param.id);
-                            $('#shopName').val(param.shopName);
-                            $('#shopAddr').val(param.shopAddr);
+                            $('#shopInfo_shopId').val(param.id);
+                            $('#shopInfo_shopName').val(param.shopName);
+                            $('#shopInfo_shopAddr').val(param.shopAddr);
                             if (param.category == '1') {
-                                $('#category').attr('checked', true);
+                                $('#shopInfo_category').prop('checked', true);
                             } else {
-                                $('#category').attr('checked', false);
+                                $('#shopInfo_category').prop('checked', false);
                             }
                         }
                     })(shop));
@@ -331,22 +484,21 @@
                             })
                         }
                     })(shop));
-                    var array = [deleteSpan, editSpan, viewSpan];
-                    $(array).each(function () {
-                        var me = $(this);
-                        me.hover(function () {
-                            me.addClass('label-danger');
-                        }, function () {
-                            me.removeClass('label-danger');
-                        });
-                    });
 
-                    var ele = $('<h5/>');
+                    var ele = $('<li/>');
                     ele.append(shop.shopName).append(" ").append(shop.shopAddr).append(deleteSpan).append(viewSpan).append(editSpan)
-                    shopInfos.append(ele);
+                    ul.append(ele);
                 }
+                shopInfos.append(ul);
             }
         });
+    }
+
+    function showPanel(tag) {
+        $('.blog-post-area').each(function () {
+            $(this).css('display', 'none');
+        });
+        $('#' + tag).css('display', 'block');
     }
     /*]]>*/
 </script>

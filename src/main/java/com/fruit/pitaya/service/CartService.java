@@ -80,8 +80,14 @@ public class CartService {
 
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("cusCode", cusCode);
-            parameters.addValue("skus", Arrays.asList(skus));
-            namedParameterJdbcTemplate.update("DELETE FROM mall_cart_de WHERE cusCode=:cusCode AND sku in (:skus)", parameters);
+            String sql;
+            if (skus.length == 0) {
+                sql = "DELETE FROM mall_cart_de WHERE cusCode=:cusCode";
+            } else {
+                parameters.addValue("skus", Arrays.asList(skus));
+                sql = "DELETE FROM mall_cart_de WHERE cusCode=:cusCode AND sku in (:skus)";
+            }
+            namedParameterJdbcTemplate.update(sql, parameters);
         }
     }
 
