@@ -2,6 +2,8 @@
 <!--suppress ALL -->
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
@@ -116,6 +118,9 @@
                     <h2 class="title text-center">个人信息</h2>
 
                     <form action="customer/updateMe" method="post" class="form-horizontal" role="form">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
                         <div class="form-group">
                             <label for="male" class="col-sm-2 control-label">性别</label>
 
@@ -213,6 +218,49 @@
                 <div class="blog-post-area" id="order" style="display: none;">
                     <h2 class="title text-center">我的订单</h2>
 
+                    <div th:class="${order.status}==0 ? 'panel panel-danger' : (${order.status}==1 ? 'panel panel-warning' :(${order.status}==2 ? 'panel panel-info' : (${order.status}==3 ? 'panel panel-success' : 'panel panel-default')))"
+                         th:each="order:${orders}">
+                        <div class="panel-heading">
+                            <table style="width:100%">
+                                <tr>
+                                    <td th:text="${order.orderID}"></td>
+                                    <td th:text="${order.odtime}"></td>
+                                    <td th:switch="${order.status}">
+                                        <i th:case="0">待支付</i>
+                                        <i th:case="1">已付款</i>
+                                        <i th:case="2">待发货</i>
+                                        <i th:case="3">已发货</i>
+                                        <i th:case="4">已关闭</i>
+                                    </td>
+                                    <td class="text-right" th:text="${'总额:￥' + order.amount}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="panel-body">
+                            <p class="col-sm-7" th:text="${order.addr}"></p>
+
+                            <div th:replace="${order.status} == 0 ? @{upload} : @{blank}">
+                            </div>
+                        </div>
+                        <table class="table">
+                            <tr th:each="orderDetail:${order.orderDetailVOs}">
+                                <td width="30px">
+                                    <a href="javascript:void(0)"><img
+                                            th:src="${'../ext/public/' + orderDetail.image}" alt=""
+                                            width="30px"/></a>
+                                </td>
+                                <td class="text-left" th:text="${orderDetail.skuName}">
+                                </td>
+                                <td class="text-right col-sm-2" th:text="${'单价:' + orderDetail.price}">
+                                </td>
+                                <td class="text-right col-sm-2" th:text="${'数量:' + orderDetail.quantity}">
+                                </td>
+                                <td class="text-right col-sm-3"
+                                    th:text="${'合计:￥' + (orderDetail.price * orderDetail.quantity)}">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="blog-post-area" id="address" style="display: none;">
@@ -220,6 +268,9 @@
 
                     <form action="customer/saveAddr" method="post" class="form-horizontal" role="form">
                         <input type="hidden" name="id" id="addrId"/>
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
 
                         <div class="form-group">
                             <label for="address_recipient" class="col-sm-2 control-label">收件人</label>
@@ -231,7 +282,8 @@
                             <label for="address_phone" class="col-sm-2 control-label">电话</label>
 
                             <div class="col-sm-4">
-                                <input type="text" placeholder="电话" class="form-control" name="phone" id="address_phone"/>
+                                <input type="text" placeholder="电话" class="form-control" name="phone"
+                                       id="address_phone"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -258,6 +310,9 @@
                     <form action="customer/saveShop" method="post" class="form-horizontal" role="form"
                           enctype="multipart/form-data">
                         <input type="hidden" name="id" id="shopId"/>
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
 
                         <div class="form-group">
                             <label for="shopInfo_shopName" class="col-sm-2 control-label">店铺名称</label>
@@ -269,7 +324,8 @@
                             <label for="shopInfo_file" class="col-sm-2 control-label">店铺LOGO</label>
 
                             <div class="col-sm-4">
-                                <input type="file" placeholder="店铺LOGO" class="form-control" name="file" id="shopInfo_file"/>
+                                <input type="file" placeholder="店铺LOGO" class="form-control" name="file"
+                                       id="shopInfo_file"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -340,7 +396,13 @@
 <script src="js/main.js"></script>
 <script src="js/bootstrap-datepicker.min.js"></script>
 <script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<!--[if lt IE 10]>
+<script src="js/jquery.placeholder.js"></script>
+<script src="js/ie8.js"></script>
+<![endif]-->
 <script type="text/javascript">
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
     /*<![CDATA[*/
     $(document.body).ready(function () {
         $('#birthday').datepicker({
@@ -349,6 +411,13 @@
         });
         loadAddresses();
         loadShopInfos();
+        $('.certificate').click(function () {
+            if ($('#certificate').val() == '') {
+                alert("请上传交易凭证");
+                return false;
+            }
+            $('#uploadCertificateForm').submit();
+        });
     });
 
     function loadAddresses() {
@@ -356,6 +425,9 @@
             cache: false,
             type: 'POST',
             url: 'customer/listAddr',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
             success: function (response) {
                 var addresses = $('#addresses');
                 addresses.empty();
@@ -371,6 +443,9 @@
                                 type: 'POST',
                                 url: 'customer/deleteAddr',
                                 data: {id: param.id},
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader(header, token);
+                                },
                                 success: function (response) {
                                     if (response.code == '200') {
                                         alert("删除成功");
@@ -403,6 +478,9 @@
                                 type: 'POST',
                                 url: 'customer/usedAddr',
                                 data: {id: param.id},
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader(header, token);
+                                },
                                 success: function (response) {
                                     if (response.code == '200') {
                                         alert("设置成功");
@@ -432,6 +510,9 @@
             cache: false,
             type: 'POST',
             url: 'customer/listShop',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
             success: function (response) {
                 var shopInfos = $('#shopInfos');
                 shopInfos.empty();
@@ -447,6 +528,9 @@
                                 type: 'POST',
                                 url: 'customer/deleteShop',
                                 data: {id: param.id},
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader(header, token);
+                                },
                                 success: function (response) {
                                     if (response.code == '200') {
                                         alert("删除成功");
@@ -499,6 +583,7 @@
             $(this).css('display', 'none');
         });
         $('#' + tag).css('display', 'block');
+        $(window).resize();
     }
     /*]]>*/
 </script>

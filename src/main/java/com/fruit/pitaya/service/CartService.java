@@ -25,9 +25,6 @@ public class CartService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private StockService stockService;
-
     public Cart get(String cusCode) {
         List<Cart> carts = jdbcTemplate.query("SELECT * FROM mall_cart WHERE cusCode=?", new Object[]{cusCode}, new CartMapper());
         if (carts.isEmpty()) {

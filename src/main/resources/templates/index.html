@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.springframework.org/schema/beans">
 <head>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
@@ -113,8 +115,7 @@
             </div>
         </div>
     </div>
-    <!--/header-bottom--></header>
-<!--/header-->
+</header>
 <section id="slider">
     <!--slider-->
     <div class="container">
@@ -184,7 +185,6 @@
         </div>
     </div>
 </section>
-<!--/slider-->
 <section>
     <div class="container">
         <div class="row">
@@ -198,50 +198,58 @@
                         <div class="product-image-wrapper">
                             <div class="single-products">
                                 <div class="productinfo text-center">
-                                    <img class="lazy" width="100%" th:attr="data-original=${'ext/public/' + sku.image}"
-                                         alt=""/>
+                                    <img src="images/loading.gif" class="b-lazy" width="100%" th:attr="data-src=${'ext/public/' + sku.image}"
+                                         th:alt="${sku.skuName}"/>
                                     <h5
-                                        th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
+                                            th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
+
                                     <p th:text="${'库存:' + sku.quantity}"></p>
                                     <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add
                                         to cart</a>
                                 </div>
                                 <div class="product-overlay">
-                                    <div class="overlay-content" style="bottom: 20px !important;">
-                                        <div class="row"
-                                             th:style="${sku.price == null} ? 'display: none;' : 'display:block'">
-                                            <p class=" col-md-6 col-xs-5 text-right">统一价</p>
+                                    <div class="overlay-content">
+                                        <table class="table">
+                                            <th:block th:if="${sku.price != null}">
+                                                <tr>
+                                                    <td style="padding: 0px;border: 0px;"><p>统一价</p></td>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${'￥' + sku.price}"></p></td>
+                                                </tr>
+                                            </th:block>
+                                            <th:block th:if="${sku.price == null}">
+                                                <tr>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${'0 到 ' + sku.num2 + '件'}"></p></td>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${'￥' + sku.price1}"></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p></td>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${'￥' + sku.price2}"></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${sku.num3 + '件以上'}"></p></td>
+                                                    <td style="padding: 0px;border: 0px;"><p
+                                                            th:text="${'￥' + sku.price3}"></p></td>
+                                                </tr>
+                                            </th:block>
+                                            <tr>
+                                                <td style="padding: 0px;border: 0px;" colspan="2">
+                                                    <h5 th:text="${sku.skuName}"></h5>
 
-                                            <p class="col-md-1 col-xs-3 text-right" th:text="${'￥' + sku.price}"></p>
-                                        </div>
-                                        <div class="row"
-                                             th:style="${sku.price == null} ? 'display: block;' : 'display:none'">
-                                            <p class=" col-md-6 col-xs-5 text-right"
-                                               th:text="${'0 到 ' + sku.num2 + '件'}"></p>
-
-                                            <p class="col-md-1 col-xs-3 text-right" th:text="${'￥' + sku.price1}"></p>
-                                        </div>
-                                        <div class="row"
-                                             th:style="${sku.price == null} ? 'display: block;' : 'display:none'">
-                                            <p class=" col-md-6 col-xs-5 text-right"
-                                               th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p>
-
-                                            <p class="col-md-1 col-xs-3 text-right" th:text="${'￥' + sku.price2}"></p>
-                                        </div>
-                                        <div class="row"
-                                             th:style="${sku.price == null} ? 'display: block;' : 'display:none'">
-                                            <p class=" col-md-6 col-xs-5 text-right"
-                                               th:text="${sku.num3 + '件以上'}"></p>
-
-                                            <p class="col-md-1 col-xs-3 text-right" th:text="${'￥' + sku.price3}"></p>
-                                        </div>
-                                        <div class="row">
-                                            <input class="col-md-offset-3 col-md-6 purchase-text"
-                                                   placeholder="购买数量"/>
-                                        </div>
-                                        <h5
-                                            th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
-                                        <p th:text="${'库存:' + sku.quantity}"></p>
+                                                    <p th:text="${sku.sku + ' ' + sku.specName + ' 库存:' + sku.quantity}"></p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 0px;border: 0px;" colspan="2">
+                                                    <input type="number" style="width:90%" class="purchase-text" placeholder="购买数量"/>
+                                                </td>
+                                            </tr>
+                                        </table>
                                         <a th:href="${'cart/addSku/' + sku.sku}"
                                            class="btn btn-default add-to-cart btn-add-to-cart">
                                             <i class="fa fa-shopping-cart"></i>Add to cart</a>
@@ -265,7 +273,6 @@
     </div>
 </section>
 <footer id="footer">
-    <!--Footer-->
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
@@ -279,20 +286,39 @@
         </div>
     </div>
 </footer>
-<!--/Footer-->
-<script src="js/jquery.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.scrollUp.min.js"></script>
-<script src="js/price-range.js"></script>
-<script src="js/jquery.prettyPhoto.js"></script>
-<script src="js/notify.min.js"></script>
-<script src="js/main.js"></script>
-<script src="js/jquery.lazyload.min.js"></script>
-<script type="application/javascript">
-    $(document).ready(function () {
-        $("img.lazy").lazyload({
-            effect: "fadeIn"
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.scrollUp.min.js"></script>
+    <script src="js/price-range.js"></script>
+    <script src="js/jquery.prettyPhoto.js"></script>
+    <script src="js/notify.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/blazy.min.js"></script>
+    <!--[if lt IE 10]>
+    <script src="js/jquery.placeholder.js"></script>
+    <script src="js/ie8.js"></script>
+    <![endif]-->
+<script>
+    /*BE LAZY*/
+    ;(function() {
+        var bLazy = new Blazy({
+            breakpoints: [{
+                width: 420, // max-width
+                src: 'data-src-small'
+            }]
+            , success: function(element){
+                setTimeout(function(){
+                    var parent = element.parentNode;
+                    parent.className = parent.className.replace(/\bloading\b/,'');
+                }, 0);
+            }
         });
+    })();
+
+    $(document).ready(function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        new Blazy();
         $('.btn-add-to-cart').each(function (index) {
             var me = $(this);
             $(this).click((function (param) {
@@ -304,6 +330,9 @@
                             url: url,
                             type: 'POST',
                             data: {count: count},
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
                             success: function (response) {
                                 if (undefined == response.code) {
                                     location.href = 'login';
@@ -332,5 +361,4 @@
     });
 </script>
 </body>
-
 </html>

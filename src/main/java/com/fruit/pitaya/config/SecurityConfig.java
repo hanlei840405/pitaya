@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/")
-                .and().csrf().disable().logout().logoutUrl("/logout").logoutSuccessUrl("/");
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/");
 //        .invalidateHttpSession(true).deleteCookies();
     }
     // @formatter:on
@@ -91,4 +91,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
+
 }

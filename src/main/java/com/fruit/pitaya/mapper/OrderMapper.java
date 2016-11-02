@@ -21,6 +21,7 @@ public class OrderMapper implements RowMapper<Order> {
         order.setOdtime(rs.getDate("odtime"));
         order.setReviewer(rs.getString("reviewer"));
         order.setStatus(rs.getInt("status"));
+        order.setCertificate(rs.getString("certificate"));
         return order;
     }
 }

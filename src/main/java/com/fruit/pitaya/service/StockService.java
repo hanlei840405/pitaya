@@ -26,7 +26,7 @@ public class StockService {
     }
 
     @Transactional
-    public void update(String sku, Long count) {
+    public void update(String sku, int count) {
         jdbcTemplate.update("UPDATE sk_stock SET quantity=quantity-? WHERE sku=?", new Object[]{count, sku});
     }
 }

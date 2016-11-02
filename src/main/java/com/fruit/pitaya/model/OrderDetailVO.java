@@ -19,4 +19,5 @@ public class OrderDetailVO {
     private int quantity;
     private BigDecimal price;
     private BigDecimal allcost;
+    private String image;
 }

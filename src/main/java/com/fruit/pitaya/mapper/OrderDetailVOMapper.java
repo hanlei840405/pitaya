@@ -21,6 +21,8 @@ public class OrderDetailVOMapper implements RowMapper<OrderDetailVO> {
         orderDetailVO.setOrderID(rs.getString("orderID"));
         orderDetailVO.setPrice(rs.getBigDecimal("price"));
         orderDetailVO.setQuantity(rs.getInt("quantity"));
+        orderDetailVO.setQuantity(rs.getInt("quantity"));
+        orderDetailVO.setImage(rs.getString("image"));
         return orderDetailVO;
     }
 }

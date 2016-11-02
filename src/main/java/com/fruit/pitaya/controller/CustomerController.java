@@ -6,6 +6,7 @@ import com.fruit.pitaya.model.CustomerShop;
 import com.fruit.pitaya.service.CustomerAddrService;
 import com.fruit.pitaya.service.CustomerService;
 import com.fruit.pitaya.service.CustomerShopService;
+import com.fruit.pitaya.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,18 +86,8 @@ public class CustomerController {
     public String saveShop(CustomerShop customerShop, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
-            if (!file.isEmpty()) {
-                final Path rootLocation = Paths.get(System.getProperties().getProperty("user.home"), "/upload/private/");
-                File folder = new File(rootLocation.toUri());
-                if (!folder.exists() && !folder.isDirectory()) {
-                    folder.mkdir();
-                }
-                if (Files.exists(rootLocation.resolve(file.getOriginalFilename()))) {
-                    Files.delete(rootLocation.resolve(file.getOriginalFilename()));
-                }
-                Files.copy(file.getInputStream(), rootLocation.resolve(file.getOriginalFilename()));
-                customerShop.setShopPic(file.getOriginalFilename());
-            }
+
+            customerShop.setShopPic(user.getUsername() + Utils.upload(file));
 
             if (customerShop.getId() != null) {
                 CustomerShop exist = customerShopService.get(customerShop.getId(), user.getUsername());

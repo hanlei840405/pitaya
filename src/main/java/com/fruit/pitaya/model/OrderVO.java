@@ -2,9 +2,11 @@ package com.fruit.pitaya.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hanlei6 on 2016/10/31.
@@ -19,6 +21,9 @@ public class OrderVO {
     private BigDecimal amount;
     private String courierNum;
     private int status;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date odtime;
     private String express;
+    private String certificate;
+    private List<OrderDetailVO> orderDetailVOs;
 }

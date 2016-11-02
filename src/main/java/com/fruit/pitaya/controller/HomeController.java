@@ -1,10 +1,7 @@
 package com.fruit.pitaya.controller;
 
 import com.fruit.pitaya.model.*;
-import com.fruit.pitaya.service.CartService;
-import com.fruit.pitaya.service.CategoryService;
-import com.fruit.pitaya.service.CustomerService;
-import com.fruit.pitaya.service.SkuService;
+import com.fruit.pitaya.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,6 +41,9 @@ public class HomeController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping("/")
     public String home(Model model) {
@@ -92,10 +92,12 @@ public class HomeController {
     public String profile(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
+        List<OrderVO> orderVOs = orderService.findByCustomer(user.getUsername());
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
         servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
         model.addAttribute("me", customer);
+        model.addAttribute("orders", orderVOs);
 //        model.addAttribute("addresses", new String[0]);
         return "profile";
     }

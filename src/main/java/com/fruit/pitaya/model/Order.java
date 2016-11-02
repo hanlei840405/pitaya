@@ -21,4 +21,5 @@ public class Order {
     private int status;
     private Date odtime;
     private String express;
+    private String certificate;
 }
