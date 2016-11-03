@@ -56,6 +56,12 @@ public class CartController {
     Map<String, Object> addSku(@PathVariable("sku") String sku, @RequestParam(required = true) Integer count) {
         Map<String, Object> result = new HashMap<>();
 
+        if (count <= 0) {
+            result.put("code", "500");
+            result.put("msg", "请填写购买数量");
+            return result;
+        }
+
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
         Stock stock = stockService.get(sku);

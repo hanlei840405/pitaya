@@ -26,7 +26,9 @@ public class CartService {
     private JdbcTemplate jdbcTemplate;
 
     public Cart get(String cusCode) {
-        List<Cart> carts = jdbcTemplate.query("SELECT * FROM mall_cart WHERE cusCode=?", new Object[]{cusCode}, new CartMapper());
+        List<Cart> carts = jdbcTemplate.query("SELECT * FROM mall_cart WHERE cusCode=?", ps -> {
+            ps.setString(1, cusCode);
+        }, new CartMapper());
         if (carts.isEmpty()) {
             return null;
         }
@@ -36,11 +38,16 @@ public class CartService {
     }
 
     public List<CartDetailVO> findByCusCode(String cusCode) {
-        return jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM mall_cart_de t1 INNER JOIN mall_sku t2 ON t1.sku = t2.sku WHERE cusCode=?", new Object[]{cusCode}, new CartDetailVOMapper());
+        return jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM mall_cart_de t1 INNER JOIN mall_sku t2 ON t1.sku = t2.sku WHERE cusCode=?", ps -> {
+            ps.setString(1, cusCode);
+        }, new CartDetailVOMapper());
     }
 
     public CartDetail get(String cusCode, String sku) {
-        List<CartDetail> cartDetails = jdbcTemplate.query("SELECT * FROM mall_cart_de WHERE cusCode=? AND sku=?", new Object[]{cusCode, sku}, new CartDetailMapper());
+        List<CartDetail> cartDetails = jdbcTemplate.query("SELECT * FROM mall_cart_de WHERE cusCode=? AND sku=?", ps -> {
+            ps.setString(1, cusCode);
+            ps.setString(2, sku);
+        }, new CartDetailMapper());
         if (cartDetails.isEmpty()) {
             return null;
         }
