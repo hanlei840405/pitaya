@@ -77,9 +77,9 @@ public class CartController {
         SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(user.getUsername(), sku);
         BigDecimal price;
         // 校验是否是新用户,如果新用户,不限制购买数量
-        if (skuSPrice != null) { // skuSPrice不为空，说明是已购买过某sku的用户或者是后台设置的享有优惠的老客户
+        if (skuSPrice != null && "0".equals(customer.getCusType())) { // skuSPrice不为空,且为非微商商户，说明是已购买过某sku的用户或者是后台设置的享有优惠的老客户
             price = skuSPrice.getPrice();
-            priceType = price != null ? "S" : "";
+            priceType = price != null ? "S" : priceType;
             String firsetBuy = skuSPrice.getFirstbuy();
             // 老客户通过后台设置后，也可享用首次购买优惠，且可以使用最优惠的价格。
             boolean validateCount = price != null && StringUtils.isEmpty(firsetBuy) ? false : true;// 校验首次购买

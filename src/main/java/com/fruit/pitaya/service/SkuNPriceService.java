@@ -21,11 +21,14 @@ public class SkuNPriceService {
     private JdbcTemplate jdbcTemplate;
 
     public List<SkuNPrice> findBySku(String sku) {
-        return jdbcTemplate.queryForList("SELECT * FROM mall_sku_nprice WHERE sku=?", SkuNPrice.class, sku);
+        return jdbcTemplate.query("SELECT * FROM mall_sku_nprice WHERE sku=?", ps -> ps.setString(1, sku), new SkuNPriceMapper());
     }
 
     public SkuNPrice findBySkuAndType(String sku, String priceType) {
-        List<SkuNPrice> skuNPrices = jdbcTemplate.query("SELECT * FROM mall_sku_nprice WHERE sku=? AND priceType=?", new Object[]{sku, priceType}, new SkuNPriceMapper());
+        List<SkuNPrice> skuNPrices = jdbcTemplate.query("SELECT * FROM mall_sku_nprice WHERE sku=? AND priceType=?", ps -> {
+            ps.setString(1, sku);
+            ps.setString(2, priceType);
+        }, new SkuNPriceMapper());
         if (skuNPrices.isEmpty()) {
             return null;
         }
@@ -41,7 +44,7 @@ public class SkuNPriceService {
                 return skuNPrice.getPrice2();
             } else if (skuNPrice.getNum3() <= count) {
                 return skuNPrice.getPrice3();
-            }else {
+            } else {
                 return skuNPrice.getPrice1();
             }
         }

@@ -24,7 +24,7 @@ public class SequenceService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String generateCode(String category) {
         int code = 10000;
-        List<Sequence> sequences = jdbcTemplate.query("SELECT * FROM console_sequence WHERE category=?", new Object[]{category}, new SequenceMapper());
+        List<Sequence> sequences = jdbcTemplate.query("SELECT * FROM console_sequence WHERE category=?", ps -> ps.setString(1, category), new SequenceMapper());
         if (!sequences.isEmpty()) {
             Sequence sequence = sequences.get(0);
             code = sequence.getCode();
@@ -34,9 +34,17 @@ public class SequenceService {
         while (loop) {
             try {
                 if (++code == 10001) {
-                    jdbcTemplate.update("INSERT INTO console_sequence (category,code) VALUE (?,?)", new Object[]{category, code});
+                    final int finalCode = code;
+                    jdbcTemplate.update("INSERT INTO console_sequence (category,code) VALUE (?,?)", ps -> {
+                        ps.setString(1, category);
+                        ps.setInt(2, finalCode);
+                    });
                 } else {
-                    jdbcTemplate.update("UPDATE console_sequence SET code=? WHERE category=?", new Object[]{code, category});
+                    final int finalCode = code;
+                    jdbcTemplate.update("UPDATE console_sequence SET code=? WHERE category=?", ps -> {
+                        ps.setInt(1, finalCode);
+                        ps.setString(2, category);
+                    });
                 }
                 loop = false;
             } catch (Exception e) {

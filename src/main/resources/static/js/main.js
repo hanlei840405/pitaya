@@ -1,11 +1,3 @@
-/*price range*/
-
- $('#sl2').slider();
-
-	var RGBChange = function() {
-	  $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
-	};	
-		
 /*scroll to top*/
 
 $(document).ready(function(){
@@ -41,4 +33,13 @@ function footerPosition(){
 	} else {
 		$("footer").removeClass("fixed-bottom");
 	}
+}
+function pagination(obj) {
+	var url = obj.name;
+	var pageArea = $(obj).parent().parent().parent().parent();
+	var ele = pageArea.prev();
+	ele.load(url);
+	url = url.replace('show', 'page');
+	pageArea.load(url);
+	return false;
 }

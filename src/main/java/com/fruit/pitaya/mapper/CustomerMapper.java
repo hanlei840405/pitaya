@@ -28,6 +28,7 @@ public class CustomerMapper implements RowMapper<Customer> {
         customer.setUpCode(rs.getString("upCode"));
         customer.setWechat(rs.getString("wechat"));
         customer.setPriceType(rs.getString("priceType"));
+        customer.setCusType(rs.getString("cusType"));
         return customer;
     }
 }

@@ -31,15 +31,22 @@ public class OrderService {
     private StockService stockService;
 
     public List<OrderVO> findByCustomer(String customer) {
-        List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=?", new Object[]{customer}, new OrderVOMapper());
+        List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=?", ps -> {
+            ps.setString(1, customer);
+        }, new OrderVOMapper());
         orderVOs.forEach(orderVO -> {
-            orderVO.setOrderDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", new Object[]{orderVO.getOrderID()}, new OrderDetailVOMapper()));
+            orderVO.setOrderDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", ps -> {
+                ps.setString(1, orderVO.getOrderID());
+            }, new OrderDetailVOMapper()));
         });
         return orderVOs;
     }
 
     public Order get(String orderId, String customer) {
-        List<Order> orders = jdbcTemplate.query("SELECT * FROM od_order WHERE orderID=? AND customer=?", new Object[]{orderId, customer}, new OrderMapper());
+        List<Order> orders = jdbcTemplate.query("SELECT * FROM od_order WHERE orderID=? AND customer=?", ps -> {
+            ps.setString(1, orderId);
+            ps.setString(2, customer);
+        }, new OrderMapper());
         if (orders.isEmpty()) {
             return null;
         }
@@ -57,16 +64,16 @@ public class OrderService {
 //    }
 
     @Transactional
-    public void test() throws Exception {
-        throw new Exception("test");
-    }
-
-    @Transactional
     public void create(String cusCode, Long addressId) {
         String orderID = "O" + sequenceService.generateCode("订单");
         Cart cart = cartService.get(cusCode);
         jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, amount, status, odtime) VALUE (?,?,?,?,0,now())",
-                orderID, cusCode, addressId, cart.getAmount());
+                ps -> {
+                    ps.setString(1, orderID);
+                    ps.setString(2, cusCode);
+                    ps.setLong(3, addressId);
+                    ps.setBigDecimal(4, cart.getAmount());
+                });
 
         cart.getCartDetailVOs().forEach(cartDetailVO -> {
             int count = cartDetailVO.getSkuCount();
@@ -96,13 +103,21 @@ public class OrderService {
             }
         });
         CustomerAddr customerAddr = customerAddrService.get(addressId, cusCode);
-        jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)", orderID, customerAddr.getAddr() + " " + customerAddr.getRecipient() + " " + customerAddr.getPhone());
+        jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
+                ps -> {
+                    ps.setString(1, orderID);
+                    ps.setString(2, customerAddr.getAddr() + " " + customerAddr.getRecipient() + " " + customerAddr.getPhone());
+                });
         cartService.clearCart(cusCode);
         cartService.clearCart(cusCode);
     }
 
     @Transactional
     public int uploadCertificate(String customer, String orderId, String certificate) {
-        return jdbcTemplate.update("UPDATE od_order SET certificate=?,status=1 WHERE orderID=? AND customer=?", certificate, orderId, customer);
+        return jdbcTemplate.update("UPDATE od_order SET certificate=?,status=1 WHERE orderID=? AND customer=?", ps -> {
+            ps.setString(1, certificate);
+            ps.setString(2, orderId);
+            ps.setString(3, customer);
+        });
     }
 }

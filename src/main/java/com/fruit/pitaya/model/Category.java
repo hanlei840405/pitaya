@@ -17,4 +17,5 @@ public class Category {
     private String cateCode;
     private String parentCode;
     private List<Category> categories = new ArrayList<>();
+    private boolean showPage;
 }

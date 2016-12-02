@@ -1,9 +1,0 @@
-<form action="order/upload" method="post" enctype="multipart/form-data" id="uploadCertificateForm"
-      xmlns:th="http://www.w3.org/1999/xhtml">
-    <input type="hidden"
-           th:name="${_csrf.parameterName}"
-           th:value="${_csrf.token}"/>
-    <input type="hidden" name="orderId" th:value="${order.orderID}" class="col-sm-3"/>
-    <input type="file" name="file" class="col-sm-3" id="certificate"/>
-    <a href="#" class="col-sm-2 text-right certificate">上传凭证</a>
-</form>

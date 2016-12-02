@@ -30,4 +30,5 @@ public class Customer implements Serializable {
     private int rate;
     private BigDecimal amount;
     private String priceType;
+    private String cusType;
 }

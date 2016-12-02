@@ -37,17 +37,4 @@ public class OrderController {
         }
         return "redirect:/profile";
     }
-
-    @RequestMapping(value = "/test")
-    public String test(RedirectAttributes redirectAttributes) throws Exception {
-        try {
-            orderService.test();
-        } catch (Exception e) {
-            log.error("error");
-            redirectAttributes.addAttribute("code", "500");
-            redirectAttributes.addAttribute("msg", "保存失败");
-            throw e;
-        }
-        return "redirect:/profile";
-    }
 }

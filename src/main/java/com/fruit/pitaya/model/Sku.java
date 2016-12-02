@@ -20,4 +20,5 @@ public class Sku implements Serializable {
     private String specName;
     private String image;
     private String remark;
+    private String exclusive;
 }

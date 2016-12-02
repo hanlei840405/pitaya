@@ -45,6 +45,7 @@ public class CustomerController {
         exist.setWechat(customer.getWechat());
         exist.setEmail(customer.getEmail());
         exist.setSaler(customer.getSaler());
+        exist.setCusType(customer.getCusType());
         try {
             customerService.update(exist);
         } catch (Exception e) {

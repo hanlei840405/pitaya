@@ -22,6 +22,7 @@ public class SkuMapper implements RowMapper<Sku> {
         sku.setSkuName(rs.getString("skuName"));
         sku.setSpecName(rs.getString("specName"));
         sku.setStatus(rs.getInt("status"));
+        sku.setExclusive(rs.getString("exclusive"));
         return sku;
     }
 }

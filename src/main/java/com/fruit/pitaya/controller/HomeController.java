@@ -1,7 +1,11 @@
 package com.fruit.pitaya.controller;
 
-import com.fruit.pitaya.model.*;
+import com.fruit.pitaya.model.Cart;
+import com.fruit.pitaya.model.Category;
+import com.fruit.pitaya.model.Customer;
+import com.fruit.pitaya.model.OrderVO;
 import com.fruit.pitaya.service.*;
+import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,39 +51,41 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home(Model model) {
+        boolean showExclusivePage = false;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!principal.equals("anonymousUser")) {
             User user = (User) principal;
             Cart cart = cartService.get(user.getUsername());
             model.addAttribute("cart", cart);
+            Long count = skuService.countExclusiveSku(user.getUsername());
+            long pages = (long) Math.ceil(count.doubleValue() / Constant.PAGE_SIZE);
+            if (pages > 1) {
+                showExclusivePage = true;
+            }
         }
         List<Category> categories = categoryService.findAllCategories();
         model.addAttribute("categories", categories);
-
-        /*
-         判断是否有登录
-         1：未登录：显示sku的D类价格
-         2：认证后：判断用户是否是S类用户
-            2.1：是，显示S类价格
-            2.2：否，显示对应A、B、C、D四类等级的价格
-         */
-        List<CategoryVO> categoryVOs = new ArrayList<>();
-        List<Category> subCategories = categoryService.findAllSubCategories();
-        for (Category category : subCategories) {
-            List<SkuVO> skuVOs;
-            if (!principal.equals("anonymousUser")) { // 说明有登录认证
-                User user = (User) principal;
-                Customer customer = customerService.get(user.getUsername());
-                skuVOs = skuService.findByCategory(category.getCateCode(), customer.getCusCode(), customer.getPriceType());
+        List<Category> subCategories = new ArrayList<>();
+        List<Category> rootCategories = categoryService.findAllRootCategories();
+        for (Category root : rootCategories) {
+            List<Category> subs = categoryService.findSubCategories(root.getCateCode());
+            if (subs.isEmpty()) {
+                subCategories.add(root);
             } else {
-                skuVOs = skuService.findByCategory(category.getCateCode(), "", "D");
+                for (Category sub : subs) {
+                    Long count = skuService.count(sub.getCateCode());
+                    long pages = (long) Math.ceil(count.doubleValue() / Constant.PAGE_SIZE);
+                    if (pages > 1) {
+                        sub.setShowPage(true);
+                    } else {
+                        sub.setShowPage(false);
+                    }
+                }
+                subCategories.addAll(subs);
             }
-            CategoryVO categoryVO = new CategoryVO();
-            categoryVO.setCategory(category);
-            categoryVO.setSkus(skuVOs);
-            categoryVOs.add(categoryVO);
         }
-        model.addAttribute("subCategories", categoryVOs);
+        model.addAttribute("showExclusivePage", showExclusivePage);
+        model.addAttribute("subCategories", subCategories);
         return "index";
     }
 

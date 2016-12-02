@@ -20,7 +20,10 @@ public class SkuSPriceService {
     private JdbcTemplate jdbcTemplate;
 
     public SkuSPrice findByCusCodeAndSku(String cusCode, String sku) {
-        List<SkuSPrice> skuSPrices = jdbcTemplate.query("SELECT * FROM mall_sku_sprice WHERE sku=? AND customer=?", new Object[]{sku, cusCode}, new SkuSPriceMapper());
+        List<SkuSPrice> skuSPrices = jdbcTemplate.query("SELECT * FROM mall_sku_sprice WHERE sku=? AND customer=?", ps->{
+            ps.setString(1,sku);
+            ps.setString(2,cusCode);
+        }, new SkuSPriceMapper());
         if (skuSPrices.isEmpty()) {
             return null;
         }

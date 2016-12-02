@@ -96,7 +96,7 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody th:if="${cart != null}">
                 <tr th:each="cartDetail:${cart.cartDetailVOs}">
                     <td class="cart_product">
                         <a href="javascript:void(0)"><img th:src="${'../ext/public/' + cartDetail.image}" alt=""
@@ -128,7 +128,7 @@
 </section> <!--/#cart_items-->
 
 <section id="do_action">
-    <div class="container">
+    <div class="container" th:if="${cart != null}">
         <div class="heading">
             <h3>确认收件地址</h3>
         </div>
@@ -177,54 +177,6 @@
 <script src="../js/jquery.prettyPhoto.js"></script>
 <script src="../js/notify.min.js"></script>
 <script src="../js/main.js"></script>
-<script type="application/javascript">
-    var selectAddress = null;
-    $(document).ready(function () {
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $('.select-address').each(function () {
-            var me = $(this);
-            me.click(function () {
-                var url = me.attr('href');
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (response) {
-                        if (response.code == '200') {
-                            var address = response.address;
-                            selectAddress = address.id;
-                            var addr = address.addr;
-                            var recipient = address.recipient;
-                            var phone = address.phone;
-                            $('#addr').text(addr);
-                            $('#recipient').text(recipient);
-                            $('#phone').text(phone);
-                        }
-                    }
-                });
-                return false;
-            });
-        });
-        $('.check_out').each(function () {
-            var me = $(this);
-            me.click(function () {
-                var form = $('form:first');
-                if (selectAddress != null) {
-                    form.prop('action', '../cart/settle/' + selectAddress);
-                }else {
-                    form.prop('action', '../cart/settle/');
-                }
-                debugger;
-                form.submit();
-            });
-        });
-        $('.update').click(function () {
-            $('#addresses').css('display', 'block');
-        });
-    });
-</script>
+<script src="../js/cart.js"></script>
 </body>
 </html>

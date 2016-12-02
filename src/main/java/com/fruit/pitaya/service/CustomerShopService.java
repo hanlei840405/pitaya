@@ -21,7 +21,10 @@ public class CustomerShopService {
     private JdbcTemplate jdbcTemplate;
 
     public CustomerShop get(long id, String cusCode) {
-        List<CustomerShop> result = jdbcTemplate.query("SELECT * FROM mall_customer_shop WHERE id=? AND customer=?", new Object[]{id, cusCode}, new CustomerShopMapper());
+        List<CustomerShop> result = jdbcTemplate.query("SELECT * FROM mall_customer_shop WHERE id=? AND customer=?", ps -> {
+            ps.setLong(1, id);
+            ps.setString(2, cusCode);
+        }, new CustomerShopMapper());
         if (!result.isEmpty()) {
             return result.get(0);
         }
@@ -29,24 +32,39 @@ public class CustomerShopService {
     }
 
     public List<CustomerShop> findByCustomer(String cusCode) {
-        return jdbcTemplate.query("SELECT * FROM mall_customer_shop WHERE customer=?", new Object[]{cusCode}, new CustomerShopMapper());
+        return jdbcTemplate.query("SELECT * FROM mall_customer_shop WHERE customer=?", ps -> {
+            ps.setString(1, cusCode);
+        }, new CustomerShopMapper());
     }
 
     @Transactional
     public void insert(CustomerShop customerShop) {
         jdbcTemplate.update("INSERT INTO mall_customer_shop (customer,category,shopName,shopAddr,shopPic) VALUE (?,?,?,?,?)",
-                new Object[]{customerShop.getCustomer(), customerShop.getCategory(), customerShop.getShopName(), customerShop.getShopAddr(), customerShop.getShopPic()});
+                ps -> {
+                    ps.setString(1, customerShop.getCustomer());
+                    ps.setString(2, customerShop.getCategory());
+                    ps.setString(3, customerShop.getShopName());
+                    ps.setString(4, customerShop.getShopAddr());
+                    ps.setString(5, customerShop.getShopPic());
+                });
     }
 
     @Transactional
     public void update(CustomerShop customerShop) {
         jdbcTemplate.update("UPDATE mall_customer_shop SET category=?,shopName=?,shopAddr=?,shopPic=? WHERE id=?",
-                new Object[]{customerShop.getCategory(), customerShop.getShopName(), customerShop.getShopAddr(), customerShop.getShopPic(), customerShop.getId()});
+                ps -> {
+                    ps.setString(1, customerShop.getCategory());
+                    ps.setString(2, customerShop.getShopName());
+                    ps.setString(3, customerShop.getShopAddr());
+                    ps.setString(4, customerShop.getShopPic());
+                    ps.setLong(5, customerShop.getId());
+                });
     }
 
     @Transactional
     public void delete(long id) {
-        jdbcTemplate.update("DELETE FROM mall_customer_shop WHERE id=?",
-                new Object[]{id});
+        jdbcTemplate.update("DELETE FROM mall_customer_shop WHERE id=?", ps -> {
+            ps.setLong(1, id);
+        });
     }
 }

@@ -1,0 +1,12 @@
+<nav class="pull-right" xmlns:th="http://www.w3.org/1999/xhtml">
+    <ul class="pagination">
+        <th:block th:if="${showPre}">
+        <li th:class="${cateCode}"><a href="javascript:void(0)" th:name="${firstUrl}" onclick="pagination(this)" class="page page-first">&lt;&lt;</a></li>
+        <li th:class="${cateCode}"><a href="javascript:void(0)" th:name="${preUrl}" onclick="pagination(this)" class="page page-pre">&lt;</a></li>
+        </th:block>
+        <th:block th:if="${showNext}">
+        <li th:class="${cateCode}"><a href="javascript:void(0)" th:name="${nextUrl}" onclick="pagination(this)" class="page page-next">&gt;</a></li>
+        <li th:class="${cateCode}"><a href="javascript:void(0)" th:name="${lastUrl}" onclick="pagination(this)" class="page page-last">&gt;&gt;</a></li>
+        </th:block>
+    </ul>
+</nav>

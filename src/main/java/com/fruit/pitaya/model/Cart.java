@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,5 +17,5 @@ public class Cart implements Serializable {
     private String cusCode;
     private Integer totalCount;
     private BigDecimal amount;
-    private List<CartDetailVO> cartDetailVOs;
+    private List<CartDetailVO> cartDetailVOs = new ArrayList<>();
 }

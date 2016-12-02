@@ -85,188 +85,77 @@
         <!--header-bottom-->
         <div class="container">
             <div class="row">
-                <div class="col-sm-9">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                                data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                    </div>
-                    <div class="mainmenu pull-left">
-                        <ul class="nav navbar-nav collapse navbar-collapse">
-                            <li class="dropdown" th:each="category:${categories}">
-                                <a th:href="${'#' + category.cateCode}" th:text="${category.cateName}"><i
-                                        class="fa fa-angle-down"></i></a>
-                                <ul role="menu" class="sub-menu" th:each="subCategory: ${category.categories}">
-                                    <li><a th:href="${'#' + subCategory.cateCode}"
-                                           th:text="${subCategory.cateName}"></a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="search_box pull-right">
-                        <input type="text" placeholder="Search"/></div>
+                <div style="width:100%">
+                    <ul class="nav nav-tabs navbar-nav collapse navbar-collapse" role="tablist" style="width:100%">
+                        <th:block th:each="category : ${categories}">
+                            <th:block th:if="${categories.size() gt 1}">
+                                <li role="presentation" class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown"
+                                       th:href="${'#anchor_' + category.cateCode}"><span
+                                            th:text="${category.cateName}"></span><i
+                                            class="fa fa-angle-down"></i></a>
+
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li th:each="subCategory: ${category.categories}"><a
+                                                th:href="${'#anchor_' + subCategory.cateCode}"><span
+                                                th:text="${subCategory.cateName}"></span></a></li>
+                                    </ul>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${categories.size() eq 1}">
+                                <li role="presentation">
+                                    <a th:href="${'#' + category.cateCode}" th:text="${category.cateName}"></a>
+                                </li>
+                            </th:block>
+                        </th:block>
+                        <li role="presentation">
+                            <a href="#anchor_exclusive">专属商品</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </header>
-<section id="slider">
-    <!--slider-->
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="slider-carousel" class="carousel slide" data-ride="carousel">
-                    <ol class="carousel-indicators">
-                        <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#slider-carousel" data-slide-to="1"></li>
-                        <li data-target="#slider-carousel" data-slide-to="2"></li>
-                    </ol>
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <div class="col-sm-6">
-                                <h1>
-                                    <span>E</span>-SHOPPER</h1>
-
-                                <h2>Free E-Commerce Template</h2>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua.</p>
-                                <button type="button" class="btn btn-default get">Get it now</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="images/home/girl1.jpg" class="girl img-responsive" alt=""/>
-                                <img src="images/home/pricing.png" class="pricing" alt=""/></div>
-                        </div>
-                        <div class="item">
-                            <div class="col-sm-6">
-                                <h1>
-                                    <span>E</span>-SHOPPER</h1>
-
-                                <h2>100% Responsive Design</h2>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua.</p>
-                                <button type="button" class="btn btn-default get">Get it now</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="images/home/girl2.jpg" class="girl img-responsive" alt=""/>
-                                <img src="images/home/pricing.png" class="pricing" alt=""/></div>
-                        </div>
-                        <div class="item">
-                            <div class="col-sm-6">
-                                <h1>
-                                    <span>E</span>-SHOPPER</h1>
-
-                                <h2>Free Ecommerce Template</h2>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                                    incididunt ut labore et dolore magna aliqua.</p>
-                                <button type="button" class="btn btn-default get">Get it now</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <img src="images/home/girl3.jpg" class="girl img-responsive" alt=""/>
-                                <img src="images/home/pricing.png" class="pricing" alt=""/></div>
-                        </div>
-                    </div>
-                    <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
-                        <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <section>
     <div class="container">
         <div class="row">
             <div class="col-sm-9 padding-right">
                 <div class="features_items" th:each="category:${subCategories}">
                     <!--features_items-->
-                    <h2 class="title text-center" th:text="${category.category.cateName}"
-                        th:name="${category.category.cateCode}" th:id="${category.category.cateCode}"></h2>
+                    <h2 class="title text-center" th:text="${category.cateName}"
+                        th:name="${category.cateCode}" th:id="'anchor_' + ${category.cateCode}"></h2>
 
-                    <div class="col-sm-3" th:each="sku:${category.skus}">
-                        <div class="product-image-wrapper">
-                            <div class="single-products">
-                                <div class="productinfo text-center">
-                                    <img src="images/loading.gif" class="b-lazy" width="100%" th:attr="data-src=${'ext/public/' + sku.image}"
-                                         th:alt="${sku.skuName}"/>
-                                    <h5
-                                            th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
-
-                                    <p th:text="${'库存:' + sku.quantity}"></p>
-                                    <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add
-                                        to cart</a>
-                                </div>
-                                <div class="product-overlay">
-                                    <div class="overlay-content">
-                                        <table class="table">
-                                            <th:block th:if="${sku.price != null}">
-                                                <tr>
-                                                    <td style="padding: 0px;border: 0px;"><p>统一价</p></td>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${'￥' + sku.price}"></p></td>
-                                                </tr>
-                                            </th:block>
-                                            <th:block th:if="${sku.price == null}">
-                                                <tr>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${'0 到 ' + sku.num2 + '件'}"></p></td>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${'￥' + sku.price1}"></p></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p></td>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${'￥' + sku.price2}"></p></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${sku.num3 + '件以上'}"></p></td>
-                                                    <td style="padding: 0px;border: 0px;"><p
-                                                            th:text="${'￥' + sku.price3}"></p></td>
-                                                </tr>
-                                            </th:block>
-                                            <tr>
-                                                <td style="padding: 0px;border: 0px;" colspan="2">
-                                                    <h5 th:text="${sku.skuName}"></h5>
-
-                                                    <p th:text="${sku.sku + ' ' + sku.specName + ' 库存:' + sku.quantity}"></p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 0px;border: 0px;" colspan="2">
-                                                    <input type="number" style="width:90%" class="purchase-text" placeholder="购买数量"/>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <a th:href="${'cart/addSku/' + sku.sku}"
-                                           class="btn btn-default add-to-cart btn-add-to-cart">
-                                            <i class="fa fa-shopping-cart"></i>Add to cart</a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="sku-area row" th:id="${category.cateCode}"></div>
+                    <th:block th:if="${category.showPage}">
+                        <div class="row">
                         </div>
-                    </div>
+                    </th:block>
+                </div>
+                <div class="features_items">
+                    <!--features_items-->
+                    <h2 class="title text-center" id="anchor_exclusive">专属商品</h2>
+
+                    <div class="row" id="exclusive"></div>
+                    <th:block th:if="${showExclusivePage}">
+                        <div class="row" id="exclusivePager">
+                        </div>
+                    </th:block>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="left-sidebar">
                     <h2>购物车</h2>
-
-                    <div class="panel-group category-products" style="padding-bottom: 0px !important;" id="accordion"
-                         th:include="${session.username} != null ? @{cart-widget} : @{none}">
-                    </div>
+                    <th:block th:if="${session.username} != null">
+                        <div class="panel-group category-products" style="padding-bottom: 0px !important;" id="accordion"
+                             th:include="cart-widget">
+                        </div>
+                    </th:block>
+                    <th:block th:if="${session.username} == null">
+                        <div class="text-center">
+                            <a href="login" class="btn btn-danger">请登录</a>
+                        </div>
+                    </th:block>
                 </div>
             </div>
         </div>
@@ -286,79 +175,18 @@
         </div>
     </div>
 </footer>
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.scrollUp.min.js"></script>
-    <script src="js/price-range.js"></script>
-    <script src="js/jquery.prettyPhoto.js"></script>
-    <script src="js/notify.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/blazy.min.js"></script>
-    <!--[if lt IE 10]>
-    <script src="js/jquery.placeholder.js"></script>
-    <script src="js/ie8.js"></script>
-    <![endif]-->
-<script>
-    /*BE LAZY*/
-    ;(function() {
-        var bLazy = new Blazy({
-            breakpoints: [{
-                width: 420, // max-width
-                src: 'data-src-small'
-            }]
-            , success: function(element){
-                setTimeout(function(){
-                    var parent = element.parentNode;
-                    parent.className = parent.className.replace(/\bloading\b/,'');
-                }, 0);
-            }
-        });
-    })();
-
-    $(document).ready(function () {
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        new Blazy();
-        $('.btn-add-to-cart').each(function (index) {
-            var me = $(this);
-            $(this).click((function (param) {
-                return function () {
-                    var url = me.attr('href');
-                    var count = $('.purchase-text').get(param).value;
-                    if (count > 0) {
-                        $.ajax({
-                            url: url,
-                            type: 'POST',
-                            data: {count: count},
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader(header, token);
-                            },
-                            success: function (response) {
-                                if (undefined == response.code) {
-                                    location.href = 'login';
-                                } else if (response.code == '500') {
-                                    alert("库存不足");
-                                    return;
-                                } else {
-                                    $("#accordion").load('cart/fresh');
-                                }
-                            }
-                        });
-                    } else {
-                        alert("请填写购买数量");
-                    }
-                    return false;
-                }
-            })(index));
-        });
-        $('#accordion').find('.collapse').collapse({toggle: false});
-        $('.cart-settle').click(function () {
-            if ($('#accordion').find('.panel-default').size() == 1) {
-                alert('购物车为空');
-                return false;
-            }
-        });
-    });
-</script>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.scrollUp.min.js"></script>
+<script src="js/price-range.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/notify.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/blazy.min.js"></script>
+<script src="js/index.js"></script>
+<!--[if lt IE 10]>
+<script src="js/jquery.placeholder.js"></script>
+<script src="js/ie8.js"></script>
+<![endif]-->
 </body>
 </html>

@@ -8,12 +8,15 @@ import com.fruit.pitaya.model.CartDetail;
 import com.fruit.pitaya.model.CartDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,24 +59,43 @@ public class CartService {
 
     @Transactional
     public void createCart(Cart cart, CartDetail cartDetail) {
-        jdbcTemplate.update("INSERT INTO mall_cart (cusCode, totalCount, amount) VALUE (?,?,?)", cart.getCusCode(), cart.getTotalCount(), cart.getAmount());
+        jdbcTemplate.update("INSERT INTO mall_cart (cusCode, totalCount, amount) VALUE (?,?,?)",
+                ps -> {
+                    ps.setString(1, cart.getCusCode());
+                    ps.setInt(2, cart.getTotalCount());
+                    ps.setBigDecimal(3, cart.getAmount());
+                });
         addSku(cartDetail);
     }
 
     @Transactional
     public void updateCart(Cart cart) {
-        jdbcTemplate.update("UPDATE mall_cart SET totalCount=?, amount=? WHERE cusCode=?", cart.getTotalCount(), cart.getAmount(), cart.getCusCode());
+        jdbcTemplate.update("UPDATE mall_cart SET totalCount=?, amount=? WHERE cusCode=?",
+                ps -> {
+                    ps.setInt(1, cart.getTotalCount());
+                    ps.setBigDecimal(2, cart.getAmount());
+                    ps.setString(3, cart.getCusCode());
+                });
     }
 
     @Transactional
     public void addSku(CartDetail cartDetail) {
-        jdbcTemplate.update("INSERT INTO mall_cart_de (cusCode, sku, priceType, skuCount, price, skuAmount) VALUE (?,?,?,?,?,?)", new Object[]{cartDetail.getCusCode(),
-                cartDetail.getSku(), cartDetail.getPriceType(), cartDetail.getSkuCount(), cartDetail.getPrice(), cartDetail.getSkuAmount()});
+        jdbcTemplate.update("INSERT INTO mall_cart_de (cusCode, sku, priceType, skuCount, price, skuAmount) VALUE (?,?,?,?,?,?)",
+                ps -> {
+                    ps.setString(1, cartDetail.getCusCode());
+                    ps.setString(2, cartDetail.getSku());
+                    ps.setString(3, cartDetail.getPriceType());
+                    ps.setInt(4, cartDetail.getSkuCount());
+                    ps.setBigDecimal(5, cartDetail.getPrice());
+                    ps.setBigDecimal(6, cartDetail.getSkuAmount());
+                });
     }
 
     @Transactional
     public void clearCart(String cusCode) {
-        jdbcTemplate.update("DELETE FROM mall_cart WHERE cusCode=?", cusCode);
+        jdbcTemplate.update("DELETE FROM mall_cart WHERE cusCode=?", ps -> {
+            ps.setString(1, cusCode);
+        });
         clearCartDetail(cusCode);
     }
 

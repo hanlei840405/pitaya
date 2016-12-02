@@ -10,6 +10,7 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -24,7 +25,9 @@ public class CustomerService {
     private SequenceService sequenceService;
 
     public Customer get(long id) {
-        List<Customer> result = jdbcTemplate.query("SELECT * FROM mall_customer WHERE id=?", new Object[]{id}, new CustomerMapper());
+        List<Customer> result = jdbcTemplate.query("SELECT * FROM mall_customer WHERE id=?", ps -> {
+            ps.setLong(1, id);
+        }, new CustomerMapper());
         if (!result.isEmpty()) {
             return result.get(0);
         }
@@ -32,7 +35,9 @@ public class CustomerService {
     }
 
     public Customer get(String cusCode) {
-        List<Customer> result = jdbcTemplate.query("SELECT * FROM mall_customer WHERE cusCode=?", new Object[]{cusCode}, new CustomerMapper());
+        List<Customer> result = jdbcTemplate.query("SELECT * FROM mall_customer WHERE cusCode=?", ps -> {
+            ps.setString(1, cusCode);
+        }, new CustomerMapper());
         if (!result.isEmpty()) {
             return result.get(0);
         }
@@ -51,9 +56,18 @@ public class CustomerService {
 
             Md5PasswordEncoder encoder = new Md5PasswordEncoder();
             customer.setPasswd(encoder.encodePassword(customer.getPasswd(), customer.getCusCode()));
-
-            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,status,rate) VALUE (?,?,?,?,?,?,?,?,?,0,0)",
-                    new Object[]{customer.getCusCode(), customer.getCusName(), customer.getPasswd(), customer.getSex(), customer.getBirthday(), customer.getEmail(), customer.getPhone(), customer.getWechat(), customer.getUpCode()});
+            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,status,rate, cusType) VALUE (?,?,?,?,?,?,?,?,?,0,0,?)",
+                    ps -> {
+                        ps.setString(1, customer.getCusCode());
+                        ps.setString(2, customer.getPasswd());
+                        ps.setString(3, customer.getSex());
+                        ps.setDate(4, new Date(customer.getBirthday().getTime()));
+                        ps.setString(5, customer.getEmail());
+                        ps.setString(6, customer.getPhone());
+                        ps.setString(7, customer.getWechat());
+                        ps.setString(8, customer.getUpCode());
+                        ps.setString(9, customer.getCusType());
+                    });
         } catch (Exception e) {
             log.error("INSERT CUSTOMER : {}", customer);
             throw new Exception(e);
@@ -64,9 +78,18 @@ public class CustomerService {
     @Transactional
     public Customer update(Customer customer) throws Exception {
         try {
-            jdbcTemplate.update("UPDATE mall_customer SET sex=?,birthday=?,email=?,phone=?,wechat=?,upCode=?,saler=? WHERE id=?",
-                    new Object[]{customer.getSex(), customer.getBirthday(), customer.getEmail(), customer.getPhone(),
-                            customer.getWechat(), customer.getUpCode(), customer.getSaler(), customer.getId()});
+            jdbcTemplate.update("UPDATE mall_customer SET sex=?,birthday=?,email=?,phone=?,wechat=?,upCode=?,cusType=? WHERE id=?",
+                    ps -> {
+                        ps.setString(1, customer.getSex());
+                        ps.setDate(2, new Date(customer.getBirthday().getTime()));
+                        ps.setString(3, customer.getEmail());
+                        ps.setString(4, customer.getPhone());
+                        ps.setString(5, customer.getWechat());
+                        ps.setString(6, customer.getUpCode());
+                        ps.setString(7, customer.getUpCode());
+                        ps.setString(8, customer.getCusType());
+                        ps.setLong(8, customer.getId());
+                    });
         } catch (Exception e) {
             log.error("UPDATE CUSTOMER : {}", customer);
             throw new Exception(e.getCause());
@@ -77,7 +100,10 @@ public class CustomerService {
     @Transactional
     public Customer changePassword(long id, String passwd) throws Exception {
         try {
-            jdbcTemplate.update("UPDATE mall_customer SET password=? WHERE id=?", new Object[]{id, passwd});
+            jdbcTemplate.update("UPDATE mall_customer SET password=? WHERE id=?", ps -> {
+                ps.setLong(1, id);
+                ps.setString(2, passwd);
+            });
         } catch (Exception e) {
             log.error("CHANGE PASSWORD CUSTOMER : {}", id);
             throw new Exception(e.getCause());

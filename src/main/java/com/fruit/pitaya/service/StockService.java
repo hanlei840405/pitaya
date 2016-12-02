@@ -18,7 +18,7 @@ public class StockService {
     private JdbcTemplate jdbcTemplate;
 
     public Stock get(String sku) {
-        List<Stock> stocks = jdbcTemplate.query("SELECT * FROM sk_stock WHERE sku=?",new Object[]{sku}, new StockMapper());
+        List<Stock> stocks = jdbcTemplate.query("SELECT * FROM sk_stock WHERE sku=?", ps -> ps.setString(1, sku), new StockMapper());
         if (stocks.isEmpty()) {
             return null;
         }
@@ -27,6 +27,9 @@ public class StockService {
 
     @Transactional
     public void update(String sku, int count) {
-        jdbcTemplate.update("UPDATE sk_stock SET quantity=quantity-? WHERE sku=?", new Object[]{count, sku});
+        jdbcTemplate.update("UPDATE sk_stock SET quantity=quantity-? WHERE sku=?", ps -> {
+            ps.setInt(1, count);
+            ps.setString(2, sku);
+        });
     }
 }
