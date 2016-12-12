@@ -4,6 +4,7 @@ import com.fruit.pitaya.mapper.OrderDetailVOMapper;
 import com.fruit.pitaya.mapper.OrderMapper;
 import com.fruit.pitaya.mapper.OrderVOMapper;
 import com.fruit.pitaya.model.*;
+import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hanlei6 on 2016/10/31.
@@ -30,15 +32,15 @@ public class OrderService {
     @Autowired
     private StockService stockService;
 
-    public List<OrderVO> findByCustomer(String customer) {
-        List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=?", ps -> {
+    public List<OrderVO> findByCustomer(String customer, int page) {
+        List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=? ORDER BY status ASC, odtime DESC LIMIT ?,?", ps -> {
             ps.setString(1, customer);
+            ps.setInt(2, (page - 1) * Constant.PAGE_SIZE);
+            ps.setInt(3, Constant.PAGE_SIZE);
         }, new OrderVOMapper());
-        orderVOs.forEach(orderVO -> {
-            orderVO.setOrderDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", ps -> {
-                ps.setString(1, orderVO.getOrderID());
-            }, new OrderDetailVOMapper()));
-        });
+        orderVOs.forEach(orderVO -> orderVO.setOrderDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", ps -> {
+            ps.setString(1, orderVO.getOrderID());
+        }, new OrderDetailVOMapper())));
         return orderVOs;
     }
 
@@ -53,15 +55,10 @@ public class OrderService {
         return orders.get(0);
     }
 
-//    public OrderVO get(String orderId, String customer) {
-//        List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.addrID = t2.id INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode INNER JOIN sys_user t4 ON t1.reviewer=t4.name WHERE orderID=? AND customer=?", new Object[]{orderId, customer}, new OrderVOMapper());
-//        if (orderVOs.isEmpty()) {
-//            return null;
-//        }
-//        OrderVO orderVO = orderVOs.get(0);
-//        orderVO.setOrderDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", new Object[]{orderVO.getOrderID()}, new OrderDetailVOMapper()));
-//        return orderVO;
-//    }
+    public Long count(String customer) {
+        Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(*) AS cnt FROM od_order WHERE customer=?", customer);
+        return (Long) result.get("cnt");
+    }
 
     @Transactional
     public void create(String cusCode, Long addressId) {

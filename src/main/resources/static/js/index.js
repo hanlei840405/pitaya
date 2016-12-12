@@ -7,13 +7,8 @@ $(document).ready(function () {
     $('.sku-area').each(function () {
         var page = 1;
         var cateCode = $(this).attr('id');
-        var me = $(this);
-        $(this).load('sku/show/' + page + '/' + cateCode, function () {
-            var cnt = $(me).next();
-            if (cnt != null) {
-                $(me).next().load('sku/page/' + page + '/' + cateCode);
-            }
-        });
+        $(this).load('sku/show/' + page + '/' + cateCode);
+        $(this).next().load('sku/page/' + page + '/' + cateCode);
     });
     $('#exclusive').load('sku/show/1/exclusive');
     $('#exclusivePager').load('sku/page/1/exclusive');

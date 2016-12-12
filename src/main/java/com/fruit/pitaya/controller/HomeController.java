@@ -3,7 +3,6 @@ package com.fruit.pitaya.controller;
 import com.fruit.pitaya.model.Cart;
 import com.fruit.pitaya.model.Category;
 import com.fruit.pitaya.model.Customer;
-import com.fruit.pitaya.model.OrderVO;
 import com.fruit.pitaya.service.*;
 import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,12 +97,12 @@ public class HomeController {
     public String profile(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
-        List<OrderVO> orderVOs = orderService.findByCustomer(user.getUsername());
+        Long orderCount = orderService.count(user.getUsername());
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
         servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
         model.addAttribute("me", customer);
-        model.addAttribute("orders", orderVOs);
+        model.addAttribute("showOrderPage", orderCount > 1 ? true : false);
 //        model.addAttribute("addresses", new String[0]);
         return "profile";
     }

@@ -8,6 +8,7 @@ $(document.body).ready(function () {
         format: "yyyy-mm-dd",
         language: "zh-CN"
     });
+    loadOrders();
     loadAddresses();
     loadShopInfos();
     $('.certificate').click(function () {
@@ -20,6 +21,11 @@ $(document.body).ready(function () {
         form.submit();
     });
 });
+
+function loadOrders() {
+    $('#orders').load('order/show/1');
+    $('#orderPager').load('order/page/1');
+}
 
 function loadAddresses() {
     $.ajax({

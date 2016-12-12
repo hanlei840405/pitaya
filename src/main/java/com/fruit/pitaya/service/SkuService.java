@@ -23,13 +23,6 @@ public class SkuService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<Sku> findByCategory(String category) {
-        String sql = "SELECT * FROM mall_sku WHERE t1.category is null AND t1.status=1 AND t1.category = ?";
-        return jdbcTemplate.query(sql, ps -> {
-            ps.setString(1, category);
-        }, new SkuMapper());
-    }
-
     public List<SkuVO> findByCategory(String category, String customer, String priceType, int page) {
         StringBuilder builder = new StringBuilder("SELECT t1.skuName,t1.sku,t1.image,t1.category,t1.attribute,t1.status,t1.specName,t1.remark,t1.image,t2.price,t3.num1,t3.price1,t3.num2, t3.price2, t3.num3,t3.price3,t4.quantity");
         builder.append(" FROM mall_sku t1").append(" LEFT JOIN mall_sku_sprice t2 ON t1.sku = t2.sku AND t2.customer=?").append(" LEFT JOIN mall_sku_nprice t3 ON t1.sku = t3.sku AND t3.priceType=?")

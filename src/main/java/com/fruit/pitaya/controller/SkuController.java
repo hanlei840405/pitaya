@@ -34,8 +34,7 @@ public class SkuController {
 
     @RequestMapping("/show/{page}/{cateCode}")
     public String show(@PathVariable("page") int page, @PathVariable("cateCode") String cateCode, Model model) {
-        Long count = 0L;
-        if (page == 0) {
+        if (page <= 0) {
             page = 1;
         }
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -53,10 +52,8 @@ public class SkuController {
             User user = (User) principal;
             Customer customer = customerService.get(user.getUsername());
             if ("exclusive".equals(cateCode)) {
-                count = skuService.countExclusiveSku(customer.getCusCode());
                 skuVOs = skuService.findExclusiveSku(customer.getCusCode(), customer.getPriceType(), page);
             } else {
-                count = skuService.count(cateCode);
                 skuVOs = skuService.findByCategory(category.getCateCode(), customer.getCusCode(), customer.getPriceType(), page);
             }
         } else {
@@ -67,7 +64,6 @@ public class SkuController {
             }
         }
         model.addAttribute("skus", skuVOs);
-        model.addAttribute("count", count);
         return "sku";
     }
 
@@ -84,8 +80,8 @@ public class SkuController {
         } else {
             count = skuService.count(cateCode);
         }
-        if (page == 0) {
-            page = (int) Math.ceil(count.doubleValue() / Constant.PAGE_SIZE);
+        if (page <= 0) {
+            page = 1;
         }
         long pages = (long) Math.ceil(count.doubleValue() / Constant.PAGE_SIZE);
         if (pages - page > 0) {

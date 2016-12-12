@@ -1,0 +1,50 @@
+<div th:class="${order.status}==0 ? 'panel panel-danger' : (${order.status}==1 ? 'panel panel-warning' :(${order.status}==2 ? 'panel panel-info' : (${order.status}==3 ? 'panel panel-success' : 'panel panel-default')))"
+     th:each="order:${orders}" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="panel-heading">
+        <table style="width:100%">
+            <tr>
+                <td th:text="${order.orderID}"></td>
+                <td th:text="${order.odtime}"></td>
+                <td th:switch="${order.status}">
+                    <i th:case="0">待支付</i>
+                    <i th:case="1">已付款</i>
+                    <i th:case="2">待发货</i>
+                    <i th:case="3">已发货</i>
+                    <i th:case="4">已关闭</i>
+                </td>
+                <td class="text-right" th:text="${'总额:￥' + order.amount}"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel-body">
+        <p class="col-sm-7" th:text="${order.addr}"></p>
+        <th:block th:if="${order.status} == 0">
+            <form action="order/upload" method="post" enctype="multipart/form-data">
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <input type="hidden" name="orderId" th:value="${order.orderID}" class="col-sm-3"/>
+                <input type="file" name="file" class="col-sm-3"/>
+                <a href="#" class="col-sm-2 text-right certificate">上传凭证</a>
+            </form>
+        </th:block>
+    </div>
+    <table class="table">
+        <tr th:each="orderDetail:${order.orderDetailVOs}">
+            <td width="30px">
+                <a href="javascript:void(0)"><img
+                        th:src="${'../ext/public/' + orderDetail.image}" alt=""
+                        width="30px"/></a>
+            </td>
+            <td class="text-left" th:text="${orderDetail.skuName}">
+            </td>
+            <td class="text-right col-sm-2" th:text="${'单价:' + orderDetail.price}">
+            </td>
+            <td class="text-right col-sm-2" th:text="${'数量:' + orderDetail.quantity}">
+            </td>
+            <td class="text-right col-sm-3"
+                th:text="${'合计:￥' + (orderDetail.price * orderDetail.quantity)}">
+            </td>
+        </tr>
+    </table>
+</div>
