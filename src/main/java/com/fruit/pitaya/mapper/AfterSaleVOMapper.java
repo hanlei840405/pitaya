@@ -14,14 +14,15 @@ public class AfterSaleVOMapper implements RowMapper<AfterSaleVO> {
     public AfterSaleVO mapRow(ResultSet rs, int rowNum) throws SQLException {
         AfterSaleVO afterSaleVO = new AfterSaleVO();
         afterSaleVO.setCustomer(rs.getString("customer"));
-        afterSaleVO.setAddrID(rs.getLong("addrID"));
+        afterSaleVO.setAddr(rs.getString("addr"));
         afterSaleVO.setAsodID(rs.getString("asodID"));
-        afterSaleVO.setBkcourier(rs.getString("bkcourier"));
-        afterSaleVO.setExecuter(rs.getString("executer"));
+        afterSaleVO.setCourierNum(rs.getString("courierNum"));
         afterSaleVO.setStatus(rs.getInt("status"));
         afterSaleVO.setExecuter(rs.getString("express"));
-        afterSaleVO.setCusName(rs.getString("cusName"));
-        afterSaleVO.setAddr(rs.getString("addr"));
+        afterSaleVO.setExpress(rs.getString("express"));
+        afterSaleVO.setBkexpress(rs.getString("bkexpress"));
+        afterSaleVO.setBkcourierNum(rs.getString("bkcourierNum"));
+        afterSaleVO.setAmount(rs.getBigDecimal("amount"));
         return afterSaleVO;
     }
 }

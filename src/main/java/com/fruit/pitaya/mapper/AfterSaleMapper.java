@@ -14,12 +14,15 @@ public class AfterSaleMapper implements RowMapper<AfterSale> {
     public AfterSale mapRow(ResultSet rs, int rowNum) throws SQLException {
         AfterSale afterSale = new AfterSale();
         afterSale.setCustomer(rs.getString("customer"));
-        afterSale.setAddrID(rs.getLong("addrID"));
+        afterSale.setAddr(rs.getString("addr"));
         afterSale.setAsodID(rs.getString("asodID"));
-        afterSale.setBkcourier(rs.getString("bkcourier"));
-        afterSale.setExecuter(rs.getString("executer"));
+        afterSale.setCourierNum(rs.getString("courierNum"));
         afterSale.setStatus(rs.getInt("status"));
         afterSale.setExecuter(rs.getString("express"));
+        afterSale.setExpress(rs.getString("express"));
+        afterSale.setBkexpress(rs.getString("bkexpress"));
+        afterSale.setBkcourierNum(rs.getString("bkcourierNum"));
+        afterSale.setAmount(rs.getBigDecimal("amount"));
         return afterSale;
     }
 }

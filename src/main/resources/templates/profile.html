@@ -237,6 +237,52 @@
                     </th:block>
                 </div>
 
+                <div class="blog-post-area" id="applyAfterSale" style="display: none;">
+                    <h2 class="title text-center">申请售后</h2>
+                    <form action="aftersale/saveAfterSale" method="post" class="form-horizontal" role="form">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+
+                        <div class="form-group">
+                            <label for="address_recipient" class="col-sm-2 control-label">收件人</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="收件人" class="form-control" name="recipient"
+                                       id="address_recipient"/>
+                            </div>
+                            <label for="address_phone" class="col-sm-2 control-label">电话</label>
+
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="电话" class="form-control" name="phone"
+                                       id="address_phone"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address_addr" class="col-sm-2 control-label">地址</label>
+
+                            <div class="col-sm-10">
+                                <input type="text" placeholder="地址" class="form-control" name="addr" id="address_addr"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="blog-post-area" id="afterSaleRecord" style="display: none;">
+                    <h2 class="title text-center">售后记录</h2>
+
+                    <div id="afterSaleRecords"></div>
+                    <th:block th:if="${showAfterSalePage}">
+                        <div class="row" id="afterSalePager">
+                        </div>
+                    </th:block>
+                </div>
+
                 <div class="blog-post-area" id="address" style="display: none;">
                     <h2 class="title text-center">收货地址</h2>
 

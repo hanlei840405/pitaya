@@ -25,7 +25,7 @@ public class AfterSaleService {
     private JdbcTemplate jdbcTemplate;
 
     public List<AfterSaleVO> find(String cusCode) {
-        List<AfterSaleVO> afterSaleVOs = jdbcTemplate.query("SELECT t1.*,t2.cusName,t3.addr FROM as_aftersaleod t1 INNER JOIN mall_customer t2 ON t1.customer = t2.cusCode INNER JOIN mall_customer_addr t3 ON t1.addrID = t3.id WHERE t1.customer=?", new Object[]{cusCode}, new AfterSaleVOMapper());
+        List<AfterSaleVO> afterSaleVOs = jdbcTemplate.query("SELECT t1.*,t2.cusName FROM as_aftersaleod t1 INNER JOIN mall_customer t2 ON t1.customer = t2.cusCode WHERE t1.customer=?", new Object[]{cusCode}, new AfterSaleVOMapper());
         for (AfterSaleVO afterSaleVO : afterSaleVOs) {
             afterSaleVO.setAfterSaleDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName FROM as_aftersaleod_de t1 INNER JOIN mall_sku t2 ON t1.asodID = t2.asodID AND t1.asodID = ?", new Object[]{afterSaleVO.getAsodID()}, new AfterSaleDetailVOMapper()));
         }
