@@ -190,4 +190,5 @@ function showPanel(tag) {
         $(this).css('display', 'none');
     });
     $('#' + tag).css('display', 'block');
+    footerPosition();
 }

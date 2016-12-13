@@ -34,27 +34,30 @@ public class AfterSaleService {
 
     @Transactional
     public void createAfterSale(AfterSale afterSale, List<AfterSaleDetail> afterSaleDetails) {
-        jdbcTemplate.update("as_aftersaleod (asodID, customer, status, bkcourier, addrID, executer, express) VALUE (?,?,?,?,?,?,?)", new PreparedStatementSetter() {
+        jdbcTemplate.update("INNER INTO as_aftersaleod (asodID, customer, executer, status, express, courierNum, bkexpress, bkcourierNum, amount, addr) VALUE (?,?,?,?,?,?,?,?,?,?)", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setString(1, afterSale.getAsodID());
                 ps.setString(2, afterSale.getCustomer());
-                ps.setInt(3, afterSale.getStatus());
-                ps.setString(4, afterSale.getBkcourier());
-                ps.setLong(5, afterSale.getAddrID());
-                ps.setString(6, afterSale.getExecuter());
-                ps.setString(7, afterSale.getExpress());
+                ps.setString(3, afterSale.getExecuter());
+                ps.setInt(4, afterSale.getStatus());
+                ps.setString(5, afterSale.getExpress());
+                ps.setString(6, afterSale.getCourierNum());
+                ps.setString(7, afterSale.getBkexpress());
+                ps.setString(8, afterSale.getBkcourierNum());
+                ps.setBigDecimal(9, afterSale.getAmount());
+                ps.setString(10, afterSale.getAddr());
             }
         });
         jdbcTemplate.batchUpdate("INNER INTO as_aftersaleod_de (asodID, sku, quantity, newqty, remark) VALUE (?,?,?,?,?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setString(1,afterSaleDetails.get(i).getAsodID());
-                        ps.setString(2,afterSaleDetails.get(i).getSku());
-                        ps.setInt(3,afterSaleDetails.get(i).getQuantity());
-                        ps.setInt(4,afterSaleDetails.get(i).getNewqty());
-                        ps.setString(5,afterSaleDetails.get(i).getRemark());
+                        ps.setString(1, afterSaleDetails.get(i).getAsodID());
+                        ps.setString(2, afterSaleDetails.get(i).getSku());
+                        ps.setInt(3, afterSaleDetails.get(i).getQuantity());
+                        ps.setInt(4, afterSaleDetails.get(i).getNewqty());
+                        ps.setString(5, afterSaleDetails.get(i).getRemark());
                     }
 
                     @Override

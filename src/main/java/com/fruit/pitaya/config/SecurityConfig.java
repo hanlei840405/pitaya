@@ -40,9 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ext/public/**", "/css/**", "/fonts/**", "/images/**", "/locales/**", "/js/**", "/favicon.ico", "/", "/register", "/sku/show/**", "/sku/page/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/")
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/");
-//        .invalidateHttpSession(true).deleteCookies();
+                .formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/");
     }
     // @formatter:on
 
