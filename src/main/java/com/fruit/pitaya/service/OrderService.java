@@ -32,6 +32,16 @@ public class OrderService {
     @Autowired
     private StockService stockService;
 
+    public List<OrderVO> findSentByCustomer(String customer) {
+        List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=? AND t1.status=3 ORDER BY status ASC, odtime DESC", ps -> {
+            ps.setString(1, customer);
+        }, new OrderVOMapper());
+        orderVOs.forEach(orderVO -> orderVO.setOrderDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", ps -> {
+            ps.setString(1, orderVO.getOrderID());
+        }, new OrderDetailVOMapper())));
+        return orderVOs;
+    }
+
     public List<OrderVO> findByCustomer(String customer, int page) {
         List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=? ORDER BY status ASC, odtime DESC LIMIT ?,?", ps -> {
             ps.setString(1, customer);
@@ -116,5 +126,10 @@ public class OrderService {
             ps.setString(2, orderId);
             ps.setString(3, customer);
         });
+    }
+
+    public long receivedSkuCount(String customer, String sku) {
+        Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(1) AS cnt FROM od_order_de t1 INNER JOIN od_order t2 ON t1.orderID=t2.orderID WHERE t2.customer=? AND t1.sku=?", customer, sku);
+        return (Long) result.get("cnt");
     }
 }

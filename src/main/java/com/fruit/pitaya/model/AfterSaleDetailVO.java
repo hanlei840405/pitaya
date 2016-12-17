@@ -17,4 +17,5 @@ public class AfterSaleDetailVO {
     private String remark;
     private String skuName;
     private String specName;
+    private String image;
 }

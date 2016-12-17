@@ -21,6 +21,7 @@ public class AfterSaleDetailVOMapper implements RowMapper<AfterSaleDetailVO> {
         afterSaleDetailVO.setRemark(rs.getString("remark"));
         afterSaleDetailVO.setSkuName(rs.getString("skuName"));
         afterSaleDetailVO.setSpecName(rs.getString("specName"));
+        afterSaleDetailVO.setImage(rs.getString("image"));
         return afterSaleDetailVO;
     }
 }

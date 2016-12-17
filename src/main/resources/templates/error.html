@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -31,11 +31,11 @@
     <div class="content-404">
         <img src="/images/404/404.png" class="img-responsive" alt=""/>
 
-        <h1><b>OPPS!</b> We Couldn’t Find this Page</h1>
+        <h1><b>OPPS!</b> 系统发生错误</h1>
 
-        <p>Uh... So it looks like you brock something. The page you are looking for has up and Vanished.</p>
+        <p th:text="${'错误原因:' + param.error}"></p>
 
-        <h2><a href="/">Bring me back Home</a></h2>
+        <h2><a href="/">返回首页</a></h2>
     </div>
 </div>
 

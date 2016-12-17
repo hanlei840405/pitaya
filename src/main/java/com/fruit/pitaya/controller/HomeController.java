@@ -3,6 +3,7 @@ package com.fruit.pitaya.controller;
 import com.fruit.pitaya.model.Cart;
 import com.fruit.pitaya.model.Category;
 import com.fruit.pitaya.model.Customer;
+import com.fruit.pitaya.model.OrderVO;
 import com.fruit.pitaya.service.*;
 import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class HomeController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private AfterSaleService afterSaleService;
 
     @RequestMapping("/")
     public String home(Model model) {
@@ -109,12 +113,15 @@ public class HomeController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
         Long orderCount = orderService.count(user.getUsername());
+        Long afterSaleCount = afterSaleService.count(user.getUsername());
+        model.addAttribute("me", customer);
+        model.addAttribute("showOrderPage", orderCount > 1 ? true : false);
+        model.addAttribute("showAfterSalePage", afterSaleCount > 1 ? true : false);
+        List<OrderVO> orders = orderService.findSentByCustomer(customer.getCusCode());
+        model.addAttribute("sentOrders", orders);
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
         servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
-        model.addAttribute("me", customer);
-        model.addAttribute("showOrderPage", orderCount > 1 ? true : false);
-//        model.addAttribute("addresses", new String[0]);
         return "profile";
     }
 

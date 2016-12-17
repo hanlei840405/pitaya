@@ -18,7 +18,7 @@ public class AfterSaleVOMapper implements RowMapper<AfterSaleVO> {
         afterSaleVO.setAsodID(rs.getString("asodID"));
         afterSaleVO.setCourierNum(rs.getString("courierNum"));
         afterSaleVO.setStatus(rs.getInt("status"));
-        afterSaleVO.setExecuter(rs.getString("express"));
+        afterSaleVO.setExecuter(rs.getString("executer"));
         afterSaleVO.setExpress(rs.getString("express"));
         afterSaleVO.setBkexpress(rs.getString("bkexpress"));
         afterSaleVO.setBkcourierNum(rs.getString("bkcourierNum"));

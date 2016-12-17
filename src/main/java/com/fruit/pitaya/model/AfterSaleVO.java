@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,5 +23,5 @@ public class AfterSaleVO {
     private BigDecimal amount;
     private String addr;
     private int status;
-    private List<AfterSaleDetailVO> afterSaleDetailVOs;
+    private List<AfterSaleDetailVO> afterSaleDetailVOs = new ArrayList<>();
 }

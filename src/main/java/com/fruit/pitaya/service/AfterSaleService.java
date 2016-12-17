@@ -5,6 +5,7 @@ import com.fruit.pitaya.mapper.AfterSaleVOMapper;
 import com.fruit.pitaya.model.AfterSale;
 import com.fruit.pitaya.model.AfterSaleDetail;
 import com.fruit.pitaya.model.AfterSaleVO;
+import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hanlei6 on 2016/11/3.
@@ -24,17 +26,27 @@ public class AfterSaleService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<AfterSaleVO> find(String cusCode) {
-        List<AfterSaleVO> afterSaleVOs = jdbcTemplate.query("SELECT t1.*,t2.cusName FROM as_aftersaleod t1 INNER JOIN mall_customer t2 ON t1.customer = t2.cusCode WHERE t1.customer=?", new Object[]{cusCode}, new AfterSaleVOMapper());
-        for (AfterSaleVO afterSaleVO : afterSaleVOs) {
-            afterSaleVO.setAfterSaleDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName FROM as_aftersaleod_de t1 INNER JOIN mall_sku t2 ON t1.asodID = t2.asodID AND t1.asodID = ?", new Object[]{afterSaleVO.getAsodID()}, new AfterSaleDetailVOMapper()));
-        }
+    public List<AfterSaleVO> findByCustomer(String customer, int page) {
+        List<AfterSaleVO> afterSaleVOs = jdbcTemplate.query("SELECT t1.*,t2.cusName FROM as_aftersaleod t1 INNER JOIN mall_customer t2 ON t1.customer = t2.cusCode WHERE t1.customer=? LIMIT ?,?", ps -> {
+            ps.setString(1, customer);
+            ps.setInt(2, (page - 1) * Constant.PAGE_SIZE);
+            ps.setInt(3, Constant.PAGE_SIZE);
+        }, new AfterSaleVOMapper());
+        afterSaleVOs.forEach(afterSaleVO -> afterSaleVO.setAfterSaleDetailVOs(jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image  FROM as_aftersaleod_de t1 INNER JOIN mall_sku t2 ON t1.sku = t2.sku AND t1.asodID = ?", ps -> {
+            ps.setString(1, afterSaleVO.getAsodID());
+        }, new AfterSaleDetailVOMapper())));
         return afterSaleVOs;
+    }
+
+    public Long count(String customer) {
+        Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(*) AS cnt FROM as_aftersaleod WHERE customer=?", customer);
+        return (Long) result.get("cnt");
     }
 
     @Transactional
     public void createAfterSale(AfterSale afterSale, List<AfterSaleDetail> afterSaleDetails) {
-        jdbcTemplate.update("INNER INTO as_aftersaleod (asodID, customer, executer, status, express, courierNum, bkexpress, bkcourierNum, amount, addr) VALUE (?,?,?,?,?,?,?,?,?,?)", new PreparedStatementSetter() {
+        afterSale.setStatus(0);
+        jdbcTemplate.update("INSERT INTO as_aftersaleod (asodID, customer, executer, status, express, courierNum, bkexpress, bkcourierNum, amount, addr) VALUE (?,?,?,?,?,?,?,?,?,?)", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setString(1, afterSale.getAsodID());
@@ -49,15 +61,13 @@ public class AfterSaleService {
                 ps.setString(10, afterSale.getAddr());
             }
         });
-        jdbcTemplate.batchUpdate("INNER INTO as_aftersaleod_de (asodID, sku, quantity, newqty, remark) VALUE (?,?,?,?,?)",
+        jdbcTemplate.batchUpdate("INSERT INTO as_aftersaleod_de (asodID, sku, quantity) VALUE (?,?,?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         ps.setString(1, afterSaleDetails.get(i).getAsodID());
                         ps.setString(2, afterSaleDetails.get(i).getSku());
                         ps.setInt(3, afterSaleDetails.get(i).getQuantity());
-                        ps.setInt(4, afterSaleDetails.get(i).getNewqty());
-                        ps.setString(5, afterSaleDetails.get(i).getRemark());
                     }
 
                     @Override

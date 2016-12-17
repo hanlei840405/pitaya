@@ -1,43 +1,39 @@
-<div th:class="${aftersale.status}==0 ? 'panel panel-danger' : (${aftersale.status}==1 ? 'panel panel-warning' :(${aftersale.status}==2 ? 'panel panel-info' : (${aftersale.status}==3 ? 'panel panel-success' : 'panel panel-default')))"
+<div th:class="${aftersale.status}==0 ? 'panel panel-danger' : (${aftersale.status}==1 ? 'panel panel-warning' :(${aftersale.status}==2 ? 'panel panel-info' : 'panel panel-success'))"
      th:each="aftersale:${aftersales}" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="panel-heading" th:text="${aftersale.asodID}">
+    <div class="panel-heading"
+         th:text="${aftersale.asodID + '-' + (aftersale.status==0 ? '买家返修' : (aftersale.status==1 ? '商家签收' : '商家发货'))}">
     </div>
     <div class="panel-body">
         <div class="row">
             <label class="col-sm-2">接收人</label>
             <label class="col-sm-2" th:text="${aftersale.executer}"></label>
             <label class="col-sm-2">返修快递</label>
-            <label class="col-sm-2" th:text="${aftersale.express}"></label>
-            <label class="col-sm-2">维修数量</label>
             <label class="col-sm-2" th:text="${aftersale.courierNum}"></label>
+            <label class="col-sm-2">回寄快递</label>
+            <label class="col-sm-2" th:text="${aftersale.bkcourierNum}"></label>
         </div>
         <div class="row">
-            <label class="col-sm-2">回寄快递</label>
-            <label class="col-sm-2" th:text="${aftersale.bkexpress}"></label>
-            <label class="col-sm-2">回寄数量</label>
-            <label class="col-sm-2" th:text="${aftersale.bkcourierNum}"></label>
             <label class="col-sm-2">金额</label>
             <label class="col-sm-2" th:text="${aftersale.amount}"></label>
-        </div>
-        <div class="row">
-            <p class="col-sm-7" th:text="${aftersale.addr}"></p>
+            <label class="col-sm-2">回寄地址</label>
+            <label class="col-sm-6" th:text="${aftersale.addr}"></label>
         </div>
     </div>
     <table class="table">
-        <tr th:each="aftersaleDetail:${aftersale.aftersaleDetailVOs}">
+        <tr th:each="afterSaleDetail:${aftersale.afterSaleDetailVOs}">
             <td width="30px">
                 <a href="javascript:void(0)"><img
-                        th:src="${'../ext/public/' + aftersaleDetail.image}" alt=""
+                        th:src="${'../ext/public/' + afterSaleDetail.image}" alt=""
                         width="30px"/></a>
             </td>
-            <td class="text-left" th:text="${aftersaleDetail.skuName}">
+            <td class="text-left" th:text="${afterSaleDetail.skuName}">
             </td>
-            <td class="text-right col-sm-2" th:text="${'返修数量:' + aftersaleDetail.quantity}">
+            <td class="text-right col-sm-2" th:text="${'返修数量:' + afterSaleDetail.quantity}">
             </td>
-            <td class="text-right col-sm-2" th:text="${'回寄数量:' + aftersaleDetail.newqty}">
+            <td class="text-right col-sm-2" th:text="${'回寄数量:' + afterSaleDetail.newqty}">
             </td>
             <td class="text-right col-sm-3"
-                th:text="${aftersaleDetail.remark}">
+                th:text="${afterSaleDetail.remark}">
             </td>
         </tr>
     </table>

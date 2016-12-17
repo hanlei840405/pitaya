@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>pitaya</name>
-    <description>Demo project for Spring Boot</description>
+    <description>电子烟商城</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -42,16 +42,16 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-mail</artifactId>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-mail</artifactId>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.springframework.session</groupId>-->
-            <!--<artifactId>spring-session</artifactId>-->
+        <!--<groupId>org.springframework.session</groupId>-->
+        <!--<artifactId>spring-session</artifactId>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
