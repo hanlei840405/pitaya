@@ -50,8 +50,8 @@ public class CustomerController {
             customerService.update(exist);
         } catch (Exception e) {
             log.error("UPDATE CUSTOMER : {}", exist);
-            redirectAttributes.addAttribute("code", "500");
-            redirectAttributes.addAttribute("msg", "保存失败");
+            redirectAttributes.addAttribute("error", "保存买家信息失败");
+            return "redirect:/error";
         }
         return "redirect:/profile";
     }
@@ -63,9 +63,8 @@ public class CustomerController {
             if (customerAddr.getId() != null) {
                 CustomerAddr exist = customerAddrService.get(customerAddr.getId(), user.getUsername());
                 if (exist == null) {
-                    redirectAttributes.addAttribute("code", "500");
-                    redirectAttributes.addAttribute("msg", "未找到符合条件的地址");
-                    return "redirect:profile";
+                    redirectAttributes.addAttribute("error", "未找到符合条件的地址");
+                    return "redirect:/error";
                 }
                 exist.setPhone(customerAddr.getPhone());
                 exist.setRecipient(customerAddr.getRecipient());
@@ -77,8 +76,8 @@ public class CustomerController {
             }
         } catch (Exception e) {
             log.error("SAVE CUSTOMER ADDR : {}", customerAddr);
-            redirectAttributes.addAttribute("code", "500");
-            redirectAttributes.addAttribute("msg", "保存失败");
+            redirectAttributes.addAttribute("error", "保存买家地址失败");
+            return "redirect:/error";
         }
         return "redirect:/profile";
     }
@@ -93,9 +92,8 @@ public class CustomerController {
             if (customerShop.getId() != null) {
                 CustomerShop exist = customerShopService.get(customerShop.getId(), user.getUsername());
                 if (exist == null) {
-                    redirectAttributes.addAttribute("code", "500");
-                    redirectAttributes.addAttribute("msg", "未找到符合条件的店铺");
-                    return "redirect:profile";
+                    redirectAttributes.addAttribute("error", "未找到符合条件的店铺");
+                    return "redirect:/error";
                 }
                 exist.setShopPic(customerShop.getShopPic());
                 exist.setShopName(customerShop.getShopName());
@@ -109,8 +107,8 @@ public class CustomerController {
             }
         } catch (Exception e) {
             log.error("SAVE CUSTOMER SHOP : {}", customerShop);
-            redirectAttributes.addAttribute("code", "500");
-            redirectAttributes.addAttribute("msg", "保存失败");
+            redirectAttributes.addAttribute("error", "保存买家店铺失败");
+            return "redirect:/error";
         }
         return "redirect:/profile";
     }

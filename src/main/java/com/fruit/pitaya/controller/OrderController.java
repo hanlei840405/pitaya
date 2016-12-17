@@ -42,8 +42,8 @@ public class OrderController {
             orderService.uploadCertificate(user.getUsername(), orderId, certificate);
         } catch (Exception e) {
             log.error("SAVE CERTIFICATE : {}", orderId);
-            redirectAttributes.addAttribute("code", "500");
-            redirectAttributes.addAttribute("msg", "保存失败");
+            redirectAttributes.addAttribute("error", "上传订单凭证失败");
+            return "redirect:/error";
         }
         return "redirect:/profile";
     }
