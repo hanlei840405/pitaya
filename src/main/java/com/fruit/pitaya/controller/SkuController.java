@@ -51,7 +51,7 @@ public class SkuController {
         if (!principal.equals("anonymousUser")) { // 说明有登录认证
             User user = (User) principal;
             Customer customer = customerService.get(user.getUsername());
-            if ("exclusive".equals(cateCode)) {
+            if ("exclusive".equals(cateCode)) { // 专享价格
                 skuVOs = skuService.findExclusiveSku(customer.getCusCode(), customer.getPriceType(), page);
             } else {
                 skuVOs = skuService.findByCategory(category.getCateCode(), customer.getCusCode(), customer.getPriceType(), page);

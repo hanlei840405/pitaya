@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -106,6 +107,14 @@ public class HomeController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         new SecurityContextLogoutHandler().logout(request, response, auth);
         return "redirect:/";
+    }
+
+    @RequestMapping("/unAudit")
+    public String unAudit(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        new SecurityContextLogoutHandler().logout(request, response, auth);
+        redirectAttributes.addAttribute("error", "商户未审核，请联系卖家尽快审核");
+        return "redirect:/error";
     }
 
     @RequestMapping("/profile")

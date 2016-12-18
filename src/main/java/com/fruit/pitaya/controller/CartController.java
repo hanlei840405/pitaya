@@ -76,7 +76,7 @@ public class CartController {
         String priceType = customer.getPriceType();
         SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(user.getUsername(), sku);
         BigDecimal price;
-        // 校验是否是新用户,如果新用户,不限制购买数量
+        // 校验是否是新用户,如果新用户或者微商,不限制购买数量
         if (skuSPrice != null && "0".equals(customer.getCusType())) { // skuSPrice不为空,且为非微商商户，说明是已购买过某sku的用户或者是后台设置的享有优惠的老客户
             price = skuSPrice.getPrice();
             priceType = price != null ? "S" : priceType;
