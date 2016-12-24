@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -125,7 +126,7 @@ public class CartController {
      * @return
      */
     @RequestMapping("")
-    public String settle(Model model) {
+    public String index(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Cart cart = cartService.get(user.getUsername());
         CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
@@ -156,13 +157,18 @@ public class CartController {
      * @return
      */
     @RequestMapping("/settle")
-    public String delete(Long addressId) {
+    public String settle(Long addressId, String address, RedirectAttributes redirectAttributes) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
-        if (addressId == null) {
+        if (StringUtils.isEmpty(address) && (addressId == null || addressId == 0)) {
+            CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
+            if (customerAddr == null) {
+                log.error("购物车地址为空");
+                redirectAttributes.addAttribute("error", "购物车地址为空");
+                return "redirect:/error";
+            }
             addressId = customerAddr.getId();
         }
-        orderService.create(user.getUsername(), addressId);
+        orderService.create(user.getUsername(), addressId, address);
         return "redirect:/";
     }
 }

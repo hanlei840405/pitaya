@@ -71,16 +71,25 @@ public class OrderService {
     }
 
     @Transactional
-    public void create(String cusCode, Long addressId) {
+    public void create(String cusCode, Long addressId, String address) {
         String orderID = "O" + sequenceService.generateCode("订单");
         Cart cart = cartService.get(cusCode);
-        jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, amount, status, odtime) VALUE (?,?,?,?,0,now())",
-                ps -> {
-                    ps.setString(1, orderID);
-                    ps.setString(2, cusCode);
-                    ps.setLong(3, addressId);
-                    ps.setBigDecimal(4, cart.getAmount());
-                });
+        if (addressId == null) {
+            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, amount, status, odtime) VALUE (?,?,?,0,now())",
+                    ps -> {
+                        ps.setString(1, orderID);
+                        ps.setString(2, cusCode);
+                        ps.setBigDecimal(3, cart.getAmount());
+                    });
+        }else {
+            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, amount, status, odtime) VALUE (?,?,?,?,0,now())",
+                    ps -> {
+                        ps.setString(1, orderID);
+                        ps.setString(2, cusCode);
+                        ps.setLong(3, addressId);
+                        ps.setBigDecimal(4, cart.getAmount());
+                    });
+        }
 
         cart.getCartDetailVOs().forEach(cartDetailVO -> {
             int count = cartDetailVO.getSkuCount();
@@ -109,13 +118,20 @@ public class OrderService {
                 return cart.getCartDetailVOs().size();
             }
         });
-        CustomerAddr customerAddr = customerAddrService.get(addressId, cusCode);
-        jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
-                ps -> {
-                    ps.setString(1, orderID);
-                    ps.setString(2, customerAddr.getAddr() + " " + customerAddr.getRecipient() + " " + customerAddr.getPhone());
-                });
-        cartService.clearCart(cusCode);
+        if (addressId == null || addressId == 0) { // 如果地址是手动输入（适用于微商或不想将地址保留为常用地址的选择）
+            jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
+                    ps -> {
+                        ps.setString(1, orderID);
+                        ps.setString(2, address);
+                    });
+        } else {
+            CustomerAddr customerAddr = customerAddrService.get(addressId, cusCode);
+            jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
+                    ps -> {
+                        ps.setString(1, orderID);
+                        ps.setString(2, customerAddr.getAddr() + " " + customerAddr.getRecipient() + " " + customerAddr.getPhone());
+                    });
+        }
         cartService.clearCart(cusCode);
     }
 

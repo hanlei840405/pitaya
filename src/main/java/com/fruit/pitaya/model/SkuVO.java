@@ -27,4 +27,5 @@ public class SkuVO {
     private Integer num3;
     private BigDecimal price3;
     private Long quantity;
+    private String exclusive;
 }

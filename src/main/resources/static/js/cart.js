@@ -41,7 +41,6 @@ $(document).ready(function () {
             } else {
                 form.prop('action', '../cart/settle/');
             }
-            debugger;
             form.submit();
         });
     });

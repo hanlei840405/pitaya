@@ -92,7 +92,12 @@ public class HomeController {
                 subCategories.addAll(subs);
             }
         }
-        model.addAttribute("showExclusivePage", showExclusivePage);
+        Category exclusiveCategory = new Category();
+        exclusiveCategory.setCateCode("exclusive");
+        exclusiveCategory.setCateName("专属商品");
+        exclusiveCategory.setShowPage(showExclusivePage);
+        subCategories.add(exclusiveCategory);
+
         model.addAttribute("subCategories", subCategories);
         return "index";
     }

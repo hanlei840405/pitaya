@@ -6,8 +6,10 @@
                 <h5 th:text="${sku.skuName + '(' + sku.sku + ' ' + sku.specName + ')'}"></h5>
 
                 <p th:text="${'库存:' + sku.quantity}"></p>
-                <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add
-                    to cart</a>
+                <th:block th:if="${session.username} != null">
+                    <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add
+                        to cart</a>
+                </th:block>
             </div>
             <div class="product-overlay">
                 <div class="overlay-content">
@@ -50,15 +52,19 @@
                                 <p th:text="${sku.sku + ' ' + sku.specName + ' 库存:' + sku.quantity}"></p>
                             </td>
                         </tr>
+                        <th:block th:if="${session.username} != null">
                         <tr>
                             <td style="padding: 0px;border: 0px;" colspan="2">
-                                <input type="number" style="width:90%" class="purchase-text" placeholder="购买数量"/>
+                                <input type="number" th:id="${'count' + (sku.exclusive == '1' ? '_exclusive_' : '_normal_') + sku.sku}" style="width:90%" class="purchase-text" placeholder="购买数量"/>
                             </td>
                         </tr>
+                        </th:block>
                     </table>
-                    <a th:href="${'cart/addSku/' + sku.sku}"
-                       class="btn btn-default add-to-cart btn-add-to-cart">
-                        <i class="fa fa-shopping-cart"></i>Add to cart</a>
+                    <th:block th:if="${session.username} != null">
+                        <a href="javascript:void(0);" th:data="${sku.sku}" th:id="${'link' + (sku.exclusive == '1' ? '_exclusive_' : '_normal_') + sku.sku}" onclick="addCart(this)"
+                           class="btn btn-default add-to-cart btn-add-to-cart">
+                            <i class="fa fa-shopping-cart"></i>Add to cart</a>
+                    </th:block>
                 </div>
             </div>
         </div>
