@@ -56,17 +56,18 @@ public class CustomerService {
 
             Md5PasswordEncoder encoder = new Md5PasswordEncoder();
             customer.setPasswd(encoder.encodePassword(customer.getPasswd(), customer.getCusCode()));
-            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,status,rate, cusType) VALUE (?,?,?,?,?,?,?,?,?,0,0,?)",
+            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,status,rate,cusType) VALUE (?,?,?,?,?,?,?,?,?,0,0,?)",
                     ps -> {
                         ps.setString(1, customer.getCusCode());
-                        ps.setString(2, customer.getPasswd());
-                        ps.setString(3, customer.getSex());
-                        ps.setDate(4, new Date(customer.getBirthday().getTime()));
-                        ps.setString(5, customer.getEmail());
-                        ps.setString(6, customer.getPhone());
-                        ps.setString(7, customer.getWechat());
-                        ps.setString(8, customer.getUpCode());
-                        ps.setString(9, customer.getCusType());
+                        ps.setString(2, customer.getCusName());
+                        ps.setString(3, customer.getPasswd());
+                        ps.setString(4, customer.getSex());
+                        ps.setDate(5, new Date(customer.getBirthday().getTime()));
+                        ps.setString(6, customer.getEmail());
+                        ps.setString(7, customer.getPhone());
+                        ps.setString(8, customer.getWechat());
+                        ps.setString(9, customer.getUpCode());
+                        ps.setString(10, customer.getCusType());
                     });
         } catch (Exception e) {
             log.error("INSERT CUSTOMER : {}", customer);
