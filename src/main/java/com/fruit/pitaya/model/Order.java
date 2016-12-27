@@ -16,6 +16,7 @@ public class Order {
     private String customer;
     private String reviewer;
     private Long addrID;
+    private BigDecimal cost;
     private BigDecimal amount;
     private String courierNum;
     private int status;

@@ -15,6 +15,7 @@ public class OrderVOMapper implements RowMapper<OrderVO> {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderID(rs.getString("orderID"));
         orderVO.setAddr(rs.getString("addr"));
+        orderVO.setCost(rs.getBigDecimal("cost"));
         orderVO.setAmount(rs.getBigDecimal("amount"));
         orderVO.setCourierNum(rs.getString("courierNum"));
         orderVO.setCustomerName(rs.getString("customerName"));

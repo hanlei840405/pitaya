@@ -37,7 +37,7 @@ function addCart(element) {
                 if (undefined == response.code) {
                     location.href = 'login';
                 } else if (response.code == '500') {
-                    alert("库存不足");
+                    alert(response.msg);
                     return;
                 } else {
                     $("#accordion").load('cart/fresh');

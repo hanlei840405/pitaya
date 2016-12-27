@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -75,22 +76,21 @@ public class OrderService {
         String orderID = "O" + sequenceService.generateCode("订单");
         Cart cart = cartService.get(cusCode);
         if (addressId == null) {
-            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, amount, status, odtime) VALUE (?,?,?,0,now())",
+            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, status, odtime) VALUE (?,?,0,now())",
                     ps -> {
                         ps.setString(1, orderID);
                         ps.setString(2, cusCode);
-                        ps.setBigDecimal(3, cart.getAmount());
                     });
-        }else {
-            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, amount, status, odtime) VALUE (?,?,?,?,0,now())",
+        } else {
+            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, status, odtime) VALUE (?,?,?,0,now())",
                     ps -> {
                         ps.setString(1, orderID);
                         ps.setString(2, cusCode);
                         ps.setLong(3, addressId);
-                        ps.setBigDecimal(4, cart.getAmount());
                     });
         }
 
+        final BigDecimal[] totalPriceArray = {new BigDecimal(0)};
         cart.getCartDetailVOs().forEach(cartDetailVO -> {
             int count = cartDetailVO.getSkuCount();
             String sku = cartDetailVO.getSku();
@@ -100,9 +100,9 @@ public class OrderService {
             if (stock == null || stock.getQuantity() < count) { // 缺货
                 throw new RuntimeException(skuName + " " + specName + "(" + sku + ")" + "缺货");
             }
+            totalPriceArray[0] = totalPriceArray[0].add(cartDetailVO.getSkuAmount());
             stockService.update(sku, count);
         });
-
 
         jdbcTemplate.batchUpdate("INSERT INTO od_order_de (orderID, sku, quantity, price) VALUE (?,?,?,?)", new BatchPreparedStatementSetter() {
             @Override
@@ -111,6 +111,7 @@ public class OrderService {
                 preparedStatement.setString(2, cart.getCartDetailVOs().get(i).getSku());
                 preparedStatement.setLong(3, cart.getCartDetailVOs().get(i).getSkuCount());
                 preparedStatement.setBigDecimal(4, cart.getCartDetailVOs().get(i).getPrice());
+
             }
 
             @Override
@@ -118,6 +119,14 @@ public class OrderService {
                 return cart.getCartDetailVOs().size();
             }
         });
+
+        // 更新订单总金额
+        jdbcTemplate.update("UPDATE od_order SET amount = ? WHERE orderID = ?",
+                ps -> {
+                    ps.setBigDecimal(1, totalPriceArray[0]);
+                    ps.setString(2, orderID);
+                });
+
         if (addressId == null || addressId == 0) { // 如果地址是手动输入（适用于微商或不想将地址保留为常用地址的选择）
             jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
                     ps -> {

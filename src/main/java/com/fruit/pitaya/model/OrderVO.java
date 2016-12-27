@@ -18,6 +18,7 @@ public class OrderVO {
     private String customerName;
     private String reviewerName;
     private String addr;
+    private BigDecimal cost;
     private BigDecimal amount;
     private String courierNum;
     private int status;
