@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,5 +29,14 @@ public class Utils {
             Files.copy(file.getInputStream(), rootLocation.resolve(fileName + file.getOriginalFilename().substring(index)));
         }
         return fileName;
+    }
+
+    public static BigDecimal round(BigDecimal v, int scale) {
+        if (scale < 0) {
+            throw new IllegalArgumentException(
+                    "The scale must be a positive integer or zero");
+        }
+        BigDecimal one = new BigDecimal("1");
+        return v.divide(one, scale, BigDecimal.ROUND_HALF_UP);
     }
 }

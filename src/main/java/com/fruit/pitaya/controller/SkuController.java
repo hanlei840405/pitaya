@@ -9,6 +9,7 @@ import com.fruit.pitaya.service.CustomerService;
 import com.fruit.pitaya.service.SkuSPriceService;
 import com.fruit.pitaya.service.SkuService;
 import com.fruit.pitaya.util.Constant;
+import com.fruit.pitaya.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -65,11 +66,12 @@ public class SkuController {
 
             for (SkuVO skuVO : skuVOs) {
                 SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(customer.getCusCode(), skuVO.getSku());
-                if (skuSPrice == null || (skuSPrice != null && StringUtils.isEmpty(skuSPrice.getFirstbuy()))) { //首次购买享受95折
-                    skuVO.setPrice(skuVO.getPrice().multiply(new BigDecimal(0.95)));
-                    skuVO.setPrice1(skuVO.getPrice1().multiply(new BigDecimal(0.95)));
-                    skuVO.setPrice2(skuVO.getPrice2().multiply(new BigDecimal(0.95)));
-                    skuVO.setPrice3(skuVO.getPrice3().multiply(new BigDecimal(0.95)));
+                if (skuSPrice == null) { // 没有购买记录，则价格为普通类型价格的95折
+                    skuVO.setPrice1(Utils.round(skuVO.getPrice1().multiply(new BigDecimal(0.95)),2));
+                    skuVO.setPrice2(Utils.round(skuVO.getPrice2().multiply(new BigDecimal(0.95)),2));
+                    skuVO.setPrice3(Utils.round(skuVO.getPrice3().multiply(new BigDecimal(0.95)),2));
+                } else if (StringUtils.isEmpty(skuSPrice.getFirstbuy())) { // 享受S价格，没有购买记录，则价格为S类型价格的95折
+                    skuVO.setPrice(Utils.round(skuVO.getPrice().multiply(new BigDecimal(0.95)),2));
                 }
             }
         } else {
