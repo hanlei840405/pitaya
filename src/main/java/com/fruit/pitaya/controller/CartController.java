@@ -99,7 +99,7 @@ public class CartController {
             }
         } else { // 说明买家针对某款sku从未购买过，不需校验购买数量
             // 如果是首次购买不限制购买数量，价格执行买家价格类型中的最高标准
-            price = skuNPriceService.findPriceBySkuAndCount(sku, priceType, count);
+            price = skuNPriceService.findPriceBySkuAndCount(sku, priceType, count).multiply(new BigDecimal(0.95)); // 首次购买95折
             if (price == null) {
                 result.put("code", "500");
                 result.put("msg", "没找到商品价格");
