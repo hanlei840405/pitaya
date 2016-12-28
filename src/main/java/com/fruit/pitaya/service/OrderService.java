@@ -1,5 +1,6 @@
 package com.fruit.pitaya.service;
 
+import com.fruit.pitaya.mapper.OrderDetailMapper;
 import com.fruit.pitaya.mapper.OrderDetailVOMapper;
 import com.fruit.pitaya.mapper.OrderMapper;
 import com.fruit.pitaya.mapper.OrderVOMapper;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -32,6 +34,8 @@ public class OrderService {
     private CustomerAddrService customerAddrService;
     @Autowired
     private StockService stockService;
+    @Autowired
+    private SkuSPriceService skuSPriceService;
 
     public List<OrderVO> findSentByCustomer(String customer) {
         List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=? AND t1.status=3 ORDER BY status ASC, odtime DESC", ps -> {
@@ -146,6 +150,20 @@ public class OrderService {
 
     @Transactional
     public int uploadCertificate(String customer, String orderId, String certificate) {
+        Order order = get(orderId, customer);
+        List<OrderDetail> orderDetails = jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", ps -> {
+            ps.setString(1, order.getOrderID());
+        }, new OrderDetailMapper());
+
+        // 更新首次购买的sku为非首次购买
+        orderDetails.forEach(orderDetail -> {
+            SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(customer, orderDetail.getSku());
+            if (StringUtils.isEmpty(skuSPrice.getFirstbuy())) {
+                skuSPriceService.updateFirstbuy(customer, orderDetail.getSku());
+            }
+        });
+
+
         return jdbcTemplate.update("UPDATE od_order SET certificate=?,status=1 WHERE orderID=? AND customer=?", ps -> {
             ps.setString(1, certificate);
             ps.setString(2, orderId);

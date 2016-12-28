@@ -5,6 +5,7 @@ import com.fruit.pitaya.model.SkuSPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -34,5 +35,14 @@ public class SkuSPriceService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public void updateFirstbuy(String customer, String sku) {
+        jdbcTemplate.update("UPDATE mall_sku_sprice SET firstbuy=1 WHERE sku=? AND customer=?",
+                ps -> {
+                    ps.setString(1, customer);
+                    ps.setString(1, sku);
+                });
     }
 }

@@ -83,15 +83,15 @@ public class CartController {
             priceType = price != null ? "S" : priceType;
             String firsetBuy = skuSPrice.getFirstbuy();
             // 老客户通过后台设置后，也可享用首次购买优惠，且可以使用最优惠的价格。
-            boolean validateCount = price != null && StringUtils.isEmpty(firsetBuy) ? false : true;// 校验首次购买
-            if (validateCount) {
+            boolean validateCount = price != null && StringUtils.isEmpty(firsetBuy) ? false : true;// 如果享受S价格，并且是非首次购买
+            if (validateCount) {  // 需要校验次数
                 Integer allowCount = skuNPriceService.findMinCountBySkuAndCount(sku, priceType);
                 if (allowCount == null) {
                     result.put("code", "500");
                     result.put("msg", "没找到商品数量");
                     return result;
                 }
-                if (allowCount < count) {
+                if (allowCount > count) {
                     result.put("code", "500");
                     result.put("msg", "购买数量没有达到最低要求");
                     return result;
