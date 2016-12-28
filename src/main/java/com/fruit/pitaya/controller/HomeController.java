@@ -58,11 +58,18 @@ public class HomeController {
     private AfterSaleService afterSaleService;
 
     @RequestMapping("/")
-    public String home(Model model) {
+    public String home(Model model, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
         boolean showExclusivePage = false;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!principal.equals("anonymousUser")) {
             User user = (User) principal;
+            Customer customer = customerService.get(user.getUsername());
+            if (customer.getStatus() == 0) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+                redirectAttributes.addAttribute("error", "商户未审核，请联系卖家尽快审核");
+                return "redirect:/error";
+            }
             Cart cart = cartService.get(user.getUsername());
             model.addAttribute("cart", cart);
             Long count = skuService.countExclusiveSku(user.getUsername());
@@ -140,18 +147,18 @@ public class HomeController {
     }
 
     @RequestMapping("/register")
-    public String register(Customer customer) throws Exception {
-        String password = customer.getPasswd();
+    public String register(Customer customer, Model model) throws Exception {
         customer = customerService.insert(customer);
         String username = customer.getCusCode();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-
-        if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        }
-        return "redirect:profile";
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+//
+//        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+//
+//        if (usernamePasswordAuthenticationToken.isAuthenticated()) {
+//            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+//        }
+        model.addAttribute("username", username);
+        return "waiting";
     }
 }

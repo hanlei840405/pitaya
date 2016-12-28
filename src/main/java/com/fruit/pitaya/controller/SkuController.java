@@ -2,9 +2,11 @@ package com.fruit.pitaya.controller;
 
 import com.fruit.pitaya.model.Category;
 import com.fruit.pitaya.model.Customer;
+import com.fruit.pitaya.model.SkuSPrice;
 import com.fruit.pitaya.model.SkuVO;
 import com.fruit.pitaya.service.CategoryService;
 import com.fruit.pitaya.service.CustomerService;
+import com.fruit.pitaya.service.SkuSPriceService;
 import com.fruit.pitaya.service.SkuService;
 import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,8 @@ public class SkuController {
     private CategoryService categoryService;
     @Autowired
     private SkuService skuService;
+    @Autowired
+    private SkuSPriceService skuSPriceService;
 
     @RequestMapping("/show/{page}/{cateCode}")
     public String show(@PathVariable("page") int page, @PathVariable("cateCode") String cateCode, Model model) {
@@ -55,6 +61,16 @@ public class SkuController {
                 skuVOs = skuService.findExclusiveSku(customer.getCusCode(), customer.getPriceType(), page);
             } else {
                 skuVOs = skuService.findByCategory(category.getCateCode(), customer.getCusCode(), customer.getPriceType(), page);
+            }
+
+            for (SkuVO skuVO : skuVOs) {
+                SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(customer.getCusCode(), skuVO.getSku());
+                if (skuSPrice == null || (skuSPrice != null && StringUtils.isEmpty(skuSPrice.getFirstbuy()))) { //首次购买享受95折
+                    skuVO.setPrice(skuVO.getPrice().multiply(new BigDecimal(0.95)));
+                    skuVO.setPrice1(skuVO.getPrice1().multiply(new BigDecimal(0.95)));
+                    skuVO.setPrice2(skuVO.getPrice2().multiply(new BigDecimal(0.95)));
+                    skuVO.setPrice3(skuVO.getPrice3().multiply(new BigDecimal(0.95)));
+                }
             }
         } else {
             if ("exclusive".equals(cateCode)) {

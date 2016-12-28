@@ -10,6 +10,7 @@ import com.fruit.pitaya.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -56,6 +57,32 @@ public class CustomerController {
         return "redirect:/profile";
     }
 
+    @RequestMapping(value = "/changePwd", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> changePwd(String oldPwd, String newPwd) {
+        Map<String, Object> result = new HashMap<>();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Customer exist = customerService.get(user.getUsername());
+        Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+        String password = encoder.encodePassword(oldPwd, exist.getCusCode());
+        if (password.equals(exist.getPasswd())) {
+            password = encoder.encodePassword(newPwd, exist.getCusCode());
+            exist.setPasswd(password);
+            try {
+                customerService.update(exist);
+                result.put("code", "200");
+                result.put("msg", "保存新密码失败,请重试");
+            } catch (Exception e) {
+                result.put("code", "500");
+                result.put("msg", "保存新密码失败,请重试");
+            }
+        } else {
+            result.put("code", "500");
+            result.put("msg", "旧密码校验失败，请联系管理员重置密码后再修改密码");
+        }
+
+        return result;
+    }
+
     @RequestMapping(value = "/saveAddr", method = RequestMethod.POST)
     public String saveAddr(CustomerAddr customerAddr, RedirectAttributes redirectAttributes) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -87,7 +114,7 @@ public class CustomerController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
 
-            customerShop.setShopPic(user.getUsername() + Utils.upload(file));
+            customerShop.setShopPic(user.getUsername() + Utils.upload(file, user.getUsername()));
 
             if (customerShop.getId() != null) {
                 CustomerShop exist = customerShopService.get(customerShop.getId(), user.getUsername());

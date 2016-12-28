@@ -38,7 +38,7 @@ public class OrderController {
     public String upload(@RequestParam("orderId") String orderId, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
-            String certificate = Utils.upload(file);
+            String certificate = Utils.upload(file,user.getUsername());
             orderService.uploadCertificate(user.getUsername(), orderId, certificate);
         } catch (Exception e) {
             log.error("SAVE CERTIFICATE : {}", orderId);

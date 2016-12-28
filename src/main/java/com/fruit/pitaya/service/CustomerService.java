@@ -87,8 +87,7 @@ public class CustomerService {
                         ps.setString(4, customer.getPhone());
                         ps.setString(5, customer.getWechat());
                         ps.setString(6, customer.getUpCode());
-                        ps.setString(7, customer.getUpCode());
-                        ps.setString(8, customer.getCusType());
+                        ps.setString(7, customer.getCusType());
                         ps.setLong(8, customer.getId());
                     });
         } catch (Exception e) {

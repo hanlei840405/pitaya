@@ -13,15 +13,6 @@ $(document.body).ready(function () {
     loadAfterSales();
     loadAddresses();
     loadShopInfos();
-    $('.certificate').click(function () {
-        var form = $(this).parent('form');
-        var file = form.find('input:file');
-        if (file.val() == '') {
-            alert("请上传交易凭证");
-            return false;
-        }
-        form.submit();
-    });
     $("#select_repair").select2();
     $('#select_repair').on('select2:select', function (evt) {
         var value = evt.params.data.id;
@@ -267,4 +258,40 @@ function bindAfterSaleSkus() {
     });
     $('#skus').val(JSON.stringify(array));
     return true;
+}
+
+function uploadCertificate(obj) {
+    var file = $(obj).find('input:file')[0];
+    debugger;
+    if (file.value == '') {
+        alert("请上传交易凭证");
+        return false;
+    }
+    return true;
+}
+
+function openWindow(){
+    $('#modifyPasswordModal').modal({keyboard: false});
+}
+
+function changePwd() {
+    var oldPwd = $('#oldPwd').val();
+    var newPwd = $('#newPwd').val();
+    $.ajax({
+        cache: false,
+        type: 'POST',
+        url: 'customer/changePwd',
+        data: {'newPwd': newPwd, 'oldPwd': oldPwd},
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function (response) {
+            if (response.code == '200') {
+                alert("修改密码成功");
+                loadAddresses();
+            } else {
+                alert(response.msg);
+            }
+        }
+    });
 }
