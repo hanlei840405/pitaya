@@ -23,4 +23,6 @@ public class Order {
     private Date odtime;
     private String express;
     private String certificate;
+    private Date rated;
+    private Date rebated;
 }

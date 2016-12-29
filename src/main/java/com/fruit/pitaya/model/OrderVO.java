@@ -27,4 +27,8 @@ public class OrderVO {
     private String express;
     private String certificate;
     private List<OrderDetailVO> orderDetailVOs;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date rated;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date rebated;
 }

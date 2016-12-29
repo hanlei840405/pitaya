@@ -39,7 +39,7 @@ public class CustomerShopService {
 
     @Transactional
     public void insert(CustomerShop customerShop) {
-        jdbcTemplate.update("INSERT INTO mall_customer_shop (customer,category,shopName,shopAddr,shopPic) VALUE (?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO mall_customer_shop (customer,category,shopName,shopAddr,shopPic) VALUES (?,?,?,?,?)",
                 ps -> {
                     ps.setString(1, customerShop.getCustomer());
                     ps.setString(2, customerShop.getCategory());

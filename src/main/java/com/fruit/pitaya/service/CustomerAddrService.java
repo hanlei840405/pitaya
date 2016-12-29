@@ -55,7 +55,7 @@ public class CustomerAddrService {
 
     @Transactional
     public void insert(CustomerAddr customerAddr) {
-        jdbcTemplate.update("INSERT INTO mall_customer_addr (customer,addr,recipient,phone) VALUE (?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO mall_customer_addr (customer,addr,recipient,phone) VALUES (?,?,?,?)",
                 ps -> {
                     ps.setString(1, customerAddr.getCustomer());
                     ps.setString(2, customerAddr.getAddr());

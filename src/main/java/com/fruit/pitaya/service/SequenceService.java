@@ -35,7 +35,7 @@ public class SequenceService {
             try {
                 if (++code == 10001) {
                     final int finalCode = code;
-                    jdbcTemplate.update("INSERT INTO console_sequence (category,code) VALUE (?,?)", ps -> {
+                    jdbcTemplate.update("INSERT INTO console_sequence (category,code) VALUES (?,?)", ps -> {
                         ps.setString(1, category);
                         ps.setInt(2, finalCode);
                     });

@@ -59,7 +59,7 @@ public class CartService {
 
     @Transactional
     public void createCart(Cart cart, CartDetail cartDetail) {
-        jdbcTemplate.update("INSERT INTO mall_cart (cusCode, totalCount, amount) VALUE (?,?,?)",
+        jdbcTemplate.update("INSERT INTO mall_cart (cusCode, totalCount, amount) VALUES (?,?,?)",
                 ps -> {
                     ps.setString(1, cart.getCusCode());
                     ps.setInt(2, cart.getTotalCount());
@@ -80,7 +80,7 @@ public class CartService {
 
     @Transactional
     public void addSku(CartDetail cartDetail) {
-        jdbcTemplate.update("INSERT INTO mall_cart_de (cusCode, sku, priceType, skuCount, price, skuAmount) VALUE (?,?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO mall_cart_de (cusCode, sku, priceType, skuCount, price, skuAmount) VALUES (?,?,?,?,?,?)",
                 ps -> {
                     ps.setString(1, cartDetail.getCusCode());
                     ps.setString(2, cartDetail.getSku());

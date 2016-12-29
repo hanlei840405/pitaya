@@ -1,6 +1,5 @@
 package com.fruit.pitaya.service;
 
-import com.fruit.pitaya.mapper.OrderDetailMapper;
 import com.fruit.pitaya.mapper.OrderDetailVOMapper;
 import com.fruit.pitaya.mapper.OrderMapper;
 import com.fruit.pitaya.mapper.OrderVOMapper;
@@ -80,13 +79,13 @@ public class OrderService {
         String orderID = "O" + sequenceService.generateCode("订单");
         Cart cart = cartService.get(cusCode);
         if (addressId == null) {
-            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, status, odtime) VALUE (?,?,0,now())",
+            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, status, odtime) VALUES (?,?,0,now())",
                     ps -> {
                         ps.setString(1, orderID);
                         ps.setString(2, cusCode);
                     });
         } else {
-            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, status, odtime) VALUE (?,?,?,0,now())",
+            jdbcTemplate.update("INSERT INTO od_order (orderID, customer, addrID, status, odtime) VALUES (?,?,?,0,now())",
                     ps -> {
                         ps.setString(1, orderID);
                         ps.setString(2, cusCode);
@@ -108,7 +107,7 @@ public class OrderService {
             stockService.update(sku, count);
         });
 
-        jdbcTemplate.batchUpdate("INSERT INTO od_order_de (orderID, sku, quantity, price) VALUE (?,?,?,?)", new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate("INSERT INTO od_order_de (orderID, sku, quantity, price) VALUES (?,?,?,?)", new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
                 preparedStatement.setString(1, orderID);
@@ -132,37 +131,39 @@ public class OrderService {
                 });
 
         if (addressId == null || addressId == 0) { // 如果地址是手动输入（适用于微商或不想将地址保留为常用地址的选择）
-            jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
+            jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUES (?,?)",
                     ps -> {
                         ps.setString(1, orderID);
                         ps.setString(2, address);
                     });
         } else {
             CustomerAddr customerAddr = customerAddrService.get(addressId, cusCode);
-            jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUE (?,?)",
+            jdbcTemplate.update("INSERT INTO od_order_addr (orderID, addr) VALUES (?,?)",
                     ps -> {
                         ps.setString(1, orderID);
                         ps.setString(2, customerAddr.getAddr() + " " + customerAddr.getRecipient() + " " + customerAddr.getPhone());
                     });
         }
         cartService.clearCart(cusCode);
+
+
+        // 设置首次购买的sku为非首次购买
+        // 1,如果为S类型商户，将设置特殊价格的数据的首次购买字段设为1.2,如果为非S类型商户，新增一条首次购买字段为1的数据插入表中
+        cart.getCartDetailVOs().forEach(cartDetailVO -> {
+            SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(cusCode, cartDetailVO.getSku());
+            if (skuSPrice != null) {
+                if (StringUtils.isEmpty(skuSPrice.getFirstbuy())) {
+                    skuSPriceService.updateFirstbuy(cusCode, cartDetailVO.getSku());
+                }
+            } else {
+                skuSPriceService.insert(cusCode, cartDetailVO.getSku(), "1");
+            }
+        });
+
     }
 
     @Transactional
     public int uploadCertificate(String customer, String orderId, String certificate) {
-        Order order = get(orderId, customer);
-        List<OrderDetail> orderDetails = jdbcTemplate.query("SELECT t1.*,t2.skuName,t2.specName,t2.image FROM od_order_de t1 INNER JOIN mall_sku t2 ON t1.sku=t2.sku WHERE t1.orderID=?", ps -> {
-            ps.setString(1, order.getOrderID());
-        }, new OrderDetailMapper());
-
-        // 更新首次购买的sku为非首次购买
-        orderDetails.forEach(orderDetail -> {
-            SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(customer, orderDetail.getSku());
-            if (StringUtils.isEmpty(skuSPrice.getFirstbuy())) {
-                skuSPriceService.updateFirstbuy(customer, orderDetail.getSku());
-            }
-        });
-
 
         return jdbcTemplate.update("UPDATE od_order SET certificate=?,status=1 WHERE orderID=? AND customer=?", ps -> {
             ps.setString(1, certificate);

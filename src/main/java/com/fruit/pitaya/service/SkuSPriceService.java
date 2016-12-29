@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by hanlei6 on 2016/10/25.
@@ -29,20 +28,22 @@ public class SkuSPriceService {
         return skuSPrices.get(0);
     }
 
-    public boolean isFirstBuy(String cusCode) {
-        Map<String, Object> resulit = jdbcTemplate.queryForMap("SELECT count(*) AS cnt FROM mall_sku_sprice WHERE firstbuy = '1' AND customer=?", cusCode);
-        if ((Long) resulit.get("cnt") == 0L) {
-            return true;
-        }
-        return false;
+    @Transactional
+    public void insert(String cusCode, String sku, String firstbuy) {
+        jdbcTemplate.update("INSERT mall_sku_sprice (sku, cusCode, firstbuy) VALUES (?,?,?)",
+                ps -> {
+                    ps.setString(1, sku);
+                    ps.setString(2, cusCode);
+                    ps.setString(3, firstbuy);
+                });
     }
 
     @Transactional
     public void updateFirstbuy(String customer, String sku) {
         jdbcTemplate.update("UPDATE mall_sku_sprice SET firstbuy=1 WHERE sku=? AND customer=?",
                 ps -> {
-                    ps.setString(1, customer);
                     ps.setString(1, sku);
+                    ps.setString(2, customer);
                 });
     }
 }

@@ -23,6 +23,8 @@ public class OrderMapper implements RowMapper<Order> {
         order.setReviewer(rs.getString("reviewer"));
         order.setStatus(rs.getInt("status"));
         order.setCertificate(rs.getString("certificate"));
+        order.setRated(rs.getDate("rated"));
+        order.setRebated(rs.getDate("rebated"));
         return order;
     }
 }

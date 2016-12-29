@@ -24,6 +24,8 @@ public class OrderVOMapper implements RowMapper<OrderVO> {
         orderVO.setReviewerName(rs.getString("reviewerName"));
         orderVO.setStatus(rs.getInt("status"));
         orderVO.setCertificate(rs.getString("certificate"));
+        orderVO.setRated(rs.getDate("rated"));
+        orderVO.setRebated(rs.getDate("rebated"));
         return orderVO;
     }
 }

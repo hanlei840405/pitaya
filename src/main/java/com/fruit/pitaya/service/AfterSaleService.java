@@ -46,7 +46,7 @@ public class AfterSaleService {
     @Transactional
     public void createAfterSale(AfterSale afterSale, List<AfterSaleDetail> afterSaleDetails) {
         afterSale.setStatus(0);
-        jdbcTemplate.update("INSERT INTO as_aftersaleod (asodID, customer, executer, status, express, courierNum, bkexpress, bkcourierNum, amount, addr) VALUE (?,?,?,?,?,?,?,?,?,?)", new PreparedStatementSetter() {
+        jdbcTemplate.update("INSERT INTO as_aftersaleod (asodID, customer, executer, status, express, courierNum, bkexpress, bkcourierNum, amount, addr) VALUES (?,?,?,?,?,?,?,?,?,?)", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setString(1, afterSale.getAsodID());
@@ -61,7 +61,7 @@ public class AfterSaleService {
                 ps.setString(10, afterSale.getAddr());
             }
         });
-        jdbcTemplate.batchUpdate("INSERT INTO as_aftersaleod_de (asodID, sku, quantity) VALUE (?,?,?)",
+        jdbcTemplate.batchUpdate("INSERT INTO as_aftersaleod_de (asodID, sku, quantity) VALUES (?,?,?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
