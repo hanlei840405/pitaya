@@ -2,7 +2,6 @@ package com.fruit.pitaya.controller;
 
 import com.fruit.pitaya.model.Category;
 import com.fruit.pitaya.model.Customer;
-import com.fruit.pitaya.model.SkuSPrice;
 import com.fruit.pitaya.model.SkuVO;
 import com.fruit.pitaya.service.CategoryService;
 import com.fruit.pitaya.service.CustomerService;
@@ -15,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -63,15 +61,20 @@ public class SkuController {
             } else {
                 skuVOs = skuService.findByCategory(category.getCateCode(), customer.getCusCode(), customer.getPriceType(), page);
             }
-
-            for (SkuVO skuVO : skuVOs) {
-                SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(customer.getCusCode(), skuVO.getSku());
-                if (skuSPrice == null) { // 没有购买记录，则价格为普通类型价格的95折
-                    skuVO.setPrice1(Utils.round(skuVO.getPrice1().multiply(new BigDecimal(0.95)),2));
-                    skuVO.setPrice2(Utils.round(skuVO.getPrice2().multiply(new BigDecimal(0.95)),2));
-                    skuVO.setPrice3(Utils.round(skuVO.getPrice3().multiply(new BigDecimal(0.95)),2));
-                } else if (StringUtils.isEmpty(skuSPrice.getFirstbuy())) { // 享受S价格，没有购买记录，则价格为S类型价格的95折
-                    skuVO.setPrice(Utils.round(skuVO.getPrice().multiply(new BigDecimal(0.95)),2));
+            if (customer.getCoupon() == 1) {
+                for (SkuVO skuVO : skuVOs) {
+                    if (skuVO.getPrice() != null) {
+                        skuVO.setPrice(Utils.round(skuVO.getPrice().multiply(new BigDecimal(0.95)), 2));
+                    }
+                    if (skuVO.getPrice1() != null) {
+                        skuVO.setPrice1(Utils.round(skuVO.getPrice1().multiply(new BigDecimal(0.95)), 2));
+                    }
+                    if (skuVO.getPrice2() != null) {
+                        skuVO.setPrice2(Utils.round(skuVO.getPrice2().multiply(new BigDecimal(0.95)), 2));
+                    }
+                    if (skuVO.getPrice3() != null) {
+                        skuVO.setPrice3(Utils.round(skuVO.getPrice3().multiply(new BigDecimal(0.95)), 2));
+                    }
                 }
             }
         } else {

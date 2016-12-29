@@ -84,8 +84,8 @@ public class CartController {
             priceType = price != null ? "S" : priceType;
             String firsetBuy = skuSPrice.getFirstbuy();
             // 老客户通过后台设置后，也可享用首次购买优惠，且可以使用最优惠的价格。
-            boolean validateCount = price != null && StringUtils.isEmpty(firsetBuy) ? false : true;// 如果享受S价格，并且是非首次购买
-            if (validateCount) {  // 需要校验次数
+            boolean validateCount = price != null && StringUtils.isEmpty(firsetBuy) ? false : true;// 校验数量条件： 1,如果享受S价格，并且是非首次购买.2, 如果非S价格类型且非首次购买.
+            if (validateCount) {  // 需要校验数量
                 Integer allowCount = skuNPriceService.findMinCountBySkuAndCount(sku, priceType);
                 if (allowCount == null) {
                     result.put("code", "500");
@@ -100,7 +100,7 @@ public class CartController {
             }
         } else { // 说明买家针对某款sku从未购买过，不需校验购买数量
             // 如果是首次购买不限制购买数量，价格执行买家价格类型中的最高标准
-            price = Utils.round(skuNPriceService.findPriceBySkuAndCount(sku, priceType, count).multiply(new BigDecimal(0.95)),2); // 首次购买95折
+            price = Utils.round(skuNPriceService.findPriceBySkuAndCount(sku, priceType, count).multiply(new BigDecimal(0.95)), 2); // 首次购买95折
             if (price == null) {
                 result.put("code", "500");
                 result.put("msg", "没找到商品价格");
@@ -109,6 +109,9 @@ public class CartController {
         }
 
         try {
+            if (customer.getCoupon() == 1) {
+                price = Utils.round(price.multiply(new BigDecimal(0.95)), 2);
+            }
             cartService.process(customer.getCusCode(), sku, priceType, price, count);
             result.put("code", "200");
             result.put("msg", "操作成功");
@@ -129,9 +132,11 @@ public class CartController {
     @RequestMapping("")
     public String index(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Customer customer = customerService.get(user.getUsername());
         Cart cart = cartService.get(user.getUsername());
         CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
         List<CustomerAddr> customerAddrs = customerAddrService.findByCustomer(user.getUsername());
+        model.addAttribute("isWeChat", "1".equals(customer.getCusType()) ? true : false);
         model.addAttribute("cart", cart);
         model.addAttribute("address", customerAddr);
         model.addAttribute("addresses", customerAddrs);
@@ -158,7 +163,7 @@ public class CartController {
      * @return
      */
     @RequestMapping("/settle")
-    public String settle(Long addressId, String address, RedirectAttributes redirectAttributes) {
+    public String settle(Long addressId, String address, String recipient, String phone, RedirectAttributes redirectAttributes) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (StringUtils.isEmpty(address) && (addressId == null || addressId == 0)) {
             CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
@@ -169,7 +174,7 @@ public class CartController {
             }
             addressId = customerAddr.getId();
         }
-        orderService.create(user.getUsername(), addressId, address);
+        orderService.create(user.getUsername(), addressId, address + " " + recipient + " " + phone);
         return "redirect:/";
     }
 }

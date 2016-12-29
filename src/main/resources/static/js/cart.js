@@ -39,6 +39,13 @@ $(document).ready(function () {
             if (selectAddress != null) {
                 form.prop('action', '../cart/settle/' + selectAddress);
             } else {
+                var address = $('#cart_address').val();
+                var recipient = $('#cart_recipient').val();
+                var phone = $('#cart_phone').val();
+                if ($.trim(address) == '' || $.trim(recipient) == '' || $.trim(phone) == '') {
+                    alert("地址、联系人、电话缺一不可！");
+                    return;
+                }
                 form.prop('action', '../cart/settle/');
             }
             form.submit();

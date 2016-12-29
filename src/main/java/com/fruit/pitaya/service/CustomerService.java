@@ -56,7 +56,7 @@ public class CustomerService {
 
             Md5PasswordEncoder encoder = new Md5PasswordEncoder();
             customer.setPasswd(encoder.encodePassword(customer.getPasswd(), customer.getCusCode()));
-            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,status,rate,cusType) VALUE (?,?,?,?,?,?,?,?,?,0,0,?)",
+            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,status,rate,cusType,coupon) VALUE (?,?,?,?,?,?,?,?,?,0,0,?,1)",
                     ps -> {
                         ps.setString(1, customer.getCusCode());
                         ps.setString(2, customer.getCusName());
@@ -95,6 +95,20 @@ public class CustomerService {
             throw new Exception(e.getCause());
         }
         return get(customer.getCusCode());
+    }
+
+    @Transactional
+    public String updateCoupon(String customer) throws Exception {
+        try {
+            jdbcTemplate.update("UPDATE mall_customer SET coupon=0 WHERE cusCode=?",
+                    ps -> {
+                        ps.setString(1, customer);
+                    });
+        } catch (Exception e) {
+            log.error("UPDATE CUSTOMER : {}", customer);
+            throw new Exception(e.getCause());
+        }
+        return customer;
     }
 
     @Transactional

@@ -116,8 +116,8 @@ function loadAddresses() {
                     }
                 })(addr));
 
-                var usedSpan = $('<a title="设为常用"></a>');
-                usedSpan.addClass('fa fa-anchor pull-right');
+                var usedSpan = $('<a title="设为常用">默认</a>');
+                usedSpan.addClass('fa pull-right');
                 usedSpan.click((function (param) {
                     return function () {
                         $.ajax({

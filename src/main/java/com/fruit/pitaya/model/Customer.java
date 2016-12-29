@@ -31,4 +31,5 @@ public class Customer implements Serializable {
     private BigDecimal amount;
     private String priceType;
     private String cusType;
+    private int coupon;
 }
