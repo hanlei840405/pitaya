@@ -1096,3 +1096,27 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2016-12-29 23:46:09
+-- ----------------------------
+-- Table structure for customer_rated
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_rated`;
+CREATE TABLE `customer_rated` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer` varchar(45) DEFAULT NULL COMMENT '销售人员',
+  `orderID` varchar(45) DEFAULT NULL COMMENT '计提月份',
+  `amount` decimal(12,2) DEFAULT NULL COMMENT '提成金额',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='员工提成表';
+
+-- ----------------------------
+-- Table structure for customer_rated_de
+-- ----------------------------
+DROP TABLE IF EXISTS `customer_rated_de`;
+CREATE TABLE `customer_rated_de` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ratedID` int(11) DEFAULT NULL,
+  `orderDeID` int(11) DEFAULT NULL,
+  `sku` varchar(45) DEFAULT NULL,
+  `amount` decimal(12,2) DEFAULT NULL COMMENT '提成金额',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='员工提成表';

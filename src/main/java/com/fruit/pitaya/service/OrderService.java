@@ -1,5 +1,6 @@
 package com.fruit.pitaya.service;
 
+import com.fruit.pitaya.mapper.OrderDetailMapper;
 import com.fruit.pitaya.mapper.OrderDetailVOMapper;
 import com.fruit.pitaya.mapper.OrderMapper;
 import com.fruit.pitaya.mapper.OrderVOMapper;
@@ -67,6 +68,13 @@ public class OrderService {
             return null;
         }
         return orders.get(0);
+    }
+
+    public List<OrderDetail> findByOrderId(String orderId) {
+        List<OrderDetail> orderDetails = jdbcTemplate.query("SELECT * FROM od_order_de WHERE orderID=?", ps -> {
+            ps.setString(1, orderId);
+        }, new OrderDetailMapper());
+        return orderDetails;
     }
 
     public Long count(String customer) {
