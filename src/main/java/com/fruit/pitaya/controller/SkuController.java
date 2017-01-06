@@ -121,7 +121,7 @@ public class SkuController {
         model.addAttribute("firstUrl", "sku/show/1/" + cateCode);
         model.addAttribute("preUrl", "sku/show/" + pre + "/" + cateCode);
         model.addAttribute("nextUrl", "sku/show/" + next + "/" + cateCode);
-        model.addAttribute("lastUrl", "sku/show/0/" + cateCode);
+        model.addAttribute("lastUrl", "sku/show/" + pages + "/" + cateCode);
         return "page";
     }
 }

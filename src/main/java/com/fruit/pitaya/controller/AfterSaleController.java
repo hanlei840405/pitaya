@@ -118,7 +118,7 @@ public class AfterSaleController {
         model.addAttribute("firstUrl", "aftersale/show/1/");
         model.addAttribute("preUrl", "aftersale/show/" + pre);
         model.addAttribute("nextUrl", "aftersale/show/" + next);
-        model.addAttribute("lastUrl", "aftersale/show/0/");
+        model.addAttribute("lastUrl", "aftersale/show/" + pages);
         return "page";
     }
 }

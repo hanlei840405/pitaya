@@ -10,6 +10,7 @@ $(document.body).ready(function () {
         language: "zh-CN"
     });
     loadOrders();
+    loadCustomerRated();
     loadAfterSales();
     loadAddresses();
     loadShopInfos();
@@ -60,6 +61,11 @@ $(document.body).ready(function () {
 function loadOrders() {
     $('#orders').load('order/show/1');
     $('#orderPager').load('order/page/1');
+}
+
+function loadCustomerRated() {
+    $('#customerRateds').load('customerRated/show/1');
+    $('#ratePager').load('customerRated/page/1');
 }
 
 function loadAfterSales() {

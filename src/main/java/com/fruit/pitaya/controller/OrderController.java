@@ -82,10 +82,10 @@ public class OrderController {
         }
         int pre = page - 1 == 0 ? page : page - 1;
         int next = page + 1 > pages ? page : page + 1;
-        model.addAttribute("firstUrl", "order/show/1/");
+        model.addAttribute("firstUrl", "order/show/1");
         model.addAttribute("preUrl", "order/show/" + pre);
         model.addAttribute("nextUrl", "order/show/" + next);
-        model.addAttribute("lastUrl", "order/show/0/");
+        model.addAttribute("lastUrl", "order/show/" + pages);
         return "page";
     }
 }

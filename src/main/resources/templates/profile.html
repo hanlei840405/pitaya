@@ -249,7 +249,7 @@
 
                 <div class="blog-post-area" id="order" style="display: none;">
                     <h2 class="title text-center">我的订单</h2>
-                    <h4>支付宝账号：</h4>
+                    <h4 th:text="${'支付宝账号：' + alipayNo}"></h4>
                     <div id="orders"></div>
                     <th:block th:if="${showOrderPage}">
                         <div class="row" id="orderPager">
@@ -259,8 +259,8 @@
 
                 <div class="blog-post-area" id="rate" style="display: none;">
                     <h2 class="title text-center">我的返利</h2>
-                    <div id="rates"></div>
-                    <th:block th:if="${showRatePage}">
+                    <div id="customerRateds"></div>
+                    <th:block th:if="${showCustomerRatedPage}">
                         <div class="row" id="ratePager">
                         </div>
                     </th:block>

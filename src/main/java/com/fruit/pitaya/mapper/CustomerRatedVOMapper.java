@@ -18,7 +18,7 @@ public class CustomerRatedVOMapper implements RowMapper<CustomerRatedVO> {
         customerRatedVO.setCustomer(rs.getString("customer"));
         customerRatedVO.setOrderID(rs.getString("orderID"));
         customerRatedVO.setOrderAmount(rs.getBigDecimal("orderAmount"));
-        customerRatedVO.setOrderDate(rs.getDate("orderDate"));
+        customerRatedVO.setOrderDate(rs.getDate("odtime"));
         return customerRatedVO;
     }
 }

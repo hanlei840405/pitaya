@@ -1,19 +1,12 @@
 package com.fruit.pitaya.controller;
 
-import com.fruit.pitaya.model.Cart;
-import com.fruit.pitaya.model.Category;
-import com.fruit.pitaya.model.Customer;
-import com.fruit.pitaya.model.OrderVO;
+import com.fruit.pitaya.model.*;
 import com.fruit.pitaya.service.*;
 import com.fruit.pitaya.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,12 +30,6 @@ public class HomeController {
     private CustomerService customerService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private CategoryService categoryService;
 
     @Autowired
@@ -56,6 +43,12 @@ public class HomeController {
 
     @Autowired
     private AfterSaleService afterSaleService;
+
+    @Autowired
+    private CustomerRatedService customerRatedService;
+
+    @Autowired
+    private DictionaryService dictionaryService;
 
     @RequestMapping("/")
     public String home(Model model, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
@@ -135,9 +128,13 @@ public class HomeController {
         Customer customer = customerService.get(user.getUsername());
         Long orderCount = orderService.count(user.getUsername());
         Long afterSaleCount = afterSaleService.count(user.getUsername());
+        Long customerRatedCount = customerRatedService.count(user.getUsername());
+        Dictionary dictionary = dictionaryService.get("支付宝账号");
         model.addAttribute("me", customer);
         model.addAttribute("showOrderPage", orderCount > 1 ? true : false);
         model.addAttribute("showAfterSalePage", afterSaleCount > 1 ? true : false);
+        model.addAttribute("showCustomerRatedPage", customerRatedCount > 1 ? true : false);
+        model.addAttribute("alipayNo", dictionary.getValue());
         List<OrderVO> orders = orderService.findSentByCustomer(customer.getCusCode());
         model.addAttribute("sentOrders", orders);
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
