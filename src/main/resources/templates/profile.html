@@ -103,6 +103,11 @@
                         </div>
                         <div class="panel panel-default">
                             <div class="panel-heading">
+                                <h4 class="panel-title"><a href="javascript:showPanel('rate')">我的返利</a></h4>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
                                 <h4 class="panel-title"><a href="javascript:showPanel('applyAfterSale')">申请售后</a></h4>
                             </div>
                         </div>
@@ -248,6 +253,15 @@
                     <div id="orders"></div>
                     <th:block th:if="${showOrderPage}">
                         <div class="row" id="orderPager">
+                        </div>
+                    </th:block>
+                </div>
+
+                <div class="blog-post-area" id="rate" style="display: none;">
+                    <h2 class="title text-center">我的返利</h2>
+                    <div id="rates"></div>
+                    <th:block th:if="${showRatePage}">
+                        <div class="row" id="ratePager">
                         </div>
                     </th:block>
                 </div>

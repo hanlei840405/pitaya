@@ -18,23 +18,23 @@
             <label class="col-sm-2">回寄地址</label>
             <label class="col-sm-6" th:text="${aftersale.addr}"></label>
         </div>
+        <table class="table">
+            <tr th:each="afterSaleDetail:${aftersale.afterSaleDetailVOs}">
+                <td width="30px">
+                    <a href="javascript:void(0)"><img
+                            th:src="${'../ext/public/' + afterSaleDetail.image}" alt=""
+                            width="30px"/></a>
+                </td>
+                <td class="text-left" th:text="${afterSaleDetail.skuName}">
+                </td>
+                <td class="text-right col-sm-2" th:text="${'返修数量:' + afterSaleDetail.quantity}">
+                </td>
+                <td class="text-right col-sm-2" th:text="${'换新数量:' + afterSaleDetail.newqty}">
+                </td>
+                <td class="text-right col-sm-3"
+                    th:text="${afterSaleDetail.remark}">
+                </td>
+            </tr>
+        </table>
     </div>
-    <table class="table">
-        <tr th:each="afterSaleDetail:${aftersale.afterSaleDetailVOs}">
-            <td width="30px">
-                <a href="javascript:void(0)"><img
-                        th:src="${'../ext/public/' + afterSaleDetail.image}" alt=""
-                        width="30px"/></a>
-            </td>
-            <td class="text-left" th:text="${afterSaleDetail.skuName}">
-            </td>
-            <td class="text-right col-sm-2" th:text="${'返修数量:' + afterSaleDetail.quantity}">
-            </td>
-            <td class="text-right col-sm-2" th:text="${'换新数量:' + afterSaleDetail.newqty}">
-            </td>
-            <td class="text-right col-sm-3"
-                th:text="${afterSaleDetail.remark}">
-            </td>
-        </tr>
-    </table>
 </div>

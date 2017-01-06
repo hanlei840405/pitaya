@@ -1,0 +1,24 @@
+<div th:class="${customerRatedVO.status}==0 ? 'panel panel-danger' : 'panel panel-success'"
+     th:each="customerRatedVO:${customerRatedVOs}" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="panel-heading"
+         th:text="${'下级商户:' + customerRatedVO.customer}">
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <label class="col-sm-2">订单编号</label>
+            <label class="col-sm-2" th:text="${customerRatedVO.orderID}"></label>
+            <label class="col-sm-2">下单时间</label>
+            <label class="col-sm-2" th:text="${customerRatedVO.orderDate}"></label>
+            <label class="col-sm-2">计提总额</label>
+            <label class="col-sm-2" th:text="${customerRatedVO.amount}"></label>
+        </div>
+        <table class="table">
+            <tr th:each="customerRatedDeVO:${customerRatedVO.customerRatedDeVOs}">
+                <td class="text-left" th:text="${'商品名称:' + customerRatedDeVO.skuName}">
+                </td>
+                <td class="text-left" th:text="${'计提金额:' + customerRatedDeVO.amount}">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
