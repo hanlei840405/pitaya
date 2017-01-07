@@ -32,8 +32,10 @@
 
         <h1><b>OPPS!</b> 系统发生错误</h1>
 
-        <p th:text="${'错误原因:' + param.error}"></p>
-
+        <p th:text="${'错误原因:' + param.error + param.errorCode}"></p>
+        <th:block th:if="${param.errorCode != null}">
+            <a href="/profile">您可以维护个人信息</a>
+        </th:block>
         <h2><a href="/">返回首页</a></h2>
     </div>
 </div>

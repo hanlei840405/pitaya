@@ -9,9 +9,6 @@ $(document.body).ready(function () {
         format: "yyyy-mm-dd",
         language: "zh-CN"
     });
-    loadOrders();
-    loadCustomerRated();
-    loadAfterSales();
     loadAddresses();
     loadShopInfos();
     $("#select_repair").select2();
@@ -57,21 +54,6 @@ $(document.body).ready(function () {
         $("#select_repair").val(null).trigger("change");
     });
 });
-
-function loadOrders() {
-    $('#orders').load('order/show/1');
-    $('#orderPager').load('order/page/1');
-}
-
-function loadCustomerRated() {
-    $('#customerRateds').load('customerRated/show/1');
-    $('#ratePager').load('customerRated/page/1');
-}
-
-function loadAfterSales() {
-    $('#afterSaleRecords').load('aftersale/show/1');
-    $('#afterSalePager').load('aftersale/page/1');
-}
 
 function loadAddresses() {
     $.ajax({
@@ -237,43 +219,6 @@ function showPanel(tag) {
     });
     $('#' + tag).css('display', 'block');
     footerPosition();
-}
-
-function bindAfterSaleSkus() {
-    if ($.trim($('#executer').val()) == '') {
-        alert('联系人不能为空');
-        return false;
-    }
-    if ($.trim($('#courierNum').val()) == '') {
-        alert('返修快递不能为空');
-        return false;
-    }
-    if ($.trim($('#addr').val()) == '') {
-        alert('返修后收货地址不能为空');
-        return false;
-    }
-    if ($.isEmptyObject(exist)) {
-        alert('请添加返修商品');
-        return false;
-    }
-    var array = [];
-    $('.repairSkuCount').each(function () {
-        var sku = $(this).attr('id');
-        var count = $(this).val();
-        array.push({sku: sku, count: count});
-    });
-    $('#skus').val(JSON.stringify(array));
-    return true;
-}
-
-function uploadCertificate(obj) {
-    var file = $(obj).find('input:file')[0];
-    debugger;
-    if (file.value == '') {
-        alert("请上传交易凭证");
-        return false;
-    }
-    return true;
 }
 
 function openWindow(){

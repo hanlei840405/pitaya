@@ -23,6 +23,6 @@ public class ResourceConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(statusInterceptor).addPathPatterns("/**").excludePathPatterns("/ext/public/**", "/css/**", "/fonts/**", "/images/**", "/locales/**", "/js/**", "/favicon.ico", "/", "/login", "/logout", "/register", "/unAudit", "/error", "/sku/show/**", "/sku/page/**");
+        registry.addInterceptor(statusInterceptor).addPathPatterns("/**").excludePathPatterns("/ext/public/**", "/css/**", "/fonts/**", "/images/**", "/locales/**", "/js/**", "/favicon.ico", "/", "/login", "/logout", "/register", "/profile", "/unAudit", "/error/**", "/sku/show/**", "/sku/page/**","/customer/**","/ext/private/**");
     }
 }
