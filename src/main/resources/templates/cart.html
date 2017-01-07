@@ -139,18 +139,18 @@
                         <input type="hidden"
                                th:name="${_csrf.parameterName}"
                                th:value="${_csrf.token}"/>
-                        <ul>
                             <th:block th:if="${!isWeChat}">
+                                <ul>
                                 <li>收件地址 <span th:text="${address.addr}" id="addr"></span></li>
                                 <li>收件人 <span th:text="${address.recipient}" id="recipient"></span></li>
                                 <li>联系电话 <span th:text="${address.phone}" id="phone"></span></li>
+                                </ul>
                             </th:block>
                             <th:block th:if="${isWeChat}">
-                                <li><input type="text" name="address" id="cart_address" placeholder="地址" style="width: 100%"/></li>
-                                <li><input type="text" name="recipient" id="cart_recipient" placeholder="联系人" style="width: 100%"/></li>
-                                <li><input type="text" name="phone" id="cart_phone" placeholder="电话" style="width: 100%"/></li>
+                                <input type="text" name="address" id="cart_address" placeholder="地址" style="width: 100%"/>
+                                <input type="text" name="recipient" id="cart_recipient" placeholder="联系人" style="width: 100%"/>
+                                <input type="text" name="phone" id="cart_phone" placeholder="电话" style="width: 100%"/>
                             </th:block>
-                        </ul>
                         <th:block th:if="${!isWeChat}">
                         <a class="btn btn-default update" href="javascript:void(0)">更换收货地址</a>
                             </th:block>

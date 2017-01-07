@@ -18,6 +18,7 @@ public class CustomerRatedMapper implements RowMapper<CustomerRated> {
         customerRated.setAmount(rs.getBigDecimal("amount"));
         customerRated.setCustomer(rs.getString("customer"));
         customerRated.setOrderID(rs.getString("orderID"));
+        customerRated.setStatus(rs.getString("status"));
         return customerRated;
     }
 }

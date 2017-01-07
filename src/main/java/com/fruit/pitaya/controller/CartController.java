@@ -100,7 +100,7 @@ public class CartController {
             }
         } else { // 说明买家针对某款sku从未购买过，不需校验购买数量
             // 如果是首次购买不限制购买数量，价格执行买家价格类型中的最高标准
-            price = Utils.round(skuNPriceService.findPriceBySkuAndCount(sku, priceType, count).multiply(new BigDecimal(0.95)), 2); // 首次购买95折
+            price = skuNPriceService.findPriceBySkuAndCount(sku, priceType, count);
             if (price == null) {
                 result.put("code", "500");
                 result.put("msg", "没找到商品价格");
@@ -109,7 +109,7 @@ public class CartController {
         }
 
         try {
-            if (customer.getCoupon() == 1) {
+            if (customer.getCoupon() == 1) { // 有优惠券（首次购买）95折优惠
                 price = Utils.round(price.multiply(new BigDecimal(0.95)), 2);
             }
             cartService.process(customer.getCusCode(), sku, priceType, price, count);

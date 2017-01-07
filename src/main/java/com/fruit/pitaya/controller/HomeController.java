@@ -151,6 +151,16 @@ public class HomeController {
             }
         });
         model.addAttribute("payInfo", payInfo);
+        Map<String, String> receiveAddr = new LinkedHashMap<>();
+        dictionaries = dictionaryService.getByType("公司地址");
+        dictionaries.forEach(dictionary -> {
+            if (receiveAddr.containsKey(dictionary.getName())) {
+                receiveAddr.put(dictionary.getName(), receiveAddr.get(dictionary.getName()) + "," + dictionary.getValue());
+            } else {
+                receiveAddr.put(dictionary.getName(), dictionary.getValue());
+            }
+        });
+        model.addAttribute("receiveAddr", receiveAddr);
         List<OrderVO> orders = orderService.findSentByCustomer(customer.getCusCode());
         model.addAttribute("sentOrders", orders);
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

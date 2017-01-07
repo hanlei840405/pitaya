@@ -227,10 +227,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="upCode" class="col-sm-2 control-label">上级经销商</label>
+                            <label for="upCode" class="col-sm-2 control-label">邀请码</label>
 
                             <div class="col-sm-4">
-                                <input type="text" placeholder="上级经销商" class="form-control" id="upCode" name="upCode"
+                                <input type="text" placeholder="邀请码" class="form-control" id="upCode" name="upCode"
                                        th:value="${me.upCode} != null ? ${me.upCode}"/>
                             </div>
                             <label for="saler" class="col-sm-2 control-label">销售员</label>
@@ -273,7 +273,7 @@
 
                     <div class="blog-post-area" id="applyAfterSale" style="display: none;">
                         <h2 class="title text-center">申请售后</h2>
-
+                        <h4 th:each="entry : ${receiveAddr}" th:text="${entry.key + ' : ' + entry.value}"></h4>
                         <form action="aftersale/saveAfterSale" method="post" class="form-horizontal" role="form"
                               onsubmit="return bindAfterSaleSkus()">
                             <input type="hidden"
@@ -318,7 +318,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="addr" class="col-sm-2 control-label">收件地址</label>
+                                <label for="addr" class="col-sm-2 control-label">回寄地址</label>
 
                                 <div class="col-sm-10">
                                     <input type="text" placeholder="收件地址" class="form-control" name="addr"

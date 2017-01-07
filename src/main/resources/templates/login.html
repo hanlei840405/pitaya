@@ -68,7 +68,7 @@
         <div class="row">
             <div class="col-sm-4 col-sm-offset-1">
                 <div class="signup-form"><!--login form-->
-                    <h2>Login to your account</h2>
+                    <h2>用户登录</h2>
 
                     <form action="login" method="post">
                         <input type="hidden"
@@ -76,7 +76,7 @@
                                th:value="${_csrf.token}"/>
                         <input type="text" placeholder="用户名" name="username"/>
                         <input type="password" placeholder="密码" name="password"/>
-                        <button type="submit" class="btn btn-default pull-left">Login</button>
+                        <button type="submit" class="btn btn-default pull-left">登录</button>
                         <a class="pull-right" href="forgotPwd">忘记密码?</a>
                     </form>
                 </div><!--/login form-->
@@ -86,7 +86,7 @@
             </div>
             <div class="col-sm-4">
                 <div class="signup-form"><!--sign up form-->
-                    <h2>New User Signup!</h2>
+                    <h2>新用户注册</h2>
 
                     <form action="register" method="post" id="signForm" class="form-horizontal">
                         <input type="hidden"
@@ -112,7 +112,7 @@
                             <a class="btn btn-success col-sm-6 normalShop">普通商户</a>
                             <a class="btn btn-default col-sm-6 wxShop">微商</a>
                         </div>
-                        <input type="text" placeholder="上级商户" name="upCode" id="upCode"/>
+                        <input type="text" placeholder="邀请码" name="upCode" id="upCode"/>
                         <input type="text" placeholder="业务员" name="saler" id="saler"/>
                         <button type="button" class="btn btn-default submit">注册</button>
                     </form>

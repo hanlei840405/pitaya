@@ -1,7 +1,8 @@
 <div th:class="${customerRatedVO.status}==0 ? 'panel panel-danger' : 'panel panel-success'"
      th:each="customerRatedVO:${customerRatedVOs}" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="panel-heading"
-         th:text="${'下级商户:' + customerRatedVO.customer}">
+    <div class="panel-heading">
+        <i th:text="${'下级商户:' + customerRatedVO.orderOwner}"></i>
+        <i class="pull-right" th:text="${customerRatedVO.status}==0 ? '待审核' : '已审核'"></i>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -15,6 +16,8 @@
         <table class="table">
             <tr th:each="customerRatedDeVO:${customerRatedVO.customerRatedDeVOs}">
                 <td class="text-left" th:text="${'商品名称:' + customerRatedDeVO.skuName}">
+                </td>
+                <td class="text-left" th:text="${'销售金额:' + customerRatedDeVO.orderDeAmount}">
                 </td>
                 <td class="text-left" th:text="${'计提金额:' + customerRatedDeVO.amount}">
                 </td>

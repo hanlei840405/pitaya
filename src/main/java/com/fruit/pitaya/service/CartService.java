@@ -6,17 +6,15 @@ import com.fruit.pitaya.mapper.CartMapper;
 import com.fruit.pitaya.model.Cart;
 import com.fruit.pitaya.model.CartDetail;
 import com.fruit.pitaya.model.CartDetailVO;
+import com.fruit.pitaya.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +25,8 @@ import java.util.List;
 public class CartService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private CustomerService customerService;
 
     public Cart get(String cusCode) {
         List<Cart> carts = jdbcTemplate.query("SELECT * FROM mall_cart WHERE cusCode=?", ps -> {
@@ -118,7 +118,7 @@ public class CartService {
     }
 
     @Transactional
-    public void process(String cusCode, String sku, String priceType, BigDecimal price, int count) {
+    public void process(String cusCode, String sku, String priceType, BigDecimal price, int count) throws Exception {
         // 判断购物车是否有商品
         CartDetail cartDetail = get(cusCode, sku);
         if (cartDetail != null) {
@@ -147,5 +147,8 @@ public class CartService {
             updateCart(cart);
             addSku(cartDetail);
         }
+        Customer customer = customerService.get(cusCode);
+        customer.setCoupon(0);
+        customerService.update(customer);
     }
 }

@@ -21,6 +21,7 @@ public class CustomerRatedVO {
     private BigDecimal amount;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date orderDate;
-    private BigDecimal orderAmount;
+    private String status;
+    private String orderOwner;
     private List<CustomerRatedDeVO> customerRatedDeVOs = new ArrayList<>();
 }

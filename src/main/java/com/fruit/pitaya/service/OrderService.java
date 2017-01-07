@@ -36,6 +36,8 @@ public class OrderService {
     private StockService stockService;
     @Autowired
     private SkuSPriceService skuSPriceService;
+    @Autowired
+    private CustomerRatedService customerRatedService;
 
     public List<OrderVO> findSentByCustomer(String customer) {
         List<OrderVO> orderVOs = jdbcTemplate.query("SELECT t1.*,t2.addr,t3.cusName AS customerName,t4.realName AS reviewerName FROM od_order t1 INNER JOIN od_order_addr t2 on t1.orderID = t2.orderID INNER JOIN mall_customer t3 ON t1.customer = t3.cusCode LEFT JOIN sys_user t4 ON t1.reviewer=t4.name WHERE customer=? AND t1.status=3 ORDER BY status ASC, odtime DESC", ps -> {
@@ -172,7 +174,7 @@ public class OrderService {
 
     @Transactional
     public int uploadCertificate(String customer, String orderId, String certificate) {
-
+        customerRatedService.create(orderId, customer);
         return jdbcTemplate.update("UPDATE od_order SET certificate=?,status=1 WHERE orderID=? AND customer=?", ps -> {
             ps.setString(1, certificate);
             ps.setString(2, orderId);

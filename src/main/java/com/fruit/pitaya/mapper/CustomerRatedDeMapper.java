@@ -16,8 +16,7 @@ public class CustomerRatedDeMapper implements RowMapper<CustomerRatedDe> {
         customerRatedDe.setId(rs.getLong("id"));
         customerRatedDe.setAmount(rs.getBigDecimal("amount"));
         customerRatedDe.setSku(rs.getString("sku"));
-        customerRatedDe.setOrderDeID(rs.getLong("orderDeID"));
-        customerRatedDe.setRateID(rs.getLong("rateID"));
+        customerRatedDe.setRateID(rs.getLong("ratedID"));
         return customerRatedDe;
     }
 }

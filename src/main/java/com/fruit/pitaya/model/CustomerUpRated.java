@@ -6,14 +6,14 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 /**
- * Created by hanlei6 on 2017/1/4.
+ * Created by JesseHan on 2017/1/7.
  */
 @Setter
 @Getter
-public class CustomerRated {
+public class CustomerUpRated {
     private Long id;
     private String customer;
-    private String orderID;
-    private BigDecimal amount;
-    private String status;
+    private String up;
+    private String sku;
+    private BigDecimal rated;
 }

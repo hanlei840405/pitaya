@@ -30,7 +30,7 @@ public class SkuSPriceService {
 
     @Transactional
     public void insert(String cusCode, String sku, String firstbuy) {
-        jdbcTemplate.update("INSERT mall_sku_sprice (sku, cusCode, firstbuy) VALUES (?,?,?)",
+        jdbcTemplate.update("INSERT mall_sku_sprice (sku, customer, firstbuy) VALUES (?,?,?)",
                 ps -> {
                     ps.setString(1, sku);
                     ps.setString(2, cusCode);
