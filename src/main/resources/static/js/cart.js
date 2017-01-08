@@ -2,8 +2,8 @@
  * Created by hanlei6 on 2016/12/2.
  */
 
-var selectAddress = null;
 $(document).ready(function () {
+    var selectAddress = $('#addressId').val();
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $('.select-address').each(function () {
@@ -32,24 +32,19 @@ $(document).ready(function () {
             return false;
         });
     });
-    $('.check_out').each(function () {
-        var me = $(this);
-        me.click(function () {
-            var form = $('form:first');
-            if (selectAddress != null) {
-                form.prop('action', '../cart/settle/' + selectAddress);
-            } else {
-                var address = $('#cart_address').val();
-                var recipient = $('#cart_recipient').val();
-                var phone = $('#cart_phone').val();
-                if ($.trim(address) == '' || $.trim(recipient) == '' || $.trim(phone) == '') {
-                    alert("地址、联系人、电话缺一不可！");
-                    return;
-                }
-                form.prop('action', '../cart/settle/');
+    $('.check_out').click(function () {
+        var form = $('form:first');
+        if (selectAddress == null && selectAddress == '') {
+            var address = $('#cart_address').val();
+            var recipient = $('#cart_recipient').val();
+            var phone = $('#cart_phone').val();
+            if ($.trim(address) == '' || $.trim(recipient) == '' || $.trim(phone) == '') {
+                alert("地址、联系人、电话缺一不可！");
+                return;
             }
-            form.submit();
-        });
+            form.prop('action', '../cart/settle/');
+        }
+        form.submit();
     });
     $('.update').click(function () {
         $('#addresses').css('display', 'block');

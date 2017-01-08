@@ -348,7 +348,7 @@
                     <h2 class="title text-center">收货地址</h2>
 
                     <form action="customer/saveAddr" method="post" class="form-horizontal" role="form">
-                        <input type="hidden" name="id" id="addrId"/>
+                        <input type="hidden" name="id" id="address_addrId"/>
                         <input type="hidden"
                                th:name="${_csrf.parameterName}"
                                th:value="${_csrf.token}"/>
@@ -390,7 +390,7 @@
 
                     <form action="customer/saveShop" method="post" class="form-horizontal" role="form"
                           enctype="multipart/form-data">
-                        <input type="hidden" name="id" id="shopId"/>
+                        <input type="hidden" name="id" id="shopInfo_shopId"/>
                         <input type="hidden"
                                th:name="${_csrf.parameterName}"
                                th:value="${_csrf.token}"/>

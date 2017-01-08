@@ -20,7 +20,7 @@ public class CustomerMapper implements RowMapper<Customer> {
         customer.setId(rs.getLong("id"));
         customer.setPasswd(rs.getString("passwd"));
         customer.setPhone(rs.getString("phone"));
-        customer.setRate(rs.getInt("rate"));
+        customer.setRate(rs.getBigDecimal("rate"));
         customer.setSaler(rs.getString("saler"));
         customer.setSex(rs.getString("sex"));
         customer.setBirthday(rs.getDate("birthday"));

@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -43,11 +44,14 @@ public class CustomerRatedService {
     @Transactional
     public void create(String orderId, String customer) {
         Customer cus = customerService.get(customer);
+        if (StringUtils.isEmpty(cus.getUpCode())) {
+            return;
+        }
         List<OrderDetail> orderDetails = orderService.findByOrderId(orderId);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement("INSERT INTO customer_rated (customer, orderID, status) VALUES (?,?, '0')", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, cus.getCusCode());
+            ps.setString(1, cus.getUpCode());
             ps.setString(2, orderId);
             return ps;
         }, keyHolder);
@@ -71,11 +75,11 @@ public class CustomerRatedService {
                 if (skuSPrice.getPrice() != null) {
                     amount = price.subtract(skuSPrice.getPrice());
                 } else {
-                    SkuNPrice skuNPrice = skuNPriceService.findBySkuAndType(orderDetail.getSku(), customer);
+                    SkuNPrice skuNPrice = skuNPriceService.findBySkuAndType(orderDetail.getSku(), cus.getPriceType());
                     amount = price.subtract(skuNPrice.getPrice1());
                 }
             }
-            totalAmount[0] = totalAmount[0].add(amount);
+            totalAmount[0] = totalAmount[0].add(amount.doubleValue() > 0d ? amount : new BigDecimal(0));
             customerRatedDe.setOrderDeID(orderDetail.getId());
             customerRatedDe.setRateID(keyHolder.getKey().longValue());
             customerRatedDe.setSku(orderDetail.getSku());

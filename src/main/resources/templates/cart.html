@@ -135,11 +135,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="total_area">
-                    <form action="" method="POST">
+                    <form action="../cart/settle/" method="POST">
                         <input type="hidden"
                                th:name="${_csrf.parameterName}"
                                th:value="${_csrf.token}"/>
                             <th:block th:if="${!isWeChat}">
+                                <input type="hidden" id="addressId" th:value="${address.id}"/>
                                 <ul>
                                 <li>收件地址 <span th:text="${address.addr}" id="addr"></span></li>
                                 <li>收件人 <span th:text="${address.recipient}" id="recipient"></span></li>

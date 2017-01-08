@@ -114,7 +114,7 @@ public class CustomerController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         try {
 
-            customerShop.setShopPic(user.getUsername() + Utils.upload(file, user.getUsername()));
+            customerShop.setShopPic(Utils.upload(file, user.getUsername()));
 
             if (customerShop.getId() != null) {
                 CustomerShop exist = customerShopService.get(customerShop.getId(), user.getUsername());

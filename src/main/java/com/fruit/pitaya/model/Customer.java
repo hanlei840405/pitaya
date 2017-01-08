@@ -27,7 +27,7 @@ public class Customer implements Serializable {
     private String wechat;
     private String upCode;
     private String saler;
-    private int rate;
+    private BigDecimal rate;
     private BigDecimal amount;
     private String priceType;
     private String cusType;

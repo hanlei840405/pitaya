@@ -27,6 +27,7 @@ public class Utils {
 //            }
             int index = file.getOriginalFilename().lastIndexOf(".");
             Files.copy(file.getInputStream(), rootLocation.resolve(fileName + file.getOriginalFilename().substring(index)));
+            fileName += file.getOriginalFilename().substring(index);
         }
         return fileName;
     }

@@ -163,9 +163,10 @@ public class CartController {
      * @return
      */
     @RequestMapping("/settle")
-    public String settle(Long addressId, String address, String recipient, String phone, RedirectAttributes redirectAttributes) {
+    public String settle(String address, String recipient, String phone, RedirectAttributes redirectAttributes) {
+        Long addressId = null;
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (StringUtils.isEmpty(address) && (addressId == null || addressId == 0)) {
+        if (StringUtils.isEmpty(address)) {
             CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
             if (customerAddr == null) {
                 log.error("购物车地址为空");
