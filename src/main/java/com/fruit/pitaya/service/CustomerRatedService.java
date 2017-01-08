@@ -55,10 +55,10 @@ public class CustomerRatedService {
             ps.setString(2, orderId);
             return ps;
         }, keyHolder);
-        final BigDecimal[] totalAmount = {new BigDecimal(0)};
+        BigDecimal totalAmount = new BigDecimal(0);
         List<CustomerRatedDe> customerRatedDes = new ArrayList<>();
-        orderDetails.forEach(orderDetail -> {
-            BigDecimal amount = new BigDecimal(0);
+        for (OrderDetail orderDetail : orderDetails) {
+            BigDecimal amount;
             CustomerRatedDe customerRatedDe = new CustomerRatedDe();
             // 查询该商户的商品有没有配置与上级商家的固定提成
             List<CustomerUpRated> customerUpRateds = jdbcTemplate.query("SELECT * FROM customer_up_rated WHERE customer=? AND sku=? AND up=?", ps -> {
@@ -79,13 +79,13 @@ public class CustomerRatedService {
                     amount = price.subtract(skuNPrice.getPrice1());
                 }
             }
-            totalAmount[0] = totalAmount[0].add(amount.doubleValue() > 0d ? amount : new BigDecimal(0));
+            totalAmount = totalAmount.add(amount.doubleValue() > 0d ? amount.multiply(new BigDecimal(orderDetail.getQuantity())) : new BigDecimal(0));
             customerRatedDe.setOrderDeID(orderDetail.getId());
             customerRatedDe.setRateID(keyHolder.getKey().longValue());
             customerRatedDe.setSku(orderDetail.getSku());
-            customerRatedDe.setAmount(amount);
+            customerRatedDe.setAmount(amount.multiply(new BigDecimal(orderDetail.getQuantity())));
             customerRatedDes.add(customerRatedDe);
-        });
+        }
 
         jdbcTemplate.batchUpdate("INSERT INTO customer_rated_de (ratedID, orderDeID, sku, amount) VALUES (?,?,?,?)", new BatchPreparedStatementSetter() {
             @Override

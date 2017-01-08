@@ -77,7 +77,7 @@ public class CartController {
 
         String priceType = customer.getPriceType();
         SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(user.getUsername(), sku);
-        BigDecimal price;
+        BigDecimal price = new BigDecimal(0);
         // 校验是否是新用户,如果新用户或者微商,不限制购买数量
         if (skuSPrice != null && "0".equals(customer.getCusType())) { // skuSPrice不为空,且为非微商商户，说明是已购买过某sku的用户或者是后台设置的享有优惠的老客户
             price = skuSPrice.getPrice();
@@ -98,14 +98,9 @@ public class CartController {
                     return result;
                 }
             }
-        } else { // 说明买家针对某款sku从未购买过，不需校验购买数量
-            // 如果是首次购买不限制购买数量，价格执行买家价格类型中的最高标准
+        }
+        if (null == price || price.doubleValue() == 0.00D) {
             price = skuNPriceService.findPriceBySkuAndCount(sku, priceType, count);
-            if (price == null) {
-                result.put("code", "500");
-                result.put("msg", "没找到商品价格");
-                return result;
-            }
         }
 
         try {
@@ -158,8 +153,10 @@ public class CartController {
 
     /**
      * 购物车转为订单
-     *
-     * @param addressId
+     * @param address
+     * @param recipient
+     * @param phone
+     * @param redirectAttributes
      * @return
      */
     @RequestMapping("/settle")
@@ -175,7 +172,12 @@ public class CartController {
             }
             addressId = customerAddr.getId();
         }
-        orderService.create(user.getUsername(), addressId, address + " " + recipient + " " + phone);
+        try {
+            orderService.create(user.getUsername(), addressId, address + " " + recipient + " " + phone);
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("error", e.getMessage());
+            return "redirect:/error";
+        }
         return "redirect:/";
     }
 }
