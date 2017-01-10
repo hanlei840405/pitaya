@@ -139,7 +139,7 @@ a#scrollUp i{
   border-bottom: 1px solid #f5f5f5;
   margin-left: 0;
   margin-right: 0;
-  padding-bottom: 20px;
+  padding-bottom: 5px;
   padding-top: 20px;
 }
 
@@ -221,7 +221,7 @@ a#scrollUp i{
 
 .header-bottom {
   padding-bottom: 30px;
-  padding-top: 30px;
+  /*padding-top: 30px;*/
 }
 
 .navbar-collapse.collapse{
