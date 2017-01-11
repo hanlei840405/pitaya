@@ -22,9 +22,13 @@ public class SkuService {
     private JdbcTemplate jdbcTemplate;
 
     public List<SkuVO> findByCategory(String category, String customer, String priceType, int page) {
-        StringBuilder builder = new StringBuilder("SELECT t1.skuName,t1.sku,t1.image,t1.category,t1.attribute,t1.status,t1.specName,t1.remark,t1.image,t1.exclusive,t2.price,t3.num1,t3.price1,t3.num2, t3.price2, t3.num3,t3.price3,t4.quantity");
-        builder.append(" FROM mall_sku t1").append(" LEFT JOIN mall_sku_sprice t2 ON t1.sku = t2.sku AND t2.customer=?").append(" LEFT JOIN mall_sku_nprice t3 ON t1.sku = t3.sku AND t3.priceType=?")
-                .append(" INNER JOIN sk_stock t4 ON t4.sku = t1.sku").append(" WHERE t1.category=? LIMIT ?,?");
+        StringBuilder builder = new StringBuilder("SELECT t1.skuName,t1.sku,t1.image,t1.category,t1.attribute,t1.status,t1.specName," +
+                "t1.remark,t1.image,t1.exclusive,t2.price,t3.num1,t3.price1,t3.num2, t3.price2, t3.num3,t3.price3," +
+                "(CASE WHEN t4.quantity - (SELECT IFNULL(t1.value,9999999) FROM dict_data t1 INNER JOIN dict_type t2 ON t1.dict_type_id=t2.id " +
+                "WHERE t2.name='库存' AND t1.name='充足') >= 0 THEN -999 ELSE t4.quantity END) AS quantity");
+        builder.append(" FROM mall_sku t1").append(" LEFT JOIN mall_sku_sprice t2 ON t1.sku = t2.sku AND t2.customer=?")
+                .append(" LEFT JOIN mall_sku_nprice t3 ON t1.sku = t3.sku AND t3.priceType=?")
+                .append(" INNER JOIN sk_stock t4 ON t4.sku = t1.sku").append(" WHERE t1.category=? AND (exclusive=0 or exclusive is NULL ) LIMIT ?,?");
         return jdbcTemplate.query(builder.toString(), ps -> {
             ps.setString(1, customer);
             ps.setString(2, priceType);
@@ -35,7 +39,7 @@ public class SkuService {
     }
 
     public Long count(String category) {
-        Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(*) AS cnt FROM mall_sku t1 INNER JOIN sk_stock t2 ON t1.sku = t2.sku WHERE t1.category=?", category);
+        Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(*) AS cnt FROM mall_sku t1 INNER JOIN sk_stock t2 ON t1.sku = t2.sku WHERE t1.category=? AND (exclusive=0 or exclusive is NULL )", category);
         return (Long) result.get("cnt");
     }
 
@@ -45,9 +49,12 @@ public class SkuService {
     }
 
     public List<SkuVO> findExclusiveSku(String customer, String priceType, int page) {
-        StringBuilder builder = new StringBuilder("SELECT t1.skuName,t1.sku,t1.image,t1.category,t1.attribute,t1.status,t1.specName,t1.remark,t1.image,t1.exclusive, t2.price,t3.num1,t3.price1,t3.num2, t3.price2, t3.num3,t3.price3,t4.quantity");
+        StringBuilder builder = new StringBuilder("SELECT t1.skuName,t1.sku,t1.image,t1.category,t1.attribute,t1.status,t1.specName," +
+                "t1.remark,t1.image,t1.exclusive,t2.price,t3.num1,t3.price1,t3.num2, t3.price2, t3.num3,t3.price3," +
+                "(CASE WHEN t4.quantity - (SELECT IFNULL(t1.value,9999999) FROM dict_data t1 INNER JOIN dict_type t2 ON t1.dict_type_id=t2.id " +
+                "WHERE t2.name='库存' AND t1.name='充足') >= 0 THEN -999 ELSE t4.quantity END) AS quantity");
         builder.append(" FROM mall_sku t1").append(" LEFT JOIN mall_sku_sprice t2 ON t1.sku = t2.sku AND t2.customer=?").append(" LEFT JOIN mall_sku_nprice t3 ON t1.sku = t3.sku AND t3.priceType=?")
-                .append(" INNER JOIN sk_stock t4 ON t4.sku = t1.sku INNER JOIN mall_customer_sku t5 ON t1.sku=t5.sku").append(" WHERE t5.customer=? LIMIT ?,?");
+                .append(" INNER JOIN sk_stock t4 ON t4.sku = t1.sku INNER JOIN mall_customer_sku t5 ON t1.sku=t5.sku").append(" WHERE t5.customer=? AND exclusive=1 LIMIT ?,?");
         return jdbcTemplate.query(builder.toString(), ps -> {
             ps.setString(1, customer);
             ps.setString(2, priceType);

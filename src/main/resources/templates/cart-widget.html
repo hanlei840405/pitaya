@@ -3,14 +3,13 @@
      xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" th:href="${'#cart' + cartDetail.sku}">
+            <a th:href="${'#cart' + cartDetail.sku}">
                         <span class="badge pull-right">
-                          <i class="fa fa-plus"></i>
                         </span><i th:text="${cartDetail.skuName}"></i><i class="pull-right"
                                                                          th:text="${'￥' + cartDetail.skuAmount}"></i></a>
         </h4>
     </div>
-    <div th:attr="id=${'cart' + cartDetail.sku}" class="panel-collapse collapse">
+    <div th:attr="id=${'cart' + cartDetail.sku}">
         <div class="panel-body">
             <ul>
                 <li>

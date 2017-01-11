@@ -54,15 +54,15 @@
                         <ul class="nav navbar-nav">
                             <li>
                                 <a href="profile">
-                                    <i class="fa fa-user"></i></a>
+                                    <i class="fa fa-user"></i>设置</a>
                             </li>
                             <li>
                                 <a href="cart">
-                                    <i class="fa fa-shopping-cart"></i></a>
+                                    <i class="fa fa-shopping-cart"></i>购物车</a>
                             </li>
                             <li><a th:href="${session.username} != null ? @{logout} : @{login}"><i
                                     th:class="${session.username} != null ? @{fa fa-unlock} : @{fa fa-lock}"></i><span
-                                    th:text="${session.username} != null ? ${session.username}"></span></a></li>
+                                    th:text="${session.username} != null ? ${session.username}"></span>退出登录</a></li>
                         </ul>
                     </div>
                 </div>
@@ -91,6 +91,11 @@
             <div class="col-sm-3">
                 <div class="left-sidebar">
                     <div class="panel-group category-products" id="accordian"><!--category-productsr-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"><a href="./">返回首页</a></h4>
+                            </div>
+                        </div>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h4 class="panel-title"><a href="javascript:showPanel('customer')">个人信息</a></h4>
@@ -160,11 +165,11 @@
                             <div class="col-sm-4">
                                 <label class="checkbox-inline">
                                     <input type="radio" name="cusType" value="0" id="normalShop"
-                                           th:checked="${me.cusType} == '0' ? @{checked}"/> 普通商户
+                                           th:checked="${me.cusType} == '0' ? @{checked}" th:disabled="${me.status} == 1 ? 'disabled'"/> 普通商户
                                 </label>
                                 <label class="checkbox-inline">
                                     <input type="radio" name="cusType" value="F" id="wxShop"
-                                           th:checked="${me.cusType} == '1' ? @{checked}"/> 微商
+                                           th:checked="${me.cusType} == '1' ? @{checked}" th:disabled="${me.status} == 1 ? 'disabled'"/> 微商
                                 </label>
                             </div>
                         </div>
@@ -190,26 +195,11 @@
                                 <input type="text" placeholder="消费金额" class="form-control" id="amount" name="amount"
                                        th:value="${me.amount}" readonly="readonly"/>
                             </div>
-                            <label for="priceType" class="col-sm-2 control-label">价格类型</label>
-
-                            <div class="col-sm-4">
-                                <input type="text" placeholder="价格类型" class="form-control" id="priceType"
-                                       name="priceType"
-                                       th:value="${me.priceType}" readonly="readonly"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label for="birthday" class="col-sm-2 control-label">生日</label>
 
                             <div class="col-sm-4">
                                 <input type="text" placeholder="生日" class="form-control" id="birthday" name="birthday"
                                        th:value="${me.birthday}"/>
-                            </div>
-                            <label for="email" class="col-sm-2 control-label">邮箱</label>
-
-                            <div class="col-sm-4">
-                                <input type="email" placeholder="邮箱" class="form-control" id="email" name="email"
-                                       th:value="${me.email} != null ? ${me.email}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -219,20 +209,28 @@
                                 <input type="text" placeholder="电话" class="form-control" id="phone" name="phone"
                                        th:value="${me.phone} != null ? ${me.phone}"/>
                             </div>
+                            <label for="email" class="col-sm-2 control-label">邮箱</label>
+
+                            <div class="col-sm-4">
+                                <input type="email" placeholder="邮箱" class="form-control" id="email" name="email"
+                                       th:value="${me.email} != null ? ${me.email}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="wechat" class="col-sm-2 control-label">微信</label>
 
                             <div class="col-sm-4">
                                 <input type="text" placeholder="微信" class="form-control" id="wechat" name="wechat"
                                        th:value="${me.wechat} != null ? ${me.wechat}"/>
                             </div>
-                        </div>
-                        <div class="form-group">
                             <label for="upCode" class="col-sm-2 control-label">邀请码</label>
 
                             <div class="col-sm-4">
                                 <input type="text" placeholder="邀请码" class="form-control" id="upCode" name="upCode"
-                                       th:value="${me.upCode} != null ? ${me.upCode}"/>
+                                       th:value="${me.upCode} != null ? ${me.upCode}" readonly="readonly"/>
                             </div>
+                        </div>
+                        <div class="form-group">
                             <label for="saler" class="col-sm-2 control-label">销售员</label>
 
                             <div class="col-sm-4">
@@ -494,18 +492,15 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
-<footer id="footer"><!--Footer-->
+<footer id="footer">
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
-                <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
-
-                <p class="pull-right">Designed by <span><a target="_blank"
-                                                           href="http://www.themeum.com">Themeum</a></span></p>
+                <p class="pull-right">Copyright © 2017 VAPE.COM.CN. All rights reserved.</p>
             </div>
         </div>
     </div>
-</footer><!--/Footer-->
+</footer>
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.scrollUp.min.js"></script>

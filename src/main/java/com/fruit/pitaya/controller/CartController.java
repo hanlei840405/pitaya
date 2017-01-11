@@ -125,11 +125,16 @@ public class CartController {
      * @return
      */
     @RequestMapping("")
-    public String index(Model model) {
+    public String index(Model model, RedirectAttributes redirectAttributes) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
         Cart cart = cartService.get(user.getUsername());
         CustomerAddr customerAddr = customerAddrService.getDefault(user.getUsername());
+        if (customerAddr == null && "0".equals(customer.getCusType())) {
+            log.error("买家地址为空");
+            redirectAttributes.addAttribute("error", "请先维护收货地址");
+            return "redirect:/error";
+        }
         List<CustomerAddr> customerAddrs = customerAddrService.findByCustomer(user.getUsername());
         model.addAttribute("isWeChat", "1".equals(customer.getCusType()) ? true : false);
         model.addAttribute("cart", cart);

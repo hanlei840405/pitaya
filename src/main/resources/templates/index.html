@@ -51,15 +51,15 @@
                         <ul class="nav navbar-nav">
                             <li>
                                 <a href="profile">
-                                    <i class="fa fa-user"></i></a>
+                                    <i class="fa fa-user"></i>设置</a>
                             </li>
                             <li>
                                 <a href="cart">
-                                    <i class="fa fa-shopping-cart"></i></a>
+                                    <i class="fa fa-shopping-cart"></i>购物车</a>
                             </li>
                             <li><a th:href="${session.username} != null ? @{logout} : @{login}"><i
                                     th:class="${session.username} != null ? @{fa fa-unlock} : @{fa fa-lock}"></i><span
-                                    th:text="${session.username} != null ? ${session.username}"></span></a></li>
+                                    th:text="${session.username} != null ? ${session.username}"></span>退出登录</a></li>
                         </ul>
                     </div>
                 </div>
@@ -155,12 +155,7 @@
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
-                <p class="pull-left">Copyright © 2013 E-SHOPPER Inc. All rights reserved.</p>
-
-                <p class="pull-right">Designed by
-              <span>
-                <a target="_blank" href="http://www.themeum.com">Themeum</a></span>
-                </p>
+                <p class="pull-right">Copyright © 2017 VAPE.COM.CN. All rights reserved.</p>
             </div>
         </div>
     </div>
