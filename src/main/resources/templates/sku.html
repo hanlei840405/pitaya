@@ -17,52 +17,69 @@
                         <th:block th:if="${sku.price != null}">
                             <tr>
                                 <td style="padding: 0px;border: 0px;">
-                                    <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large" th:text="${session.username} != null ? ${session.username + ' ' + session.username + ' ' + session.username}"></div><p th:text="${'最低数量：' + sku.num1 + '件'}"></p></td>
-                                <td style="padding: 0px;border: 0px;"><p
-                                        th:text="${'￥' + sku.price}"></p></td>
+                                    <p th:text="${'最低数量：' + sku.num1 + '件'}"></p></td>
+                                <td style="padding: 0px;border: 0px;">
+                                    <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large"
+                                         th:text="${session.username} != null ? ${session.username + ' ' + session.username}"></div>
+                                    <p
+                                            th:text="${'￥' + sku.price}"></p></td>
                             </tr>
                         </th:block>
                         <th:block th:if="${sku.price == null}">
                             <tr>
                                 <td style="padding: 0px;border: 0px;">
-                                    <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large" th:text="${session.username} != null ? ${session.username + ' ' + session.username + ' ' + session.username}"></div>
                                     <p
-                                        th:text="${sku.num1 + ' 到 ' + sku.num2 + '件'}"></p></td>
-                                <td style="padding: 0px;border: 0px;"><p
-                                        th:text="${'￥' + sku.price1}"></p></td>
+                                            th:text="${sku.num1 + ' 到 ' + sku.num2 + '件'}"></p></td>
+                                <td style="padding: 0px;border: 0px;">
+                                    <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large"
+                                         th:text="${session.username} != null ? ${session.username + ' ' + session.username}"></div>
+                                    <p
+                                            th:text="${'￥' + sku.price1}"></p></td>
                             </tr>
                             <tr>
                                 <td style="padding: 0px;border: 0px;">
                                     <p
-                                        th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p></td>
-                                <td style="padding: 0px;border: 0px;"><p
-                                        th:text="${'￥' + sku.price2}"></p></td>
+                                            th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p></td>
+                                <td style="padding: 0px;border: 0px;">
+                                    <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large"
+                                         th:text="${session.username} != null ? ${session.username + ' ' + session.username}"></div>
+                                    <p
+                                            th:text="${'￥' + sku.price2}"></p></td>
                             </tr>
                             <tr>
                                 <td style="padding: 0px;border: 0px;">
                                     <p
-                                        th:text="${sku.num3 + '件以上'}"></p></td>
-                                <td style="padding: 0px;border: 0px;"><p
-                                        th:text="${'￥' + sku.price3}"></p></td>
+                                            th:text="${sku.num3 + '件以上'}"></p></td>
+                                <td style="padding: 0px;border: 0px;">
+                                    <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large"
+                                         th:text="${session.username} != null ? ${session.username + ' ' + session.username}"></div>
+                                    <p
+                                            th:text="${'￥' + sku.price3}"></p></td>
                             </tr>
                         </th:block>
                         <tr>
                             <td style="padding: 0px;border: 0px;" colspan="2">
                                 <h5 th:text="${sku.skuName}"></h5>
+
                                 <p th:text="${sku.sku + ' ' + sku.specName}"></p>
+
                                 <p th:text="${'库存:' + (sku.quantity == - 999? '充足' : sku.quantity)}"></p>
                             </td>
                         </tr>
                         <th:block th:if="${session.username} != null">
-                        <tr>
-                            <td style="padding: 0px;border: 0px;" colspan="2">
-                                <input type="number" th:id="${'count' + (sku.exclusive == '1' ? '_exclusive_' : '_normal_') + sku.sku}" style="width:90%" class="purchase-text" placeholder="购买数量"/>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td style="padding: 0px;border: 0px;" colspan="2">
+                                    <input type="number"
+                                           th:id="${'count' + (sku.exclusive == '1' ? '_exclusive_' : '_normal_') + sku.sku}"
+                                           style="width:90%" class="purchase-text" placeholder="购买数量"/>
+                                </td>
+                            </tr>
                         </th:block>
                     </table>
                     <th:block th:if="${session.username} != null">
-                        <a href="javascript:void(0);" th:data="${sku.sku}" th:id="${'link' + (sku.exclusive == '1' ? '_exclusive_' : '_normal_') + sku.sku}" onclick="addCart(this)"
+                        <a href="javascript:void(0);" th:data="${sku.sku}"
+                           th:id="${'link' + (sku.exclusive == '1' ? '_exclusive_' : '_normal_') + sku.sku}"
+                           onclick="addCart(this)"
                            class="btn btn-default add-to-cart btn-add-to-cart">
                             <i class="fa fa-shopping-cart"></i>Add to cart</a>
                     </th:block>
