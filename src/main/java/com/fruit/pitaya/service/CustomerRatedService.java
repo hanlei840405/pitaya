@@ -46,6 +46,17 @@ public class CustomerRatedService {
         Customer cus = customerService.get(customer);
         if (StringUtils.isEmpty(cus.getUpCode())) {
             return;
+        } else if ("0".equals(cus.getAgency())) { // 非经销商
+            Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(*) AS cnt FROM od_order WHERE customer=? AND status IN ('1','2','3')", customer);
+            Long count = (Long) result.get("cnt");
+            if (count == 0) { // 只在下家首次购买时发放礼物
+                jdbcTemplate.update("INSERT INTO customer_gift (customer,relationship,orderID, status) VALUES (?,?,?,'0')", ps -> {
+                    ps.setString(1, cus.getUpCode());
+                    ps.setString(2, cus.getCusCode());
+                    ps.setString(3, orderId);
+                });
+            }
+            return;
         }
         List<OrderDetail> orderDetails = orderService.findByOrderId(orderId);
         KeyHolder keyHolder = new GeneratedKeyHolder();

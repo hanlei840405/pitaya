@@ -56,7 +56,7 @@ public class CustomerService {
 
             Md5PasswordEncoder encoder = new Md5PasswordEncoder();
             customer.setPasswd(encoder.encodePassword(customer.getPasswd(), customer.getCusCode()));
-            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,saler, status,rate,cusType,coupon) VALUES (?,?,?,?,?,?,?,?,?,?,0,0,?,1)",
+            jdbcTemplate.update("INSERT INTO mall_customer (cusCode,cusName,passwd,sex,birthday,email,phone,wechat,upCode,saler, status,rate,cusType,agency,coupon) VALUES (?,?,?,?,?,?,?,?,?,?,0,0,?,'0',1)",
                     ps -> {
                         ps.setString(1, customer.getCusCode());
                         ps.setString(2, customer.getCusName());
@@ -80,7 +80,7 @@ public class CustomerService {
     @Transactional
     public Customer update(Customer customer) throws Exception {
         try {
-            jdbcTemplate.update("UPDATE mall_customer SET sex=?,birthday=?,email=?,phone=?,wechat=?,upCode=?,cusType=? WHERE id=?",
+            jdbcTemplate.update("UPDATE mall_customer SET sex=?,birthday=?,email=?,phone=?,wechat=?,upCode=? WHERE id=?",
                     ps -> {
                         ps.setString(1, customer.getSex());
                         ps.setDate(2, new Date(customer.getBirthday().getTime()));
@@ -88,8 +88,7 @@ public class CustomerService {
                         ps.setString(4, customer.getPhone());
                         ps.setString(5, customer.getWechat());
                         ps.setString(6, customer.getUpCode());
-                        ps.setString(7, customer.getCusType());
-                        ps.setLong(8, customer.getId());
+                        ps.setLong(7, customer.getId());
                     });
         } catch (Exception e) {
             log.error("UPDATE CUSTOMER : {}", customer);

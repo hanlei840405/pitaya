@@ -30,6 +30,7 @@ public class CustomerMapper implements RowMapper<Customer> {
         customer.setPriceType(rs.getString("priceType"));
         customer.setCusType(rs.getString("cusType"));
         customer.setCoupon(rs.getInt("coupon"));
+        customer.setAgency(rs.getString("agency"));
         return customer;
     }
 }
