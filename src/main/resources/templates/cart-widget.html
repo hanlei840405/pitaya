@@ -5,8 +5,8 @@
         <h4 class="panel-title">
             <a th:href="${'#cart' + cartDetail.sku}">
                         <span class="badge pull-right">
-                        </span><i th:text="${cartDetail.skuName}"></i><i class="pull-right"
-                                                                         th:text="${'￥' + cartDetail.skuAmount}"></i></a>
+                        </span><span th:text="${cartDetail.skuName}"></span><span class="pull-right"
+                                                                         th:text="${'￥' + cartDetail.skuAmount}"></span></a>
         </h4>
     </div>
     <div th:attr="id=${'cart' + cartDetail.sku}">
@@ -14,12 +14,12 @@
             <ul>
                 <li>
                     <div class="row">
-                        <i th:text="${'条码:' + cartDetail.sku}"></i><i class="pull-right"
-                                                                      th:text="${'规格:' + cartDetail.specName}"></i>
+                        <span th:text="${'条码:' + cartDetail.sku}"></span><span class="pull-right"
+                                                                      th:text="${'规格:' + cartDetail.specName}"></span>
                     </div>
                     <div class="row">
-                        <i th:text="${'数量:' + cartDetail.skuCount}"></i><i class="pull-right"
-                                                                           th:text="${'单价:￥' + cartDetail.price}"></i>
+                        <span th:text="${'数量:' + cartDetail.skuCount}"></span><span class="pull-right"
+                                                                           th:text="${'单价:￥' + cartDetail.price}"></span>
                     </div>
                     <div class="row">
                         <a class="btn btn-danger" th:href="${'cart/delete/' + cartDetail.sku}">删除</a>

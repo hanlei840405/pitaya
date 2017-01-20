@@ -50,16 +50,16 @@
                     <div class="social-icons pull-right">
                         <ul class="nav navbar-nav">
                             <li>
-                                <a href="../profile">
-                                    <i class="fa fa-user"></i></a>
+                                <a href="profile">
+                                    <i class="fa fa-user"></i>设置</a>
                             </li>
                             <li>
-                                <a href="../cart">
-                                    <i class="fa fa-shopping-cart"></i></a>
+                                <a href="cart">
+                                    <i class="fa fa-shopping-cart"></i>购物车</a>
                             </li>
-                            <li><a th:href="${session.username} != null ? @{../logout} : @{../login}"><i
+                            <li><a th:href="${session.username} != null ? @{logout} : @{login}"><i
                                     th:class="${session.username} != null ? @{fa fa-unlock} : @{fa fa-lock}"></i><span
-                                    th:text="${session.username} != null ? ${session.username}"></span></a></li>
+                                    th:text="${session.username} != null ? ${session.username}"></span>退出登录</a></li>
                         </ul>
                     </div>
                 </div>
