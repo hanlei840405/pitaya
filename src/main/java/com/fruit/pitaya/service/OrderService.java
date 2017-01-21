@@ -204,7 +204,6 @@ public class OrderService {
 
     @Transactional
     public int uploadCertificate(String customer, String orderId, String certificate) {
-        customerRatedService.create(orderId, customer);
         return jdbcTemplate.update("UPDATE od_order SET certificate=?,status=1 WHERE orderID=? AND customer=?", ps -> {
             ps.setString(1, certificate);
             ps.setString(2, orderId);

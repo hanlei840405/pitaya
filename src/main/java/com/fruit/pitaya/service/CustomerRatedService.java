@@ -32,89 +32,8 @@ public class CustomerRatedService {
     private static final Logger log = LoggerFactory.getLogger(CustomerRatedService.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private SkuSPriceService skuSPriceService;
-    @Autowired
-    private SkuNPriceService skuNPriceService;
-    @Autowired
-    private CustomerService customerService;
 
-    @Transactional
-    public void create(String orderId, String customer) {
-        Customer cus = customerService.get(customer);
-        if (StringUtils.isEmpty(cus.getUpCode())) {
-            return;
-        } else if ("0".equals(cus.getAgency())) { // 非经销商
-            Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(*) AS cnt FROM od_order WHERE customer=? AND status IN ('1','2','3')", customer);
-            Long count = (Long) result.get("cnt");
-            if (count == 0) { // 只在下家首次购买时发放礼物
-                jdbcTemplate.update("INSERT INTO customer_gift (customer,relationship,orderID, status) VALUES (?,?,?,'0')", ps -> {
-                    ps.setString(1, cus.getUpCode());
-                    ps.setString(2, cus.getCusCode());
-                    ps.setString(3, orderId);
-                });
-            }
-            return;
-        }
-        List<OrderDetail> orderDetails = orderService.findByOrderId(orderId);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO customer_rated (customer, orderID, status) VALUES (?,?, '0')", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, cus.getUpCode());
-            ps.setString(2, orderId);
-            return ps;
-        }, keyHolder);
-        BigDecimal totalAmount = new BigDecimal(0);
-        List<CustomerRatedDe> customerRatedDes = new ArrayList<>();
-        for (OrderDetail orderDetail : orderDetails) {
-            BigDecimal amount;
-            CustomerRatedDe customerRatedDe = new CustomerRatedDe();
-            // 查询该商户的商品有没有配置与上级商家的固定提成
-            List<CustomerUpRated> customerUpRateds = jdbcTemplate.query("SELECT * FROM customer_up_rated WHERE customer=? AND sku=? AND up=?", ps -> {
-                ps.setString(1, customer);
-                ps.setString(2, orderDetail.getSku());
-                ps.setString(3, cus.getUpCode());
-            }, new CustomerUpRatedMapper());
 
-            if (!customerUpRateds.isEmpty()) { // 从配置中获取固定提成
-                amount = customerUpRateds.get(0).getRated();
-            } else { // 下线的最低价格减去上线的最高价格
-                BigDecimal price = orderDetail.getPrice();
-                SkuSPrice skuSPrice = skuSPriceService.findByCusCodeAndSku(customer, orderDetail.getSku());
-                if (skuSPrice.getPrice() != null) {
-                    amount = price.subtract(skuSPrice.getPrice());
-                } else {
-                    SkuNPrice skuNPrice = skuNPriceService.findBySkuAndType(orderDetail.getSku(), cus.getPriceType());
-                    amount = price.subtract(skuNPrice.getPrice1());
-                }
-            }
-            totalAmount = totalAmount.add(amount.doubleValue() > 0d ? amount.multiply(new BigDecimal(orderDetail.getQuantity())) : new BigDecimal(0));
-            customerRatedDe.setOrderDeID(orderDetail.getId());
-            customerRatedDe.setRateID(keyHolder.getKey().longValue());
-            customerRatedDe.setSku(orderDetail.getSku());
-            customerRatedDe.setAmount(amount.multiply(new BigDecimal(orderDetail.getQuantity())));
-            customerRatedDes.add(customerRatedDe);
-        }
-
-        jdbcTemplate.batchUpdate("INSERT INTO customer_rated_de (ratedID, orderDeID, sku, amount) VALUES (?,?,?,?)", new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement preparedStatement, int i) throws SQLException {
-                preparedStatement.setLong(1, customerRatedDes.get(i).getRateID());
-                preparedStatement.setLong(2, customerRatedDes.get(i).getOrderDeID());
-                preparedStatement.setString(3, customerRatedDes.get(i).getSku());
-                preparedStatement.setBigDecimal(4, customerRatedDes.get(i).getAmount());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return customerRatedDes.size();
-            }
-        });
-
-        jdbcTemplate.update("UPDATE customer_rated SET amount=?", totalAmount);
-    }
 
     public List<CustomerRatedVO> findByCustomer(String customer, int page) {
         List<CustomerRatedVO> customerRatedVOs = jdbcTemplate.query("SELECT t1.*,t2.cusName,t3.odtime, t4.cusName as orderOwner FROM customer_rated t1 INNER JOIN mall_customer t2 ON t1.customer = t2.cusCode INNER JOIN od_order t3 ON t1.orderID=t3.orderID INNER JOIN mall_customer t4 ON t3.customer = t4.cusCode WHERE t1.customer=? LIMIT ?,?", ps -> {
