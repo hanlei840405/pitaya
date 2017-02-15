@@ -46,8 +46,9 @@ public class AfterSaleController {
     public String saveAfterSale(AfterSale afterSale, String skus, RedirectAttributes redirectAttributes) {
         if (afterSale == null || StringUtils.isEmpty(StringUtils.trimTrailingWhitespace(afterSale.getAddr())) ||
                 StringUtils.isEmpty(StringUtils.trimTrailingWhitespace(afterSale.getExecuter())) ||
+                StringUtils.isEmpty(StringUtils.trimTrailingWhitespace(afterSale.getExpress())) ||
                 StringUtils.isEmpty(StringUtils.trimTrailingWhitespace(afterSale.getCourierNum()))) {
-            log.error("收件人、快递单号、地址不能为空 : {}", afterSale);
+            log.error("收件人、快递公司、快递单号、地址不能为空 : {}", afterSale);
             redirectAttributes.addAttribute("error", "收件人、快递单号、地址不能为空");
             return "redirect:/error";
         }
