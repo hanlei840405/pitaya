@@ -34,8 +34,6 @@ public class SkuController {
     private CategoryService categoryService;
     @Autowired
     private SkuService skuService;
-    @Autowired
-    private SkuSPriceService skuSPriceService;
 
     @RequestMapping("/show/{page}/{cateCode}")
     public String show(@PathVariable("page") int page, @PathVariable("cateCode") String cateCode, Model model) {

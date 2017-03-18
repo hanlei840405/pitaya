@@ -43,6 +43,8 @@ public class CartController {
     private CustomerAddrService customerAddrService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private DictionaryService dictionaryService;
 
     @RequestMapping("/fresh")
     public String fresh(Model model) {
@@ -140,6 +142,15 @@ public class CartController {
         model.addAttribute("cart", cart);
         model.addAttribute("address", customerAddr);
         model.addAttribute("addresses", customerAddrs);
+
+        List<Dictionary> dictionaries = dictionaryService.getByType("联系方式");
+        for (Dictionary dictionary : dictionaries) {
+            if ("电话".equals(dictionary.getName())) {
+                model.addAttribute("tel", dictionary.getValue());
+            } else if ("邮箱".equals(dictionary.getName())) {
+                model.addAttribute("email", dictionary.getValue());
+            }
+        }
         return "cart";
     }
 
