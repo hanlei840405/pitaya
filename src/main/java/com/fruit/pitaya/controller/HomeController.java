@@ -109,11 +109,28 @@ public class HomeController {
         subCategories.add(exclusiveCategory);
 
         model.addAttribute("subCategories", subCategories);
+
+        List<Dictionary> dictionaries = dictionaryService.getByType("联系方式");
+        for (Dictionary dictionary : dictionaries) {
+            if ("电话".equals(dictionary.getName())) {
+                model.addAttribute("tel", dictionary.getValue());
+            } else if ("邮箱".equals(dictionary.getName())) {
+                model.addAttribute("email", dictionary.getValue());
+            }
+        }
         return "index";
     }
 
     @RequestMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        List<Dictionary> dictionaries = dictionaryService.getByType("联系方式");
+        for (Dictionary dictionary : dictionaries) {
+            if ("电话".equals(dictionary.getName())) {
+                model.addAttribute("tel", dictionary.getValue());
+            } else if ("邮箱".equals(dictionary.getName())) {
+                model.addAttribute("email", dictionary.getValue());
+            }
+        }
         return "login";
     }
 
@@ -173,6 +190,15 @@ public class HomeController {
             activeTag = "customer";
         }
         model.addAttribute("activeTag", activeTag);
+
+        dictionaries = dictionaryService.getByType("联系方式");
+        for (Dictionary dictionary : dictionaries) {
+            if ("电话".equals(dictionary.getName())) {
+                model.addAttribute("tel", dictionary.getValue());
+            } else if ("邮箱".equals(dictionary.getName())) {
+                model.addAttribute("email", dictionary.getValue());
+            }
+        }
         return "profile";
     }
 
@@ -182,6 +208,7 @@ public class HomeController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
     @RequestMapping("/register")
     public String register(Customer customer) throws Exception {
         String password = customer.getPasswd();
