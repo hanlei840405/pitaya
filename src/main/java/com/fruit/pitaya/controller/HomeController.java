@@ -14,10 +14,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -131,7 +134,7 @@ public class HomeController {
     }
 
     @RequestMapping("/profile")
-    public String profile(Model model) {
+    public String profile(Model model, @ModelAttribute("activeTag") String activeTag) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer customer = customerService.get(user.getUsername());
         Long orderCount = orderService.count(user.getUsername());
@@ -166,6 +169,10 @@ public class HomeController {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         servletRequestAttributes.getRequest().getSession().setAttribute("username", customer.getCusCode());
         servletRequestAttributes.getRequest().getSession().setAttribute("realName", customer.getCusName());
+        if(StringUtils.isEmpty(activeTag)) {
+            activeTag = "customer";
+        }
+        model.addAttribute("activeTag", activeTag);
         return "profile";
     }
 

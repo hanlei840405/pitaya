@@ -183,6 +183,7 @@ public class CartController {
             redirectAttributes.addAttribute("error", e.getMessage());
             return "redirect:/error";
         }
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("activeTag", "order");
+        return "redirect:/profile";
     }
 }

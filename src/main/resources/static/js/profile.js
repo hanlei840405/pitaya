@@ -53,6 +53,7 @@ $(document.body).ready(function () {
         }
         $("#select_repair").val(null).trigger("change");
     });
+    showPanel($('#hidden_tag').val());
 });
 
 function loadAddresses() {
