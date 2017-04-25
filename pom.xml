@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>pitaya</name>
-    <description>电子烟商城</description>
+    <description>电子烟实体经销网</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
