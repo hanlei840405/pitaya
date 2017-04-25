@@ -5,10 +5,8 @@ import com.fruit.pitaya.model.Customer;
 import com.fruit.pitaya.model.SkuVO;
 import com.fruit.pitaya.service.CategoryService;
 import com.fruit.pitaya.service.CustomerService;
-import com.fruit.pitaya.service.SkuSPriceService;
 import com.fruit.pitaya.service.SkuService;
 import com.fruit.pitaya.util.Constant;
-import com.fruit.pitaya.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -17,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,27 +56,41 @@ public class SkuController {
             } else {
                 skuVOs = skuService.findByCategory(category.getCateCode(), customer.getCusCode(), customer.getPriceType(), page);
             }
-            if (customer.getCoupon() == 1) {
-                for (SkuVO skuVO : skuVOs) {
-                    if (skuVO.getPrice() != null) {
-                        skuVO.setPrice(Utils.round(skuVO.getPrice().multiply(new BigDecimal(0.95)), 2));
-                    }
-                    if (skuVO.getPrice1() != null) {
-                        skuVO.setPrice1(Utils.round(skuVO.getPrice1().multiply(new BigDecimal(0.95)), 2));
-                    }
-                    if (skuVO.getPrice2() != null) {
-                        skuVO.setPrice2(Utils.round(skuVO.getPrice2().multiply(new BigDecimal(0.95)), 2));
-                    }
-                    if (skuVO.getPrice3() != null) {
-                        skuVO.setPrice3(Utils.round(skuVO.getPrice3().multiply(new BigDecimal(0.95)), 2));
-                    }
-                }
-            }
+            // FIXME 取消用户首单95折显示
+//            if (customer.getCoupon() == 1) {
+//                for (SkuVO skuVO : skuVOs) {
+//                    if (skuVO.getPrice() != null) {
+//                        skuVO.setPrice(Utils.round(skuVO.getPrice().multiply(new BigDecimal(0.95)), 2));
+//                    }
+//                    if (skuVO.getPrice1() != null) {
+//                        skuVO.setPrice1(Utils.round(skuVO.getPrice1().multiply(new BigDecimal(0.95)), 2));
+//                    }
+//                    if (skuVO.getPrice2() != null) {
+//                        skuVO.setPrice2(Utils.round(skuVO.getPrice2().multiply(new BigDecimal(0.95)), 2));
+//                    }
+//                    if (skuVO.getPrice3() != null) {
+//                        skuVO.setPrice3(Utils.round(skuVO.getPrice3().multiply(new BigDecimal(0.95)), 2));
+//                    }
+//                }
+//            }
         } else {
             if ("exclusive".equals(cateCode)) {
                 skuVOs = new ArrayList<>(0);
             } else {
                 skuVOs = skuService.findByCategory(category.getCateCode(), "", "D", page);
+            }
+        }
+        for (SkuVO vo : skuVOs) {
+            if (vo.getPrice() == null) {
+                Integer num1 = vo.getNum1();
+                Integer num2 = vo.getNum2();
+                Integer num3 = vo.getNum3();
+                if (num1 != num2) {
+                    vo.setNum12(vo.getNum2() - 1);
+                }
+                if (num2 != num3) {
+                    vo.setNum22(vo.getNum3() - 1);
+                }
             }
         }
         model.addAttribute("skus", skuVOs);

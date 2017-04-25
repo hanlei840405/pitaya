@@ -21,8 +21,10 @@ public class SkuVO {
     private String image;
     private BigDecimal price;
     private Integer num1;
+    private Integer num12;
     private BigDecimal price1;
     private Integer num2;
+    private Integer num22;
     private BigDecimal price2;
     private Integer num3;
     private BigDecimal price3;

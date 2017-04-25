@@ -28,7 +28,8 @@
                         <th:block th:if="${sku.price == null}">
                             <tr>
                                 <td style="padding: 0px;border: 0px;">
-                                    <p th:text="${sku.num1 + ' 到 ' + sku.num2 + '件'}"></p></td>
+                                    <p
+                                            th:text="${sku.num1 + ' 到 ' + sku.num12 + '件'}"></p></td>
                                 <td style="padding: 0px;border: 0px;">
                                     <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large"
                                          th:text="${session.username} != null ? ${session.username + ' ' + session.username}"></div>
@@ -38,7 +39,7 @@
                             <tr>
                                 <td style="padding: 0px;border: 0px;">
                                     <p
-                                            th:text="${sku.num2 + ' 到 ' + sku.num3 + '件'}"></p></td>
+                                            th:text="${sku.num2 + ' 到 ' + sku.num22 + '件'}"></p></td>
                                 <td style="padding: 0px;border: 0px;">
                                     <div style="width: 100%;position: absolute;opacity: 0.3;color:#0000ff;font-size: x-large"
                                          th:text="${session.username} != null ? ${session.username + ' ' + session.username}"></div>
