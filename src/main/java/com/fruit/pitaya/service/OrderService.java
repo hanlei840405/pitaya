@@ -211,6 +211,14 @@ public class OrderService {
         });
     }
 
+    @Transactional
+    public int colseOrder(String customer, String orderId) {
+        return jdbcTemplate.update("UPDATE od_order SET status=42 WHERE orderID=? AND customer=?", ps -> {
+            ps.setString(1, orderId);
+            ps.setString(2, customer);
+        });
+    }
+
     public long receivedSkuCount(String customer, String sku) {
         Map<String, Object> result = jdbcTemplate.queryForMap("SELECT COUNT(1) AS cnt FROM od_order_de t1 INNER JOIN od_order t2 ON t1.orderID=t2.orderID WHERE t2.customer=? AND t1.sku=?", customer, sku);
         return (Long) result.get("cnt");

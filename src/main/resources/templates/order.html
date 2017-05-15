@@ -10,7 +10,8 @@
                     <i th:case="1">已付款</i>
                     <i th:case="2">待发货</i>
                     <i th:case="3">已发货</i>
-                    <i th:case="4">已关闭</i>
+                    <i th:case="41">卖家关闭</i>
+                    <i th:case="42">买家关闭</i>
                 </td>
                 <td class="text-right" th:text="${'总额:￥' + order.amount}"></td>
             </tr>
@@ -28,6 +29,7 @@
                 <input type="file" name="file" class="col-sm-3"/>
                 <input type="submit" class="btn btn-info col-sm-2 text-right form-inline"/>
             </form>
+            <a th:href="${'#order/delete?orderId' + order.orderID}" class="btn btn-warning col-sm-2 text-right form-inline">取消订单</a>
         </th:block>
     </div>
     <table class="table">

@@ -1,6 +1,7 @@
 package com.fruit.pitaya.controller;
 
 import com.fruit.pitaya.model.Customer;
+import com.fruit.pitaya.model.Order;
 import com.fruit.pitaya.model.OrderVO;
 import com.fruit.pitaya.service.CustomerService;
 import com.fruit.pitaya.service.OrderService;
@@ -13,10 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -87,5 +85,15 @@ public class OrderController {
         model.addAttribute("nextUrl", "order/show/" + next);
         model.addAttribute("lastUrl", "order/show/" + pages);
         return "page";
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public String delete(@RequestParam("orderId") String orderId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Order order = orderService.get(orderId, user.getUsername());
+        if ("0".equals(order.getStatus())){
+            orderService.colseOrder(user.getUsername(), orderId);
+        }
+        return "redirect:/profile";
     }
 }
