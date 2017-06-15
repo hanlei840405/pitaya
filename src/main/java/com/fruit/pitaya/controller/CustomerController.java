@@ -60,7 +60,8 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/changePwd", method = RequestMethod.POST)
-    public @ResponseBody Map<String, Object> changePwd(String oldPwd, String newPwd) {
+    public @ResponseBody
+    Map<String, Object> changePwd(String oldPwd, String newPwd) {
         Map<String, Object> result = new HashMap<>();
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Customer exist = customerService.get(user.getUsername());
@@ -70,7 +71,7 @@ public class CustomerController {
             password = encoder.encodePassword(newPwd, exist.getCusCode());
             exist.setPasswd(password);
             try {
-                customerService.update(exist);
+                customerService.changePwd(exist);
                 result.put("code", "200");
                 result.put("msg", "保存新密码失败,请重试");
             } catch (Exception e) {

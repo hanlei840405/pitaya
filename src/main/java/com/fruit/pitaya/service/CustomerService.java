@@ -98,6 +98,21 @@ public class CustomerService {
     }
 
     @Transactional
+    public Customer changePwd(Customer customer) throws Exception {
+        try {
+            jdbcTemplate.update("UPDATE mall_customer SET passwd=? WHERE id=?",
+                    ps -> {
+                        ps.setString(1, customer.getPasswd());
+                        ps.setLong(2, customer.getId());
+                    });
+        } catch (Exception e) {
+            log.error("UPDATE CUSTOMER : {}", customer);
+            throw new Exception(e.getCause());
+        }
+        return get(customer.getCusCode());
+    }
+
+    @Transactional
     public String updateCoupon(String customer) throws Exception {
         try {
             jdbcTemplate.update("UPDATE mall_customer SET coupon=0 WHERE cusCode=?",
