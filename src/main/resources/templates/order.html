@@ -29,7 +29,7 @@
                 <input type="file" name="file" class="col-sm-3"/>
                 <input type="submit" class="btn btn-info col-sm-2 text-right form-inline"/>
             </form>
-            <a th:href="${'#order/delete?orderId' + order.orderID}" class="btn btn-warning col-sm-2 text-right form-inline">取消订单</a>
+            <button class="btn btn-warning col-sm-2 text-right form-inline" onclick="cancelOrder(this)" th:id="${order.orderID}">取消订单</button>
         </th:block>
     </div>
     <table class="table">

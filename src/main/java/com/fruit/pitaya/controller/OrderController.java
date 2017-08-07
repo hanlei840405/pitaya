@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hanlei6 on 2016/11/1.
@@ -88,12 +90,20 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public String delete(@RequestParam("orderId") String orderId) {
+    public @ResponseBody Map<String,Object> delete(@RequestParam("orderId") String orderId) {
+        Map<String,Object> result = new HashMap<>();
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Order order = orderService.get(orderId, user.getUsername());
-        if ("0".equals(order.getStatus())){
-            orderService.colseOrder(user.getUsername(), orderId);
+        if (order.getStatus() == 0){
+            int cnt = orderService.colseOrder(user.getUsername(), orderId);
+            if (cnt  == 1) {
+                result.put("code","200");
+            }else {
+                result.put("msg","取消不成功，请刷新页面确认订单状态");
+            }
+        }else {
+            result.put("msg","取消不成功，请刷新页面确认订单状态");
         }
-        return "redirect:/profile";
+        return result;
     }
 }

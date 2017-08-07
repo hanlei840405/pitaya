@@ -222,6 +222,31 @@ function showPanel(tag) {
     footerPosition();
 }
 
+function cancelOrder(obj){
+    var r=confirm("确定取消此订单吗？");
+    if (r==true)
+    {
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: 'order/delete',
+            data: {orderId: obj.id},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function (response) {
+                if (response.code == '200') {
+                    alert("取消成功");
+                    $('#orders').load('order/show/1');
+                    $('#orderPager').load('order/page/1');
+                } else {
+                    alert(response.msg);
+                }
+            }
+        });
+    }
+}
+
 function openWindow(){
     $('#modifyPasswordModal').modal({keyboard: false});
 }
@@ -235,7 +260,7 @@ function changePwd() {
         url: 'customer/changePwd',
         data: {'newPwd': newPwd, 'oldPwd': oldPwd},
         beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
+            xhr.setRequestHeader(header, token); 
         },
         success: function (response) {
             if (response.code == '200') {
