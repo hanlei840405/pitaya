@@ -95,7 +95,7 @@ public class OrderController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Order order = orderService.get(orderId, user.getUsername());
         if (order.getStatus() == 0){
-            int cnt = orderService.colseOrder(user.getUsername(), orderId);
+            int cnt = orderService.closeOrder(user.getUsername(), orderId);
             if (cnt  == 1) {
                 result.put("code","200");
             }else {

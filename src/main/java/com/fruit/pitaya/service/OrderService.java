@@ -74,7 +74,7 @@ public class OrderService {
         return orders.get(0);
     }
 
-    public List<OrderDetail> findByOrderId(String orderId) {
+    private List<OrderDetail> findByOrderId(String orderId) {
         List<OrderDetail> orderDetails = jdbcTemplate.query("SELECT * FROM od_order_de WHERE orderID=?", ps -> {
             ps.setString(1, orderId);
         }, new OrderDetailMapper());
@@ -97,7 +97,7 @@ public class OrderService {
                             ps.setString(1, orderID);
                             ps.setString(2, cusCode);
                         });
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw new Exception("新建订单出错", e);
             }
         } else {
@@ -108,7 +108,7 @@ public class OrderService {
                             ps.setString(2, cusCode);
                             ps.setLong(3, addressId);
                         });
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw new Exception("新建订单出错", e);
             }
         }
@@ -143,7 +143,7 @@ public class OrderService {
                     return cart.getCartDetailVOs().size();
                 }
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new Exception("购物车明细转为订单明细失败", e);
         }
 
@@ -154,7 +154,7 @@ public class OrderService {
                         ps.setBigDecimal(1, totalPriceArray[0]);
                         ps.setString(2, orderID);
                     });
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new Exception("更新订单总金额失败", e);
         }
 
@@ -165,7 +165,7 @@ public class OrderService {
                             ps.setString(1, orderID);
                             ps.setString(2, address);
                         });
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw new Exception("收件地址未填写", e);
             }
         } else {
@@ -176,13 +176,13 @@ public class OrderService {
                             ps.setString(1, orderID);
                             ps.setString(2, customerAddr.getAddr() + " " + customerAddr.getRecipient() + " " + customerAddr.getPhone());
                         });
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw new Exception("未找到默认收件地址", e);
             }
         }
         try {
             cartService.clearCart(cusCode);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new Exception("清空购物车失败", e);
         }
 
@@ -212,7 +212,11 @@ public class OrderService {
     }
 
     @Transactional
-    public int colseOrder(String customer, String orderId) {
+    public int closeOrder(String customer, String orderId) {
+        List<OrderDetail> orderDetails = findByOrderId(orderId);
+        orderDetails.forEach(orderDetail -> {
+            stockService.update(orderDetail.getSku(), -orderDetail.getQuantity());
+        });
         return jdbcTemplate.update("UPDATE od_order SET status=42 WHERE orderID=? AND customer=?", ps -> {
             ps.setString(1, orderId);
             ps.setString(2, customer);
